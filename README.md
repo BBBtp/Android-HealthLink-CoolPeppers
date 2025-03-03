@@ -25,7 +25,7 @@
 
 ## 🔗 Ссылки на Github  
 - [📱 App](#)  
-- [🖥 Backend](#)
+- [🖥 Backend](https://github.com/BBBtp/HealthLink-CoolPeppers-Backend?tab=readme-ov-file)
 - [📌 Борда](https://github.com/users/BBBtp/projects/3)  
 
 ## 👥 Состав команды  
