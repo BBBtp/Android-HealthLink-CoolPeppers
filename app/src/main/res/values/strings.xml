@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Android-HealthLink-CoolPeppers</string>
+    <string name="random">Random string</string>
+    <string name="email">email@email.email</string>
 </resources>
