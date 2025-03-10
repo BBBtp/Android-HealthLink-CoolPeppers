@@ -15,3 +15,9 @@ val LightTextPrimary = Color(0xFF2F6690)
 val LightTextHeaders = Color(0xFFFFFFFF)
 val DarkBgSecondary = Color(0xFF2F6690)
 val DarkBgPrimary = Color(0xFF123143)
+
+val ShimmerColorShades = listOf(
+    Color.LightGray.copy(0.9f),
+    Color.LightGray.copy(0.2f),
+    Color.LightGray.copy(0.9f)
+)
