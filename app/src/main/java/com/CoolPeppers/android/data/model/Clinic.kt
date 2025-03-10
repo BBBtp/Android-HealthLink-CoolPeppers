@@ -5,5 +5,7 @@ data class Clinic(
     val name: String,
     val city: String,
     val metro: String,
+    val rating: Int,
+    val price: Int,
     val image: Int
 )

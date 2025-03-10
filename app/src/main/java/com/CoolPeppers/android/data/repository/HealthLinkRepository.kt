@@ -33,9 +33,9 @@ class ClinicRepository {
     suspend fun fetchClinics(): List<Clinic> {
         delay(2000)
         return listOf(
-            Clinic(1, "Клиника Здоровье", "Москва", "Арбатская", R.drawable.clinic1),
-            Clinic(2, "Медицинский Центр Лидер", "Москва","Новая", R.drawable.clinic2),
-            Clinic(3, "Клиника Улыбка", "Москва","Коломенская", R.drawable.clinic3)
+            Clinic(1, "Клиника Здоровье", "Москва", "Арбатская", 4,3, R.drawable.clinic1),
+            Clinic(2, "Медицинский Центр Лидер", "Москва","Новая",3,4, R.drawable.clinic2),
+            Clinic(3, "Клиника Улыбка", "Москва","Коломенская",5,4, R.drawable.clinic3)
         )
     }
 
