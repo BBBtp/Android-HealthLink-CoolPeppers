@@ -9,6 +9,6 @@ import androidx.compose.ui.Modifier
 @Composable
 fun HomeScreen() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Главная", style = MaterialTheme.typography.headlineLarge)
+        Text("Главная страница", style = MaterialTheme.typography.headlineLarge)
     }
 }
