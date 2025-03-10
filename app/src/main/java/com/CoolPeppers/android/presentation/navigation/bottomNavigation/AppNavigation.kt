@@ -1,4 +1,4 @@
-package com.CoolPeppers.android.presentation.navigation
+package com.CoolPeppers.android.presentation.navigation.bottomNavigation
 
 import HomeScreen
 import ProfileScreen

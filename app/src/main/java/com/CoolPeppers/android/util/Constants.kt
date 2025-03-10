@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import com.CoolPeppers.android.R
-import com.CoolPeppers.android.data.model.BottomNavItem
-import com.CoolPeppers.android.data.model.TabIndicator
+import com.CoolPeppers.android.presentation.navigation.bottomNavigation.BottomNavItem
+import com.CoolPeppers.android.presentation.navigation.tabBarIndicator.TabIndicator
 
 
 @Composable
