@@ -2,4 +2,10 @@
     <string name="app_name">Android-HealthLink-CoolPeppers</string>
     <string name="random">Random string</string>
     <string name="email">email@email.email</string>
+    <string name="about">Приложение позволяет быстро и удобно записываться на приём к врачам, оплачивать услуги онлайн и взаимодействовать с клиниками через встроенный чат.
+    👨‍💻 Богдан Топорин
+    👨‍💻 Холматов Темур
+    👨‍💻 Алексей Утенков
+    👩‍💻 Анна Гладышева
+    👨‍💻 Александр Шубин</string>
 </resources>
