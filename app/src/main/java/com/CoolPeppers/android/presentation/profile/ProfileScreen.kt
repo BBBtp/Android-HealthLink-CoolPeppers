@@ -7,7 +7,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +25,7 @@ import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -34,9 +34,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,19 +47,39 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
+import com.CoolPeppers.android.data.model.MockProfileController
+import com.CoolPeppers.android.data.model.Profile
+import com.CoolPeppers.android.data.model.ProfileController
+import com.CoolPeppers.android.presentation.profile.ProfileViewModel
+import com.CoolPeppers.android.presentation.profile.ProfileViewModelFactory
 import com.CoolPeppers.android.ui.theme.ShimmerColorShades
 
 
 @Preview(widthDp = 400, showBackground = true)
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileScreen(
+    modifier: Modifier = Modifier,
+    viewModel: ProfileViewModel = viewModel(
+        factory = ProfileViewModelFactory(
+            MockProfileController()
+        )
+    ),
+) {
+    val profile by viewModel.profileState
+    val loading by viewModel.loadingState
+
     Column(
         verticalArrangement = Arrangement.spacedBy(60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxWidth()
     ) {
-        ProfileInfo()
+
+        // TODO: сделать нормальное обновление аватарки
+
+        ProfileInfo(profile = profile, onAvatarClick = { viewModel.updateAvatar("newurl") })
         OptionsList()
     }
 }
@@ -104,6 +121,8 @@ fun OptionsList(modifier: Modifier = Modifier) {
     }
 }
 
+// TODO: сделать больше настроек, выпадающей окно изменения языка
+
 @Preview(showBackground = true)
 @Composable
 fun Settings(modifier: Modifier = Modifier) {
@@ -112,7 +131,7 @@ fun Settings(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 8.dp, bottom = 4.dp)
+//            .padding(start = 16.dp, end = 8.dp, bottom = 4.dp)
     ) {
         Option(
             icon = Icons.Default.Face,
@@ -141,20 +160,20 @@ fun Settings(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun ProfileInfo(modifier: Modifier = Modifier) {
+fun ProfileInfo(modifier: Modifier = Modifier, profile: Profile, onAvatarClick: () -> Unit) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
-        Avatar()
+        Avatar(onClick = onAvatarClick, avatarUrl = profile.avatarUrl)
         Text(
-            text = stringResource(R.string.app_name),
+            text = profile.first_name + profile.last_name,
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp
         )
         Text(
-            text = stringResource(R.string.email),
+            text = profile.email,
             fontWeight = FontWeight.Medium,
             fontSize = 12.sp
         )
@@ -215,7 +234,21 @@ fun About(modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun Avatar(modifier: Modifier = Modifier) {
+fun AvatarPreview() {
+    Avatar(
+        onClick = {},
+        avatarUrl = "https://www.meme-arsenal.com/memes/5bfd716225affd016f78d5b2630c67e0.jpg"
+    )
+}
+
+// TODO: сделать шиммер при загрузке
+
+@Composable
+fun Avatar(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    avatarUrl: String
+) {
     val transition = rememberInfiniteTransition(label = "")
     val translateAnim by transition.animateFloat(
         initialValue = 0f,
@@ -233,14 +266,15 @@ fun Avatar(modifier: Modifier = Modifier) {
     )
     // это я украл из components/shimmereffect. надо вопрос решить
     Box(modifier = modifier) {
-        Image(
-            painter = painterResource(R.drawable.ic_launcher_background),
-            contentDescription = "Аватар пользователя",
+        AsyncImage(
+            model = avatarUrl,
+            contentDescription = "Аватар",
             modifier = Modifier
                 .size(122.dp)
                 .clip(CircleShape)
                 .background(brush)
         )
+
         Surface(
             shape = CircleShape,
             modifier = Modifier
@@ -251,21 +285,98 @@ fun Avatar(modifier: Modifier = Modifier) {
             Icon(
                 imageVector = Icons.Default.Edit,
                 contentDescription = null,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clickable(onClick = onClick)
             )
         }
     }
 }
 
+// TODO: сделать навигацию из ProfileScreen в EditProfile
+
 @Composable
-fun EditProfile(modifier: Modifier = Modifier) {
+fun EditProfile(
+    modifier: Modifier = Modifier,
+    viewModel: ProfileViewModel
+) {
 
-    var username by remember { mutableStateOf("") }
+    val profile by viewModel.profileState
 
-    OutlinedTextField(
-        value = username,
-        onValueChange = { username = it },
-        label = { Text("Username") }
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        ProfileTextField(
+            label = "Имя",
+            value = profile.first_name,
+            onValueChange = viewModel::updateFirstName
+        )
+
+        ProfileTextField(
+            label = "Фамилия",
+            value = profile.last_name,
+            onValueChange = viewModel::updateLastName
+        )
+
+        ProfileTextField(
+            label = "Email",
+            value = profile.email,
+            onValueChange = viewModel::updateEmail
+        )
+
+        ProfileTextField(
+            label = "Телефон",
+            value = profile.phone,
+            onValueChange = viewModel::updatePhone
+        )
+
+//        PasswordField(
+//            value = "",
+//            onValueChange = {}
+//        )
+
+        Button(
+            onClick = viewModel::saveChanges,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Сохранить изменения")
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EditProfilePreview() {
+    EditProfile(
+        viewModel = viewModel(
+            factory = ProfileViewModelFactory(
+                MockProfileController()
+            )
+        ),
     )
+}
+
+@Composable
+fun ProfileTextField(
+    modifier: Modifier = Modifier,
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(label) },
+        modifier = modifier.fillMaxWidth()
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProfileTextFieldPreview() {
+    ProfileTextField(label = "textfield", value = "placeholder", onValueChange = {})
 }
 
