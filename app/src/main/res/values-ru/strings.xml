@@ -16,4 +16,8 @@
     <string name="history">История записей</string>
     <string name="about">О приложении</string>
     <string name="log_out">Выйти</string>
+    <string name="username">Юзернейм</string>
+    <string name="blood_type">Группа крови</string>
+    <string name="age">Возраст</string>
+    <string name="unknown">Не задано</string>
 </resources>
