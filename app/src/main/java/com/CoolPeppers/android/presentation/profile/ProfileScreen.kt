@@ -4,7 +4,6 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +26,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -41,7 +39,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,7 +49,6 @@ import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.MockProfileController
 import com.CoolPeppers.android.data.model.Profile
-import com.CoolPeppers.android.data.model.ProfileController
 import com.CoolPeppers.android.presentation.profile.ProfileViewModel
 import com.CoolPeppers.android.presentation.profile.ProfileViewModelFactory
 import com.CoolPeppers.android.ui.theme.ShimmerColorShades
@@ -95,27 +91,27 @@ fun OptionsList(modifier: Modifier = Modifier) {
     ) {
         Option(
             icon = Icons.Default.Face,
-            text = "Редактирование профиля",
+            text = stringResource(R.string.edit_profile),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             onClick = {})
         Option(
             icon = Icons.Default.Build,
-            text = "Настройки",
+            text = stringResource(R.string.settings),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             onClick = {})
         Option(
             icon = Icons.Default.Refresh,
-            text = "История записей",
+            text = stringResource(R.string.history),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             onClick = {})
         Option(
             icon = Icons.Default.Info,
-            text = "О приложении",
+            text = stringResource(R.string.about),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             onClick = {})
         Option(
             icon = Icons.AutoMirrored.Filled.ExitToApp,
-            text = "Выход",
+            text = stringResource(R.string.log_out),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             onClick = {})
     }
@@ -135,7 +131,7 @@ fun Settings(modifier: Modifier = Modifier) {
     ) {
         Option(
             icon = Icons.Default.Face,
-            text = "Язык",
+            text = stringResource(R.string.language_setting),
             buttonIcon = Icons.Default.KeyboardArrowDown,
             onClick = {})
         Row(
@@ -144,7 +140,7 @@ fun Settings(modifier: Modifier = Modifier) {
         ) {
             Option(
                 icon = Icons.Default.Build,
-                text = "Темная тема",
+                text = stringResource(R.string.dark_theme_setting),
                 modifier = Modifier.weight(1f),
                 onClick = {})
             Switch(
@@ -228,7 +224,7 @@ fun Option(
 fun About(modifier: Modifier = Modifier) {
     Text(
         fontSize = 20.sp, fontWeight = FontWeight.Medium,
-        text = stringResource(R.string.about)
+        text = stringResource(R.string.about_text)
     )
 }
 
@@ -268,7 +264,7 @@ fun Avatar(
     Box(modifier = modifier) {
         AsyncImage(
             model = avatarUrl,
-            contentDescription = "Аватар",
+            contentDescription = stringResource(R.string.avatar),
             modifier = Modifier
                 .size(122.dp)
                 .clip(CircleShape)
@@ -310,25 +306,25 @@ fun EditProfile(
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         ProfileTextField(
-            label = "Имя",
+            label = stringResource(R.string.first_name),
             value = profile.first_name,
             onValueChange = viewModel::updateFirstName
         )
 
         ProfileTextField(
-            label = "Фамилия",
+            label = stringResource(R.string.last_name),
             value = profile.last_name,
             onValueChange = viewModel::updateLastName
         )
 
         ProfileTextField(
-            label = "Email",
+            label = stringResource(R.string.email),
             value = profile.email,
             onValueChange = viewModel::updateEmail
         )
 
         ProfileTextField(
-            label = "Телефон",
+            label = stringResource(R.string.phone_number),
             value = profile.phone,
             onValueChange = viewModel::updatePhone
         )
@@ -342,7 +338,7 @@ fun EditProfile(
             onClick = viewModel::saveChanges,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Сохранить изменения")
+            Text(stringResource(R.string.save_changes))
         }
     }
 }
