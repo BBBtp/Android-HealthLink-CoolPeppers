@@ -14,11 +14,10 @@ class ProfileViewModel(
 ) : ViewModel() {
     private val _profileState = mutableStateOf(
         Profile(
-            id = 0,
+            username = "",
             first_name = "",
             last_name = "",
             email = "",
-            phone = "",
             avatarUrl = ""
         )
     )
@@ -47,10 +46,6 @@ class ProfileViewModel(
         _profileState.value = _profileState.value.copy(email = newEmail)
     }
 
-    fun updatePhone(newPhone: String) {
-        _profileState.value = _profileState.value.copy(phone = newPhone)
-    }
-
     fun updateAvatar(url: String) {
         viewModelScope.launch {
             _loadingState.value = true
@@ -63,7 +58,7 @@ class ProfileViewModel(
     fun saveChanges() {
         viewModelScope.launch {
             _loadingState.value = true
-            profileController.updateProfile(_profileState.value)
+            profileController.putProfile(_profileState.value)
             _loadingState.value = false
         }
     }

@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,6 +40,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -243,7 +245,7 @@ fun AvatarPreview() {
 fun Avatar(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    avatarUrl: String
+    avatarUrl: String?
 ) {
     val transition = rememberInfiniteTransition(label = "")
     val translateAnim by transition.animateFloat(
@@ -262,15 +264,20 @@ fun Avatar(
     )
     // это я украл из components/shimmereffect. надо вопрос решить
     Box(modifier = modifier) {
-        AsyncImage(
-            model = avatarUrl,
-            contentDescription = stringResource(R.string.avatar),
-            modifier = Modifier
-                .size(122.dp)
-                .clip(CircleShape)
-                .background(brush)
-        )
-
+        val customModifier: Modifier = Modifier.size(122.dp).clip(CircleShape).background(brush) // чтобы не писать несколько раз
+        if (avatarUrl == null) {
+            Image(
+                painter = painterResource(R.drawable.ic_launcher_background),
+                contentDescription = stringResource(R.string.avatar),
+                modifier = customModifier
+            )
+        } else {
+            AsyncImage(
+                model = avatarUrl,
+                contentDescription = stringResource(R.string.avatar),
+                modifier = customModifier
+            )
+        }
         Surface(
             shape = CircleShape,
             modifier = Modifier
@@ -307,27 +314,35 @@ fun EditProfile(
     ) {
         ProfileTextField(
             label = stringResource(R.string.first_name),
-            value = profile.first_name,
+            value = (if (profile.first_name != null) profile.first_name else stringResource(R.string.unknown))!!,
             onValueChange = viewModel::updateFirstName
         )
-
         ProfileTextField(
             label = stringResource(R.string.last_name),
-            value = profile.last_name,
+            value = (if (profile.last_name != null) profile.last_name else stringResource(R.string.unknown))!!,
             onValueChange = viewModel::updateLastName
         )
-
         ProfileTextField(
             label = stringResource(R.string.email),
             value = profile.email,
             onValueChange = viewModel::updateEmail
         )
-
         ProfileTextField(
-            label = stringResource(R.string.phone_number),
-            value = profile.phone,
-            onValueChange = viewModel::updatePhone
+            label = stringResource(R.string.username),
+            value = profile.username,
+            onValueChange = viewModel::updateEmail
         )
+        ProfileTextField(
+            label = stringResource(R.string.age),
+            value = (if (profile.age != null) profile.age.toString() else stringResource(R.string.unknown)),
+            onValueChange = viewModel::updateEmail
+        )
+        ProfileTextField(
+            label = stringResource(R.string.blood_type),
+            value = (if (profile.bloodType != null) profile.bloodType else stringResource(R.string.unknown))!!,
+            onValueChange = viewModel::updateEmail
+        )
+
 
 //        PasswordField(
 //            value = "",
