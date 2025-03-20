@@ -1,8 +1,10 @@
 package com.CoolPeppers.android.data.model
 
 data class Service(
-    val id: Int,
     val name: String,
-    val description: String,
-    val icon: Int
+    val description: String?,
+    val price: Int?,
+    val duration: Int?,
+    val logoUrl: String?,
+    val id: Int
 )
