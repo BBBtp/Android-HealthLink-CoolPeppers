@@ -1,10 +1,12 @@
 package com.CoolPeppers.android.data.model
 
+import com.google.gson.annotations.SerializedName
+
 data class Appointment(
-    val clinicId: Int,
-    val doctorId: Int,
-    val serviceId: Int,
+    @SerializedName("clinic_id") val clinicId: Int,
+    @SerializedName("doctor_id") val doctorId: Int,
+    @SerializedName("service_id") val serviceId: Int,
     val id: Int,
     val status: String,
-    val appointmentSlotId: Int
+    @SerializedName("appointment_slot_id") val appointmentSlotId: Int
 )
