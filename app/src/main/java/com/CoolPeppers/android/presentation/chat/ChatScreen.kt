@@ -166,6 +166,7 @@ fun ChatApp(navController: NavController, doctors: List<Doctor>) {
             ) {
                 filteredDoctors.forEach { doctor ->
                     DoctorAvatar(
+
                         doctor = doctor,
                         onClick = {
                             navController.navigate("chatDialog/${doctor.id}")
@@ -251,8 +252,8 @@ fun ChatItem(chat: Chat, onClick: () -> Unit) {
                 painter = painterResource(id = chat.doctor.image),
                 contentDescription = "Doctor Avatar",
                 modifier = Modifier
-                    .size(64.dp)
-                    .padding(horizontal = 10.dp)
+                    .size(56.dp)
+                    .padding(end = 10.dp)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
