@@ -1,8 +1,10 @@
 package com.CoolPeppers.android.data.repository
 
 import com.CoolPeppers.android.R
+import com.CoolPeppers.android.data.model.Chat
 import com.CoolPeppers.android.data.model.Clinic
 import com.CoolPeppers.android.data.model.Doctor
+import com.CoolPeppers.android.data.model.Message
 import com.CoolPeppers.android.data.model.Request
 import com.CoolPeppers.android.data.model.Service
 import kotlinx.coroutines.delay
@@ -47,6 +49,33 @@ class ClinicRepository {
             Request(3, fetchDoctors()[2], "13.12.2024", "12:00 - 14:00")
         )
     }
-
+    suspend fun fetchMessage(index: Int): Message {
+        delay(2000)
+        return Message(
+            id = index + 1,
+            text = when (index) {
+                0 -> "У тебя все ок????"
+                1 -> "АЛОООО!!! ОТВЕТЬ ПОЖАЛУЙСТА МНЕ СЛУШАЙ"
+                2 -> "Ну как там с деньгами"
+                else -> "Ты кто"
+            },
+            time = when (index) {
+                0 -> "12:45"
+                1 -> "Вчера"
+                2 -> "5 марта"
+                else -> "11.11.21"
+            },
+            isFromUser = false
+        )
+    }
+    suspend fun fetchChats(doctors: List<Doctor>): List<Chat> {
+        delay(2000)
+        return doctors.mapIndexed { index, doctor ->
+            Chat(
+                doctor = doctor,
+                lastMessage = fetchMessage(index),
+            )
+        }
+    }
 
 }

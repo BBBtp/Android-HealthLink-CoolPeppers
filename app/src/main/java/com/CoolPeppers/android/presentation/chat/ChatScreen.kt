@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -43,6 +44,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -50,6 +53,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.CoolPeppers.android.data.model.Doctor
+import com.CoolPeppers.android.data.model.Chat
+import com.CoolPeppers.android.data.model.Message
 import com.CoolPeppers.android.data.repository.ClinicRepository
 import com.CoolPeppers.android.presentation.navigation.bottomNavigation.BottomNavigationBar
 import kotlinx.coroutines.delay
@@ -99,33 +104,13 @@ fun ChatApp(navController: NavController, doctors: List<Doctor>) {
     val context = LocalContext.current
     val searchText = remember { mutableStateOf(TextFieldValue("")) }
     val chats = remember { mutableStateOf<List<Chat>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) } // Состояние загрузки
+    var isLoading by remember { mutableStateOf(true) }
 
-    LaunchedEffect(Unit) {
-        // Создаем список чатов на основе врачей
-        chats.value = doctors.mapIndexed { index, doctor ->
-            Chat(
-                doctor = doctor,
-                lastMessage = Message(
-                    id = index + 1,
-                    text = when (index) {
-                        0 -> "У тебя все ок????"
-                        1 -> "АЛОООО!!! ОТВЕТЬ"
-                        2 -> "Ну как там с деньгами"
-                        else -> "Ты кто"
-                    },
-                    isFromUser = false
-                ),
-                time = when (index) {
-                    0 -> "12:45"
-                    1 -> "Вчера"
-                    2 -> "5 марта"
-                    else -> "11.11.21"
-                }
-            )
-        }
-        isLoading = false // Данные загружены
+    LaunchedEffect(doctors) {
+        chats.value = ClinicRepository().fetchChats(doctors)
+        isLoading = false
     }
+
 
     Column(
         modifier = Modifier
@@ -133,7 +118,6 @@ fun ChatApp(navController: NavController, doctors: List<Doctor>) {
             .padding(16.dp)
     ) {
         if (isLoading) {
-            // Показываем индикатор загрузки
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -178,7 +162,7 @@ fun ChatApp(navController: NavController, doctors: List<Doctor>) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.Center
             ) {
                 filteredDoctors.forEach { doctor ->
                     DoctorAvatar(
@@ -237,21 +221,18 @@ fun DoctorAvatar(doctor: Doctor, onClick: () -> Unit) {
                 .clip(CircleShape),
             contentScale = ContentScale.Crop
         )
-        Box {
-            Text(
-                text = "${doctor.firstName} ${doctor.lastName}",
-                fontSize = 12.sp,
-                color = Color(0XFF2F6690)
-            )
-            Text(
-                text = doctor.specialty,
-                fontSize = 10.sp,
-                color = Color(0XFF2F6690),
-                modifier = Modifier.padding(top = 15.dp)
-            )
-        }
+        // Имя врача с обрезанием текста
+        Text(
+            text = "${doctor.firstName} ${doctor.lastName}",
+            fontSize = 12.sp,
+            color = Color(0xFF2F6690),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.width(80.dp)
+        )
     }
 }
+
 @Composable
 fun ChatItem(chat: Chat, onClick: () -> Unit) {
     Row(
@@ -275,27 +256,32 @@ fun ChatItem(chat: Chat, onClick: () -> Unit) {
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
+                // Имя врача с обрезанием текста
                 Text(
                     text = "${chat.doctor.firstName} ${chat.doctor.lastName}",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF2F6690)
+                    color = Color(0xFF2F6690),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
+                // Последнее сообщение с обрезанием текста
                 Text(
                     text = chat.lastMessage.text,
+                    modifier = Modifier.padding(end = 13.dp),
                     fontSize = 14.sp,
-                    color = Color(0xFF2F6690)
+                    color = Color(0xFF2F6690),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
         Text(
-            text = chat.time,
+            text = chat.lastMessage.time,
             fontSize = 12.sp,
             color = Color(0xFF2F6690),
             modifier = Modifier.padding(end = 8.dp)
         )
     }
 }
-
-data class Chat(val doctor: Doctor, val lastMessage: Message, val time: String)

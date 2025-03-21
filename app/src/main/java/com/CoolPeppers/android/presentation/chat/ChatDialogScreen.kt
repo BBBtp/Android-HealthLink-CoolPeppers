@@ -1,7 +1,5 @@
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import androidx.annotation.Nullable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.colorspace.Rgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -28,8 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Doctor
+import com.CoolPeppers.android.data.model.Message
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-data class Message(val id: Int, val text: String, val isFromUser: Boolean)
 val LocalBottomBarVisibility = staticCompositionLocalOf { mutableStateOf(true) }
 
 @Composable
@@ -37,13 +37,13 @@ fun ChatDialogScreen(doctor: Doctor, onBack: () -> Unit) {
     var messageText by remember { mutableStateOf("") }
     val messages = remember { mutableStateListOf<Message>() }
     val keyboardController = LocalSoftwareKeyboardController.current
-    val bottomBarVisibility = LocalBottomBarVisibility.current // Получаем состояние видимости нижнего бара
+    val bottomBarVisibility = LocalBottomBarVisibility.current
 
     // Скрываем нижний бар при входе на экран
     DisposableEffect(Unit) {
-        bottomBarVisibility.value = false // Скрываем нижний бар
+        bottomBarVisibility.value = false
         onDispose {
-            bottomBarVisibility.value = true // Показываем нижний бар при выходе
+            bottomBarVisibility.value = true
         }
     }
 
@@ -51,7 +51,7 @@ fun ChatDialogScreen(doctor: Doctor, onBack: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
     ) {
-
+        // Заголовок с кнопкой "Назад" и аватаркой врача
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -95,6 +95,7 @@ fun ChatDialogScreen(doctor: Doctor, onBack: () -> Unit) {
             }
         }
 
+        // Список сообщений
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
@@ -105,6 +106,7 @@ fun ChatDialogScreen(doctor: Doctor, onBack: () -> Unit) {
             }
         }
 
+        // Поле ввода сообщения и кнопка отправки
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -116,7 +118,6 @@ fun ChatDialogScreen(doctor: Doctor, onBack: () -> Unit) {
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Surface(
                     modifier = Modifier
                         .height(65.dp)
@@ -128,16 +129,14 @@ fun ChatDialogScreen(doctor: Doctor, onBack: () -> Unit) {
                             shape = RoundedCornerShape(24.dp)
                         ),
                     shape = RoundedCornerShape(24.dp),
-                    color = Color.Transparent // Прозрачный фон
+                    color = Color.Transparent
                 ) {
                     Row(
                         modifier = Modifier.padding(start = 9.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-
                         IconButton(
-                            onClick = {
-                            },
+                            onClick = { /* Логика для смайликов */ },
                             modifier = Modifier.size(24.dp)
                         ) {
                             Icon(
@@ -153,7 +152,7 @@ fun ChatDialogScreen(doctor: Doctor, onBack: () -> Unit) {
                             onValueChange = { messageText = it },
                             modifier = Modifier
                                 .weight(1f),
-                            placeholder = { Text(text ="Введите сообщение...", fontSize = 12.sp )},
+                            placeholder = { Text(text = "Введите сообщение...", fontSize = 12.sp) },
                             shape = RoundedCornerShape(24.dp),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = Color.Transparent,
@@ -168,7 +167,10 @@ fun ChatDialogScreen(doctor: Doctor, onBack: () -> Unit) {
                             keyboardActions = KeyboardActions(
                                 onSend = {
                                     if (messageText.isNotBlank()) {
-                                        messages.add(Message(messages.size + 1, messageText, true))
+                                        val currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(
+                                            Date()
+                                        ) // Текущее время
+                                        messages.add(Message(messages.size + 1, messageText, currentTime, true))
                                         messageText = ""
                                         keyboardController?.hide()
                                     }
@@ -177,9 +179,7 @@ fun ChatDialogScreen(doctor: Doctor, onBack: () -> Unit) {
                         )
 
                         IconButton(
-                            onClick = {
-                                // Логика для прикрепления файла
-                            },
+                            onClick = { /* Логика для прикрепления файла */ },
                             modifier = Modifier.size(48.dp)
                         ) {
                             Icon(
@@ -191,10 +191,12 @@ fun ChatDialogScreen(doctor: Doctor, onBack: () -> Unit) {
                     }
                 }
 
+                // Кнопка отправки сообщения
                 IconButton(
                     onClick = {
                         if (messageText.isNotBlank()) {
-                            messages.add(Message(messages.size + 1, messageText, true))
+                            val currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date()) // Текущее время
+                            messages.add(Message(messages.size + 1, messageText, currentTime, true))
                             messageText = ""
                             keyboardController?.hide()
                         }
@@ -217,8 +219,9 @@ fun ChatDialogScreen(doctor: Doctor, onBack: () -> Unit) {
 @Composable
 fun MessageBubble(message: Message) {
     val alignment = if (message.isFromUser) Alignment.CenterEnd else Alignment.CenterStart
-    val bgcolor = if (!message.isFromUser) Color(0xFF2F6690) else Color(0xFFFFFFFF)
-    val color = if (message.isFromUser) Color(0xFF2F6690) else Color(0xFFFFFFFF)
+    val bgColor = if (message.isFromUser) Color(0xFFFFFFFF) else Color(0xFF2F6690) // Цвет фона пузыря
+    val textColor = if (message.isFromUser) Color(0xFF2F6690) else Color(0xFFFFFFFF) // Цвет текста
+    val timeAlignment = if (message.isFromUser) Alignment.Start else Alignment.End // Выравнивание времени
 
     Box(
         modifier = Modifier
@@ -226,16 +229,29 @@ fun MessageBubble(message: Message) {
             .padding(vertical = 4.dp),
         contentAlignment = alignment
     ) {
-        Surface(
-            color = bgcolor,
-            shape = RoundedCornerShape(16.dp)
+        Column(
+            horizontalAlignment = if (message.isFromUser) Alignment.End else Alignment.Start
         ) {
+            Surface(
+                color = bgColor,
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text(
+                    text = message.text,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    color = textColor,
+                    fontSize = 16.sp
+                )
+            }
+
             Text(
-                text = message.text,
+                text = message.time,
+                fontSize = 12.sp,
+                color = textColor,
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                color = color,
-                fontSize = 16.sp
+                    .padding(top = 4.dp, start = 16.dp, end = 16.dp)
+                    .align(timeAlignment)
             )
         }
     }
