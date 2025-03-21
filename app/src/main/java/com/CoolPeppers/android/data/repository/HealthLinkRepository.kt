@@ -14,7 +14,7 @@ class ClinicRepository {
         return listOf(
             Doctor(1, "Иван","Иванов", "Терапевт", R.drawable.doctor1),
             Doctor(2, "Мария", "Иванов","Хирург", R.drawable.doctor2),
-            Doctor(3, "Алексей", "Сидоров","Стоматолог", R.drawable.doctor3)
+            Doctor(3, "Алексей", "Сидоров","Стоматолог", R.drawable.doctor3),
         )
     }
 
@@ -47,5 +47,6 @@ class ClinicRepository {
             Request(3, fetchDoctors()[2], "13.12.2024", "12:00 - 14:00")
         )
     }
+
 
 }
