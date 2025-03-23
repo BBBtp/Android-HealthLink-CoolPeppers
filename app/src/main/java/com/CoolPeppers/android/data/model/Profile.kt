@@ -17,7 +17,6 @@ data class Profile(
     @SerialName("blood_type") val bloodType: String? = null,
     @SerialName("age") val age: Int? = null,
     @SerialName("photo_url") val avatarUrl: String? = null,
-//    val password: String
 )
 
 interface ProfileApi {

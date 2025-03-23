@@ -1,9 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    kotlin("plugin.serialization") version "2.1.0"
+    alias(libs.plugins.hilt)
+    kotlin("kapt")
 }
-
 android {
     namespace = "com.CoolPeppers.android"
     compileSdk = 35
@@ -51,28 +51,90 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.material)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.protolite.well.known.types)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.coil.compose)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.converter.gson)
+    // Core
+    implementation(libs.androidx.core.ktx.v1120)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material.v1110)
+    implementation(libs.androidx.constraintlayout)
+
+    // ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx.v270)
+
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.storage)
+    kapt(libs.hilt.compiler)
+    implementation (libs.androidx.hilt.navigation.compose.v110)
+
+    // Retrofit
     implementation(libs.retrofit)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
+    implementation (libs.androidx.room.paging)
+
+    // ExoPlayer
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
+
+    // Glide
+    implementation(libs.glide)
+
+    // SwipeRefreshLayout
+    implementation(libs.androidx.swiperefreshlayout)
+
+    // Testing
+    testImplementation (libs.junit)
+    testImplementation (libs.mockito.core)
+    testImplementation (libs.mockito.kotlin)
+    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation (libs.turbine)
+
+    // Android Testing
+    androidTestImplementation (libs.androidx.junit.v115)
+    androidTestImplementation (libs.androidx.espresso.core.v351)
+    androidTestImplementation (libs.ui.test.junit4)
+    androidTestImplementation (libs.hilt.android.testing)
+    kaptAndroidTest (libs.hilt.android.compiler)
+    // Compose
+    val composeBom = platform("androidx.compose:compose-bom:2024.02.00")
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.material3)
+
+    // Compose Navigation
+    implementation (libs.androidx.navigation.compose.v277)
+
+    // Lifecycle
+    implementation (libs.androidx.lifecycle.runtime.compose)
+    implementation (libs.androidx.lifecycle.viewmodel.compose.v270)
+
+    // Coil для загрузки изображений
+    implementation (libs.coil.compose)
+
+    // SwipeRefresh
+    implementation (libs.androidx.material)
+
+    // Debug
+    debugImplementation (libs.ui.tooling)
+    debugImplementation (libs.ui.test.manifest)
+
+    // ExoPlayer
+    val media3_version = "1.2.1"
+    implementation (libs.androidx.media3.exoplayer.v121)
+    implementation (libs.androidx.media3.ui.v121)
+    implementation (libs.androidx.media3.common)
+
+    // Paging
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.paging.compose)
 }
