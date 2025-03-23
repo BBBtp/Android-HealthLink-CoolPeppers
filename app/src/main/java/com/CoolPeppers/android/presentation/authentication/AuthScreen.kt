@@ -18,18 +18,23 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.Image
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.CoolPeppers.android.data.model.MockAuthController
 import kotlinx.coroutines.launch
 import com.CoolPeppers.android.ui.theme.LightBgSecondary
 import com.CoolPeppers.android.ui.theme.LightTextPrimary
+import com.CoolPeppers.android.ui.theme.Typography
+import com.CoolPeppers.android.R
 
 
 @Preview(showBackground = true)
@@ -40,7 +45,7 @@ fun AuthScreen(
         factory = AuthViewModelFactory(MockAuthController())
     )
 ) {
-    var isLoginScreen by remember { mutableStateOf(true) }
+    var isLoginScreen by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -48,6 +53,13 @@ fun AuthScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.smileface),
+            contentDescription = "smile face",
+            modifier = Modifier
+                .padding(bottom = 10.dp)
+                .size(66.dp)
+        )
         if (isLoginScreen) {
             LoginScreen(
                 viewModel = viewModel,
@@ -68,7 +80,7 @@ fun LoginScreen(
     viewModel: AuthViewModel,
     onSwitchToRegister: () -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope() // Область видимости для корутин
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -76,6 +88,12 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        Text(
+            text = "Вход",
+            style = Typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = LightTextPrimary
+        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -86,18 +104,30 @@ fun LoginScreen(
                     shape = RoundedCornerShape(25.dp) // Закругленные углы
                 )
         ) {
-            OutlinedTextField(
-                value = viewModel.loginEmail,
-                onValueChange = { viewModel.loginEmail = it },
-                label = { Text("Ваш еmail") },
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(25.dp),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.email),
+                    contentDescription = "Email Icon",
+                    modifier = Modifier
+                        .padding(start = 15.dp)
+                        .size(20.dp)
                 )
-            )
+                OutlinedTextField(
+                    value = viewModel.loginEmail,
+                    onValueChange = { viewModel.loginEmail = it },
+                    label = { Text("Ваш еmail", color = LightTextPrimary) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(25.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        containerColor = Color.Transparent,
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent
+                    )
+                )
+            }
         }
 
         // Поле для ввода пароля
@@ -111,24 +141,36 @@ fun LoginScreen(
                     shape = RoundedCornerShape(25.dp) // Закругленные углы
                 )
         ) {
-            OutlinedTextField(
-                value = viewModel.loginPassword,
-                onValueChange = { viewModel.loginPassword = it },
-                label = { Text("Ваш пароль") },
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(25.dp),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.password),
+                    contentDescription = "Password Icon",
+                    modifier = Modifier
+                        .padding(start = 15.dp)
+                        .size(20.dp)
                 )
-            )
+                OutlinedTextField(
+                    value = viewModel.loginPassword,
+                    onValueChange = { viewModel.loginPassword = it },
+                    label = { Text("Ваш пароль", color = LightTextPrimary) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(25.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        containerColor = Color.Transparent,
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent
+                    )
+                )
+            }
         }
 
 
         Button(
             onClick = {
-                coroutineScope.launch { // Запускаем корутину
+                coroutineScope.launch {
                     viewModel.login()
                 }
             },
@@ -151,12 +193,48 @@ fun LoginScreen(
             text = AnnotatedString("Нет аккаунта? Создай!"),
             onClick = { onSwitchToRegister() },
             style = TextStyle(
-                fontSize = 14.sp,
-                color = Color.DarkGray, // Цвет текста
-                textDecoration = TextDecoration.Underline // Подчеркивание
+                fontSize = 15.sp,
+                color = Color.DarkGray,
+                textDecoration = TextDecoration.Underline
             ),
             modifier = Modifier.padding(top = 8.dp)
         )
+        Image(
+            painter = painterResource(id = R.drawable.login_choise),
+            contentDescription = "login choise"
+        )
+        Button(
+            onClick = {
+                coroutineScope.launch {
+                    // to do
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            shape = RoundedCornerShape(25.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = LightBgSecondary
+            )
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.google),
+                    contentDescription = "Google Icon",
+                    modifier = Modifier
+                        .padding(start = 15.dp, end = 15.dp)
+                        .size(25.dp)
+                )
+                Text(
+                    text = "Войти через Google",
+                    color = LightTextPrimary,
+                    fontSize = 18.sp
+                )
+            }
+        }
     }
 }
 
@@ -175,7 +253,12 @@ fun RegisterScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Поле для ввода имени
+        Text(
+            text = "Регистрация",
+            style = Typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = LightTextPrimary
+        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -186,18 +269,30 @@ fun RegisterScreen(
                     shape = RoundedCornerShape(25.dp) // Закругленные углы
                 )
         ) {
-            OutlinedTextField(
-                value = viewModel.username,
-                onValueChange = { viewModel.username = it },
-                label = { Text("Ваше имя") },
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(25.dp),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.Transparent, // Прозрачный фон
-                    focusedBorderColor = Color.Transparent, // Убираем стандартную рамку
-                    unfocusedBorderColor = Color.Transparent // Убираем стандартную рамку
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.person),
+                    contentDescription = "Person Icon",
+                    modifier = Modifier
+                        .padding(start = 15.dp)
+                        .size(20.dp)
                 )
-            )
+                OutlinedTextField(
+                    value = viewModel.username,
+                    onValueChange = { viewModel.username = it },
+                    label = { Text("Ваше имя", color = LightTextPrimary) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(25.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        containerColor = Color.Transparent, // Прозрачный фон
+                        focusedBorderColor = Color.Transparent, // Убираем стандартную рамку
+                        unfocusedBorderColor = Color.Transparent // Убираем стандартную рамку
+                    )
+                )
+            }
         }
 
         // Поле для ввода email
@@ -211,18 +306,30 @@ fun RegisterScreen(
                     shape = RoundedCornerShape(25.dp) // Закругленные углы
                 )
         ) {
-            OutlinedTextField(
-                value = viewModel.email,
-                onValueChange = { viewModel.email = it },
-                label = { Text("Ваш еmail") },
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(25.dp),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.email),
+                    contentDescription = "Email Icon",
+                    modifier = Modifier
+                        .padding(start = 15.dp)
+                        .size(20.dp)
                 )
-            )
+                OutlinedTextField(
+                    value = viewModel.email,
+                    onValueChange = { viewModel.email = it },
+                    label = { Text("Ваш еmail", color = LightTextPrimary) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(25.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        containerColor = Color.Transparent,
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent
+                    )
+                )
+            }
         }
 
         // Поле для ввода пароля
@@ -236,18 +343,30 @@ fun RegisterScreen(
                     shape = RoundedCornerShape(25.dp) // Закругленные углы
                 )
         ) {
-            OutlinedTextField(
-                value = viewModel.password,
-                onValueChange = { viewModel.password = it },
-                label = { Text("Ваш пароль") },
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(25.dp),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.password),
+                    contentDescription = "Password Icon",
+                    modifier = Modifier
+                        .padding(start = 15.dp)
+                        .size(20.dp)
                 )
-            )
+                OutlinedTextField(
+                    value = viewModel.password,
+                    onValueChange = { viewModel.password = it },
+                    label = { Text("Ваш пароль", color = LightTextPrimary) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(25.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        containerColor = Color.Transparent,
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent
+                    )
+                )
+            }
         }
 
 
@@ -276,7 +395,7 @@ fun RegisterScreen(
             text = AnnotatedString("Есть аккаунт? Войти"),
             onClick = { onSwitchToLogin() },
             style = TextStyle(
-                fontSize = 14.sp,
+                fontSize = 15.sp,
                 color = Color.DarkGray, // Цвет текста
                 textDecoration = TextDecoration.Underline // Подчеркивание
             ),
