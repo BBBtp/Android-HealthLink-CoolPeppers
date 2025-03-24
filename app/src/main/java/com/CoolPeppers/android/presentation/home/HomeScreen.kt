@@ -20,26 +20,5 @@ import dagger.hilt.android.AndroidEntryPoint
 fun HomeScreen(
     viewModel: DoctorViewModel = hiltViewModel() // Внедрение ViewModel через Hilt
 ) {
-    val doctors by viewModel.doctors.observeAsState(emptyList()) // Подписка на LiveData
 
-    LaunchedEffect(Unit) {
-        viewModel.loadDoctors(skip = 0, limit = 100, search = "", serviceId = null, clinicId = null)
-    }
-
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("Главная страница", style = MaterialTheme.typography.headlineLarge)
-
-            if (doctors.isEmpty()) {
-                CircularProgressIndicator() // Показываем загрузку
-            } else {
-                LazyColumn {
-                    items(doctors.size) { index ->
-                        val doctor = doctors[index]
-                        Text(text = doctor.firstName)
-                    }
-                }
-            }
-        }
-    }
 }
