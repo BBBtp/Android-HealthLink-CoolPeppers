@@ -13,10 +13,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DoctorViewModel @Inject constructor(
-    private val doctorRepository: DoctorRepository
+    private val doctorRepository: DoctorRepository,
 ) : ViewModel() {
 
     private val _doctors = MutableLiveData<List<Doctor>>()
+
     val doctors: LiveData<List<Doctor>> get() = _doctors
 
     fun loadDoctors(skip: Int, limit: Int, search: String, serviceId: Int?, clinicId: Int?) {
