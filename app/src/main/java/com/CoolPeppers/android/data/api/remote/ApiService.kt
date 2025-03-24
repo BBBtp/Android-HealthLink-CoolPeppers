@@ -142,7 +142,7 @@ interface  ApiService {
         @Part("age") age: RequestBody?,
         @Part("blood_type") bloodType: RequestBody,
         @Part photo: MultipartBody.Part?
-    )
+    ): User
 
     //Методы для слотов записи
     @POST(ApiConstants.CREATE_GET_APPOINTMENT_SLOT_SINGLE_URL)
