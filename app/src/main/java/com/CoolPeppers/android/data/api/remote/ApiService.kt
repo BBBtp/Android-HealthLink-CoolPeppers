@@ -79,7 +79,7 @@ interface  ApiService {
         @Query("skip") skip: Int = 0,
         @Query("limit") limit: Int = 100,
         @Query("search") search: String = "",
-        @Query(ApiConstants.SERVICE_ID) serviceId: Int?
+        @Query(ApiConstants.CLINIC_ID) clinicId: Int?
     ): List<Service>
 
     @GET(ApiConstants.GET_SERVICE_URL)
