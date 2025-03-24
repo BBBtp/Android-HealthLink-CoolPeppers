@@ -1,38 +1,20 @@
 package com.CoolPeppers.android.data.model
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.POST
 
-// Модель данных для запроса авторизации/регистрации
-@Serializable
 data class AuthRequest(
-    @SerialName("username") val username: String,
-    @SerialName("email") val email: String,
-    @SerialName("password") val password: String
-)
-
-// Модель данных для ответа авторизации
-@Serializable
-data class AuthResponse(
-    @SerialName("token") val token: String
+    val username: String,
+    val email: String,
+    val password: String
 )
 
 // Интерфейс API для авторизации и регистрации
-interface AuthApi {
-    @POST("/api/v1/auth/register")
-    suspend fun register(@Body request: AuthRequest): Response<AuthResponse>
-
-    @POST("/api/v1/auth/login")
-    suspend fun login(@Body request: AuthRequest): Response<AuthResponse>
-}
+interface AuthApi {}
 
 // Контроллер для работы с авторизацией
 interface AuthController {
     suspend fun register(username: String, password: String): Boolean
     suspend fun login(email: String, password: String): String?
+    suspend fun sendPasswordReset(email: String): Boolean
 }
 
 // Моковая реализация контроллера (для тестов)
@@ -47,5 +29,9 @@ class MockAuthController : AuthController {
     override suspend fun login(email: String, password: String): String? {
         // Логика авторизации (в моковой реализации возвращает токен)
         return if (email.isNotEmpty() && password.isNotEmpty()) mockToken else null
+    }
+
+    override suspend fun sendPasswordReset(email: String): Boolean {
+        return true // false в случае ошибки
     }
 }

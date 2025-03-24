@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewModelScope
 import com.CoolPeppers.android.data.model.AuthController
+import kotlinx.coroutines.launch
 
-class AuthViewModel(
-    private val authController: AuthController
-) : ViewModel() {
+class AuthViewModel(private val authController: AuthController) : ViewModel() {
 
     // Состояние для экрана регистрации
     var username by mutableStateOf("")
@@ -59,13 +59,32 @@ class AuthViewModel(
         }
     }
 
-    // Метод для сброса ошибок
+    var forgotPasswordEmail by mutableStateOf("")
+
+    var passwordResetSent by mutableStateOf(false)
+        private set
+    var passwordResetError by mutableStateOf<String?>(null)
+        private set
+
+    fun sendPasswordReset() = viewModelScope.launch {
+        passwordResetError = null
+        try {
+            val success = authController.sendPasswordReset(forgotPasswordEmail)
+            passwordResetSent = success
+            if (!success) {
+                passwordResetError = "err"
+            }
+        } catch (e: Exception) {
+            passwordResetError = e.message ?: "err"
+            passwordResetSent = false
+        }
+    }
+
     fun resetError() {
         errorMessage = null
     }
 }
 
-// Фабрика для AuthViewModel
 class AuthViewModelFactory(
     private val authController: AuthController
 ) : ViewModelProvider.Factory {

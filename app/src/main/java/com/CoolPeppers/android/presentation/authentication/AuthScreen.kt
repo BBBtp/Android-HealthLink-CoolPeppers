@@ -4,28 +4,24 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
-import androidx.compose.material.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.Image
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -45,7 +41,22 @@ fun AuthScreen(
         factory = AuthViewModelFactory(MockAuthController())
     )
 ) {
-    var isLoginScreen by remember { mutableStateOf(false) }
+    var authState by remember {
+        mutableStateOf(AuthState.FORGOT_PASSWORD)
+    }
+
+    IconButton(
+        onClick = { /* TODO */ },
+        modifier = Modifier
+            .size(40.dp)
+            .padding(start = 10.dp, top = 10.dp)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.goback),
+            contentDescription = "Go back icon",
+            modifier = Modifier.fillMaxSize()
+        )
+    }
 
     Column(
         modifier = modifier
@@ -60,25 +71,34 @@ fun AuthScreen(
                 .padding(bottom = 10.dp)
                 .size(66.dp)
         )
-        if (isLoginScreen) {
-            LoginScreen(
+        when (authState) {
+            AuthState.LOGIN -> LoginScreen(
                 viewModel = viewModel,
-                onSwitchToRegister = { isLoginScreen = false }
+                onSwitchToRegister = { authState = AuthState.REGISTER },
+                onSwitchToForgotPassword = { authState = AuthState.FORGOT_PASSWORD }
             )
-        } else {
-            RegisterScreen(
+            AuthState.REGISTER -> RegisterScreen(
                 viewModel = viewModel,
-                onSwitchToLogin = { isLoginScreen = true }
+                onSwitchToLogin = { authState = AuthState.LOGIN }
+            )
+            AuthState.FORGOT_PASSWORD -> ForgotPasswordScreen(
+                viewModel = viewModel,
+                onBackToLogin = { authState = AuthState.LOGIN }
             )
         }
     }
+}
+
+enum class AuthState {
+    LOGIN, REGISTER, FORGOT_PASSWORD
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     viewModel: AuthViewModel,
-    onSwitchToRegister: () -> Unit
+    onSwitchToRegister: () -> Unit,
+    onSwitchToForgotPassword: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -167,6 +187,19 @@ fun LoginScreen(
             }
         }
 
+        ClickableText(
+            text = AnnotatedString("Забыли пароль?"),
+            onClick = { onSwitchToForgotPassword() },
+            style = TextStyle(
+                fontSize = 15.sp,
+                color = Color.DarkGray,
+                textDecoration = TextDecoration.Underline
+            ),
+            modifier = Modifier
+                .padding(bottom = 5.dp, end = 5.dp)
+                .align(Alignment.End)
+        )
+
 
         Button(
             onClick = {
@@ -206,7 +239,7 @@ fun LoginScreen(
         Button(
             onClick = {
                 coroutineScope.launch {
-                    // to do
+                    /* TODO */
                 }
             },
             modifier = Modifier
@@ -245,7 +278,7 @@ fun RegisterScreen(
     viewModel: AuthViewModel,
     onSwitchToLogin: () -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope() // Область видимости для корутин
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -398,6 +431,114 @@ fun RegisterScreen(
                 fontSize = 15.sp,
                 color = Color.DarkGray, // Цвет текста
                 textDecoration = TextDecoration.Underline // Подчеркивание
+            ),
+            modifier = Modifier.padding(top = 8.dp)
+        )
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ForgotPasswordScreen(
+    viewModel: AuthViewModel,
+    onBackToLogin: () -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(0.8f)
+            .padding(bottom = 25.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text = "Восстановление пароля",
+            style = Typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = LightTextPrimary
+        )
+
+        // Поле для email
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .border(
+                    width = 5.dp, // Толщина рамки
+                    color = LightBgSecondary, // Цвет рамки
+                    shape = RoundedCornerShape(25.dp) // Закругленные углы
+                )
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.email),
+                            contentDescription = "Email Icon",
+                            modifier = Modifier
+                                .padding(start = 15.dp)
+                                .size(20.dp)
+                        )
+                        OutlinedTextField(
+                            value = viewModel.forgotPasswordEmail,
+                            onValueChange = { viewModel.forgotPasswordEmail = it },
+                            label = { Text(text = "Ваш email", color = LightTextPrimary) },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(25.dp),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                containerColor = Color.Transparent,
+                                focusedBorderColor = Color.Transparent,
+                                unfocusedBorderColor = Color.Transparent
+                            )
+                        )
+                    }
+                }
+
+                    viewModel.passwordResetError?.let { error ->
+                Text(
+                    text = error,
+                    color = Color.Red,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+
+            if (viewModel.passwordResetSent) {
+                Text(
+                    text = "Ссылка отправлена на ваш email",
+                    color = Color.Green,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+
+            Button(
+                onClick = {coroutineScope.launch {
+                    viewModel.sendPasswordReset() }
+                          },
+            modifier = Modifier
+                .fillMaxWidth(0.65f)
+                .height(48.dp),
+            shape = RoundedCornerShape(25.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = LightBgSecondary
+            )
+        ) {
+            Text(
+                text = "Отправить",
+                color = LightTextPrimary,
+                fontSize = 18.sp
+            )
+        }
+
+        ClickableText(
+            text = AnnotatedString("Вернуться к входу"),
+            onClick = { onBackToLogin() },
+            style = TextStyle(
+                fontSize = 15.sp,
+                color = Color.DarkGray,
+                textDecoration = TextDecoration.Underline
             ),
             modifier = Modifier.padding(top = 8.dp)
         )
