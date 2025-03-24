@@ -5,7 +5,6 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,11 +45,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.MockProfileController
-import com.CoolPeppers.android.data.model.Profile
+import com.CoolPeppers.android.data.model.User
 import com.CoolPeppers.android.presentation.profile.ProfileViewModel
 import com.CoolPeppers.android.presentation.profile.ProfileViewModelFactory
 import com.CoolPeppers.android.ui.theme.ShimmerColorShades
@@ -60,14 +60,11 @@ import com.CoolPeppers.android.ui.theme.ShimmerColorShades
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    viewModel: ProfileViewModel = viewModel(
-        factory = ProfileViewModelFactory(
-            MockProfileController()
-        )
-    ),
+    viewModel: ProfileViewModel = hiltViewModel(),
 ) {
-    val profile by viewModel.profileState
+    val user by viewModel.userState
     val loading by viewModel.loadingState
+    val error by viewModel.errorState
 
     Column(
         verticalArrangement = Arrangement.spacedBy(60.dp),
@@ -77,7 +74,11 @@ fun ProfileScreen(
 
         // TODO: сделать нормальное обновление аватарки
 
-        ProfileInfo(profile = profile, onAvatarClick = { viewModel.updateAvatar("newurl") })
+        ProfileInfo(profile = user,
+            onAvatarClick = { viewModel.updateUser(photo = blya) },
+            loadingState = loading,
+            errorState = error
+        )
         OptionsList()
     }
 }
@@ -87,32 +88,26 @@ fun OptionsList(modifier: Modifier = Modifier) {
     Column(
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
 //            .padding(start = 16.dp, end = 8.dp)
     ) {
-        Option(
-            icon = Icons.Default.Face,
+        Option(icon = Icons.Default.Face,
             text = stringResource(R.string.edit_profile),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             onClick = {})
-        Option(
-            icon = Icons.Default.Build,
+        Option(icon = Icons.Default.Build,
             text = stringResource(R.string.settings),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             onClick = {})
-        Option(
-            icon = Icons.Default.Refresh,
+        Option(icon = Icons.Default.Refresh,
             text = stringResource(R.string.history),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             onClick = {})
-        Option(
-            icon = Icons.Default.Info,
+        Option(icon = Icons.Default.Info,
             text = stringResource(R.string.about),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             onClick = {})
-        Option(
-            icon = Icons.AutoMirrored.Filled.ExitToApp,
+        Option(icon = Icons.AutoMirrored.Filled.ExitToApp,
             text = stringResource(R.string.log_out),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             onClick = {})
@@ -127,21 +122,17 @@ fun Settings(modifier: Modifier = Modifier) {
     Column(
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
 //            .padding(start = 16.dp, end = 8.dp, bottom = 4.dp)
     ) {
-        Option(
-            icon = Icons.Default.Face,
+        Option(icon = Icons.Default.Face,
             text = stringResource(R.string.language_setting),
             buttonIcon = Icons.Default.KeyboardArrowDown,
             onClick = {})
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
         ) {
-            Option(
-                icon = Icons.Default.Build,
+            Option(icon = Icons.Default.Build,
                 text = stringResource(R.string.dark_theme_setting),
                 modifier = Modifier.weight(1f),
                 onClick = {})
@@ -158,22 +149,31 @@ fun Settings(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun ProfileInfo(modifier: Modifier = Modifier, profile: Profile, onAvatarClick: () -> Unit) {
+fun ProfileInfo(
+    modifier: Modifier = Modifier,
+    profile: User,
+    onAvatarClick: () -> Unit,
+    loadingState: Boolean,
+    errorState: String?
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
-        Avatar(onClick = onAvatarClick, avatarUrl = profile.avatarUrl)
+        Avatar(
+            onClick = onAvatarClick,
+            avatarUrl = profile.photoUrl,
+            loadingState = loadingState,
+            errorState = errorState
+        )
         Text(
-            text = profile.first_name + profile.last_name,
+            text = profile.firstName + profile.lastName,
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp
         )
         Text(
-            text = profile.email,
-            fontWeight = FontWeight.Medium,
-            fontSize = 12.sp
+            text = profile.email, fontWeight = FontWeight.Medium, fontSize = 12.sp
         )
     }
 }
@@ -193,17 +193,13 @@ fun Option(
     onClick: (() -> Unit),
     buttonIcon: ImageVector? = null
 ) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    Row(horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .then(if (onClick != {}) Modifier.clickable { onClick() } else Modifier)
-    ) {
+            .then(if (onClick != {}) Modifier.clickable { onClick() } else Modifier)) {
         Icon(
-            imageVector = icon,
-            contentDescription = null,
-            modifier = Modifier.size(20.dp)
+            imageVector = icon, contentDescription = null, modifier = Modifier.size(20.dp)
         )
         Text(
             text = text,
@@ -213,9 +209,7 @@ fun Option(
         )
         if (buttonIcon != null) {
             Icon(
-                imageVector = buttonIcon,
-                contentDescription = null,
-                modifier = Modifier.size(20.dp)
+                imageVector = buttonIcon, contentDescription = null, modifier = Modifier.size(20.dp)
             )
         }
     }
@@ -225,8 +219,7 @@ fun Option(
 @Composable
 fun About(modifier: Modifier = Modifier) {
     Text(
-        fontSize = 20.sp, fontWeight = FontWeight.Medium,
-        text = stringResource(R.string.about_text)
+        fontSize = 20.sp, fontWeight = FontWeight.Medium, text = stringResource(R.string.about_text)
     )
 }
 
@@ -235,7 +228,9 @@ fun About(modifier: Modifier = Modifier) {
 fun AvatarPreview() {
     Avatar(
         onClick = {},
-        avatarUrl = "https://www.meme-arsenal.com/memes/5bfd716225affd016f78d5b2630c67e0.jpg"
+        avatarUrl = "https://www.meme-arsenal.com/memes/5bfd716225affd016f78d5b2630c67e0.jpg",
+        loadingState = false,
+        errorState = null
     )
 }
 
@@ -245,15 +240,14 @@ fun AvatarPreview() {
 fun Avatar(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    avatarUrl: String?
+    avatarUrl: String?,
+    loadingState: Boolean,
+    errorState: String?,
 ) {
     val transition = rememberInfiniteTransition(label = "")
     val translateAnim by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1000f,
-        animationSpec = infiniteRepeatable(
-            tween(durationMillis = 1200, easing = FastOutSlowInEasing),
-            RepeatMode.Reverse
+        initialValue = 0f, targetValue = 1000f, animationSpec = infiniteRepeatable(
+            tween(durationMillis = 1200, easing = FastOutSlowInEasing), RepeatMode.Reverse
         ), label = ""
     )
 
@@ -264,8 +258,14 @@ fun Avatar(
     )
     // это я украл из components/shimmereffect. надо вопрос решить
     Box(modifier = modifier) {
-        val customModifier: Modifier = Modifier.size(122.dp).clip(CircleShape).background(brush) // чтобы не писать несколько раз
-        if (avatarUrl == null) {
+
+        val customModifier: Modifier = Modifier
+            .size(122.dp)
+            .clip(CircleShape)
+
+        if (loadingState) {
+            ShimmerItem(brush = brush, height = 122.dp, cornerRadius = 1.dp)
+        } else if (errorState != null) {
             Image(
                 painter = painterResource(R.drawable.ic_launcher_background),
                 contentDescription = stringResource(R.string.avatar),
@@ -279,8 +279,7 @@ fun Avatar(
             )
         }
         Surface(
-            shape = CircleShape,
-            modifier = Modifier
+            shape = CircleShape, modifier = Modifier
                 .size(36.dp)
                 .align(Alignment.BottomEnd)
         ) {
@@ -300,11 +299,10 @@ fun Avatar(
 
 @Composable
 fun EditProfile(
-    modifier: Modifier = Modifier,
-    viewModel: ProfileViewModel
+    modifier: Modifier = Modifier, viewModel: ProfileViewModel
 ) {
 
-    val profile by viewModel.profileState
+    val profile by viewModel.userState
 
     Column(
         modifier = modifier
@@ -314,12 +312,12 @@ fun EditProfile(
     ) {
         ProfileTextField(
             label = stringResource(R.string.first_name),
-            value = (if (profile.first_name != null) profile.first_name else stringResource(R.string.unknown))!!,
+            value = (if (profile.firstName != null) profile.firstName else stringResource(R.string.unknown))!!,
             onValueChange = viewModel::updateFirstName
         )
         ProfileTextField(
             label = stringResource(R.string.last_name),
-            value = (if (profile.last_name != null) profile.last_name else stringResource(R.string.unknown))!!,
+            value = (if (profile.lastName != null) profile.lastName else stringResource(R.string.unknown))!!,
             onValueChange = viewModel::updateLastName
         )
         ProfileTextField(
@@ -350,8 +348,7 @@ fun EditProfile(
 //        )
 
         Button(
-            onClick = viewModel::saveChanges,
-            modifier = Modifier.fillMaxWidth()
+            onClick = viewModel::saveChanges, modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.save_changes))
         }
@@ -362,20 +359,13 @@ fun EditProfile(
 @Composable
 fun EditProfilePreview() {
     EditProfile(
-        viewModel = viewModel(
-            factory = ProfileViewModelFactory(
-                MockProfileController()
-            )
-        ),
+        viewModel = hiltViewModel(),
     )
 }
 
 @Composable
 fun ProfileTextField(
-    modifier: Modifier = Modifier,
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit
+    modifier: Modifier = Modifier, label: String, value: String, onValueChange: (String) -> Unit
 ) {
     TextField(
         value = value,
