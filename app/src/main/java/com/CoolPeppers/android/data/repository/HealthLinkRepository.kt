@@ -3,10 +3,10 @@ package com.CoolPeppers.android.data.repository
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Clinic
 import com.CoolPeppers.android.data.model.Doctor
-import com.CoolPeppers.android.data.model.Request
 import com.CoolPeppers.android.data.model.Service
 import kotlinx.coroutines.delay
 
+/*
 class ClinicRepository {
 
     suspend fun fetchDoctors(): List<Doctor> {
@@ -49,3 +49,4 @@ class ClinicRepository {
     }
 
 }
+*/
