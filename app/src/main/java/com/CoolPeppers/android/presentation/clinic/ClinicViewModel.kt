@@ -20,7 +20,7 @@ class ClinicViewModel @Inject constructor(
 
     val clinics: LiveData<List<Clinic>> get() = _clinics
 
-    fun loadClinics(skip: Int, limit: Int, search: String, serviceId: Int?, clinicId: Int?) {
+    fun loadClinics(skip: Int, limit: Int, search: String) {
         viewModelScope.launch {
             try {
                 val result = clinicRepository.getClinics(

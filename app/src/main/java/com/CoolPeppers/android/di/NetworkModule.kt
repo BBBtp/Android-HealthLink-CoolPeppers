@@ -6,6 +6,7 @@ import com.CoolPeppers.android.data.api.network.AuthInterceptor
 import com.CoolPeppers.android.data.api.remote.ApiService
 import com.CoolPeppers.android.data.api.remote.ApiConstants
 import com.CoolPeppers.android.data.api.remote.RetrofitClient
+import com.CoolPeppers.android.data.repository.AppointmentRepository
 import com.CoolPeppers.android.data.repository.ClinicRepository
 import com.CoolPeppers.android.data.repository.DoctorRepository
 import com.CoolPeppers.android.data.repository.ServiceRepository
@@ -68,6 +69,12 @@ object NetworkModule {
     @Singleton
     fun provideServiceRepository(apiService: ApiService): ServiceRepository {
         return ServiceRepository(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppointmentRepository(apiService: ApiService): AppointmentRepository {
+        return AppointmentRepository(apiService)
     }
 
 }
