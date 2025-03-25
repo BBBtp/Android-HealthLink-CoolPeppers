@@ -11,7 +11,9 @@ import androidx.navigation.compose.rememberNavController
 import com.CoolPeppers.android.ui.theme.AndroidHealthLinkCoolPeppersTheme
 import com.CoolPeppers.android.presentation.navigation.bottomNavigation.BottomNavigationBar
 import com.CoolPeppers.android.presentation.navigation.bottomNavigation.NavHostContainer
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

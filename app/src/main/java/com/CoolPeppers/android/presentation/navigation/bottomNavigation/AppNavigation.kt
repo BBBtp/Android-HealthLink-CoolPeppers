@@ -1,5 +1,6 @@
 package com.CoolPeppers.android.presentation.navigation.bottomNavigation
 
+import ChatScreen
 import HomeScreen
 import ProfileScreen
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,10 +16,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.CoolPeppers.android.presentation.chat.LocalBottomBarVisibility
 import com.CoolPeppers.android.ui.theme.LightBgSecondary
 import com.CoolPeppers.android.ui.theme.LightTextHeaders
 import com.CoolPeppers.android.ui.theme.LightTextPrimary
-import com.CoolPeppers.android.presentation.chat.ChatScreen
 import com.CoolPeppers.android.presentation.notifications.NotificationsScreen
 import com.CoolPeppers.android.presentation.request.RequestScreen
 import com.CoolPeppers.android.util.getBottomNavItems
@@ -33,6 +34,7 @@ fun NavHostContainer(
         navController = navController,
         startDestination = "home",
         modifier = Modifier.padding(paddingValues = padding),
+
 
         builder = {
             composable("home") {
@@ -55,36 +57,33 @@ fun NavHostContainer(
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
+    val bottomBarVisibility = LocalBottomBarVisibility.current
+
+    if (!bottomBarVisibility.value) return
 
     NavigationBar(
-
         containerColor = LightTextHeaders
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
-
         val currentRoute = navBackStackEntry?.destination?.route
-        val buttomNavItems = getBottomNavItems()
-        buttomNavItems.forEach { navItem ->
-            NavigationBarItem(
+        val bottomNavItems = getBottomNavItems()
 
+        bottomNavItems.forEach { navItem ->
+            NavigationBarItem(
                 selected = currentRoute == navItem.route,
                 onClick = {
                     navController.navigate(navItem.route)
                 },
-
                 icon = {
                     Icon(imageVector = navItem.icon, contentDescription = null)
                 },
-
                 alwaysShowLabel = false,
-
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = LightTextPrimary,
                     unselectedIconColor = LightTextPrimary,
                     selectedTextColor = LightTextPrimary,
                     indicatorColor = LightBgSecondary
                 )
-
             )
         }
     }

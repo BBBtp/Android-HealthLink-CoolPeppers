@@ -2,6 +2,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -18,17 +20,23 @@ import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Service
 import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import androidx. compose. foundation. lazy. grid. LazyVerticalGrid
-import androidx. compose. foundation. lazy. grid. GridCells
+
 
 
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 
 
 val service1 = Service(
     id = 1,
     name = "Стоматология",
     description = "Лечение зубов",
-    icon = R.drawable.service_blue,
+    price = 0,
+    duration = 0,
+    logoUrl = "https://avatars.mds.yandex.net/get-altay/5449402/2a0000017eaa39ecb506d56384833dca85f5/XXXL"
 )
 val serviceList = List(10) { service1 }
 
@@ -93,12 +101,13 @@ fun ServiceItem(service: Service) {
                 .size(60.dp)
                 .background(Color(0xFF2F6690).copy(alpha = 0.08f), shape = RoundedCornerShape(50))
         ) {
-            Image(
-                painter = painterResource(id = service.icon),
-                contentDescription = "Service Icon",
+            AsyncImage(
+                model = service.logoUrl,
+                contentDescription = "Clinic Image",
                 modifier = Modifier
                     .size(30.dp)
-                    .align(Alignment.Center)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
             )
         }
         Text(
