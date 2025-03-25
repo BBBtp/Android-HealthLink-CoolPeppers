@@ -69,7 +69,7 @@ import kotlinx.coroutines.delay
 fun ChatScreen() {
     val navController = rememberNavController()
     val viewModel: ChatViewModel = viewModel(
-        factory = ChatViewModelFactory(ClinicRepository())
+
     )
     val doctors by viewModel.doctors.collectAsState()
     val chats by viewModel.chats.collectAsState()
@@ -203,14 +203,14 @@ fun DoctorAvatar(doctor: Doctor, onClick: () -> Unit) {
             .padding(8.dp)
             .clickable(onClick = onClick)
     ) {
-        Image(
-            painter = painterResource(id = doctor.image),
-            contentDescription = "Doctor Avatar",
-            modifier = Modifier
-                .size(64.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop
-        )
+//        Image(
+//            painter = painterResource(id = doctor.image),
+//            contentDescription = "Doctor Avatar",
+//            modifier = Modifier
+//                .size(64.dp)
+//                .clip(CircleShape),
+//            contentScale = ContentScale.Crop
+//        )
         // Имя врача с обрезанием текста
         Text(
             text = "${doctor.firstName} ${doctor.lastName}",
@@ -237,15 +237,15 @@ fun ChatItem(chat: Chat, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.weight(1f)
         ) {
-            Image(
-                painter = painterResource(id = chat.doctor.image),
-                contentDescription = "Doctor Avatar",
-                modifier = Modifier
-                    .size(56.dp)
-                    .padding(end = 10.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
+//            Image(
+//                painter = painterResource(id = chat.doctor.image),
+//                contentDescription = "Doctor Avatar",
+//                modifier = Modifier
+//                    .size(56.dp)
+//                    .padding(end = 10.dp)
+//                    .clip(CircleShape),
+//                contentScale = ContentScale.Crop
+//            )
             Column(modifier = Modifier.weight(1f)) {
                 // Имя врача с обрезанием текста
                 Text(

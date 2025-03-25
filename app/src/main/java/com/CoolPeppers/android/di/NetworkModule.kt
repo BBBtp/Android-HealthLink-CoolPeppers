@@ -7,8 +7,10 @@ import com.CoolPeppers.android.data.api.remote.ApiService
 import com.CoolPeppers.android.data.api.remote.ApiConstants
 import com.CoolPeppers.android.data.api.remote.RetrofitClient
 import com.CoolPeppers.android.data.repository.AppointmentRepository
+import com.CoolPeppers.android.data.repository.AuthRepository
 import com.CoolPeppers.android.data.repository.ClinicRepository
 import com.CoolPeppers.android.data.repository.DoctorRepository
+import com.CoolPeppers.android.data.repository.ProfileRepository
 import com.CoolPeppers.android.data.repository.ServiceRepository
 import dagger.Module
 import dagger.Provides
@@ -75,6 +77,18 @@ object NetworkModule {
     @Singleton
     fun provideAppointmentRepository(apiService: ApiService): AppointmentRepository {
         return AppointmentRepository(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProfileRepository(apiService: ApiService): ProfileRepository {
+        return ProfileRepository(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(apiService: ApiService): AuthRepository {
+        return AuthRepository(apiService)
     }
 
 }

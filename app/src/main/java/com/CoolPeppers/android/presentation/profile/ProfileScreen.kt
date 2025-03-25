@@ -31,6 +31,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,10 +50,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
-import com.CoolPeppers.android.data.model.MockProfileController
 import com.CoolPeppers.android.data.model.User
 import com.CoolPeppers.android.presentation.profile.ProfileViewModel
-import com.CoolPeppers.android.presentation.profile.ProfileViewModelFactory
+
 import com.CoolPeppers.android.ui.theme.ShimmerColorShades
 
 
@@ -62,7 +62,7 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
-    val user by viewModel.userState
+    val user by viewModel.userState.collectAsState()
     val loading by viewModel.loadingState
     val error by viewModel.errorState
 
@@ -75,7 +75,7 @@ fun ProfileScreen(
         // TODO: сделать нормальное обновление аватарки
 
         ProfileInfo(profile = user,
-            onAvatarClick = { viewModel.updateUser(photo = blya) },
+            onAvatarClick = { },
             loadingState = loading,
             errorState = error
         )
@@ -299,10 +299,10 @@ fun Avatar(
 
 @Composable
 fun EditProfile(
-    modifier: Modifier = Modifier, viewModel: ProfileViewModel
+    modifier: Modifier = Modifier,  viewModel: ProfileViewModel = hiltViewModel(),
 ) {
 
-    val profile by viewModel.userState
+    val profile by viewModel.userState.collectAsState()
 
     Column(
         modifier = modifier
@@ -310,7 +310,7 @@ fun EditProfile(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        ProfileTextField(
+       /* ProfileTextField(
             label = stringResource(R.string.first_name),
             value = (if (profile.firstName != null) profile.firstName else stringResource(R.string.unknown))!!,
             onValueChange = viewModel::updateFirstName
@@ -340,18 +340,18 @@ fun EditProfile(
             value = (if (profile.bloodType != null) profile.bloodType else stringResource(R.string.unknown))!!,
             onValueChange = viewModel::updateEmail
         )
-
+*/
 
 //        PasswordField(
 //            value = "",
 //            onValueChange = {}
 //        )
 
-        Button(
+       /* Button(
             onClick = viewModel::saveChanges, modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.save_changes))
-        }
+        }*/
     }
 }
 

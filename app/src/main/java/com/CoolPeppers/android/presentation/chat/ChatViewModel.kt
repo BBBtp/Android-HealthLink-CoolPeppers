@@ -31,16 +31,16 @@ class ChatViewModel(private val repository: ClinicRepository) : ViewModel() {
     val isLoading: StateFlow<Boolean> = _isLoading
 
     init {
-        loadData()
+//        loadData()
     }
 
-    private fun loadData() {
-        viewModelScope.launch {
-            _doctors.value = repository.fetchDoctors()
-            _chats.value = repository.fetchChats(_doctors.value)
-            _isLoading.value = false
-        }
-    }
+//    private fun loadData() {
+//        viewModelScope.launch {
+//            _doctors.value = repository.fetchDoctors()
+//            _chats.value = repository.fetchChats(_doctors.value)
+//            _isLoading.value = false
+//        }
+//    }
 
     fun getDoctorById(id: Int): Doctor? {
         return _doctors.value.find { it.id == id }

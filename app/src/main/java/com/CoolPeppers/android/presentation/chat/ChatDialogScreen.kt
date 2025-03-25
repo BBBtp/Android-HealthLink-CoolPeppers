@@ -105,14 +105,7 @@ private fun ChatHeader(doctor: Doctor, onBack: () -> Unit) {
                 modifier = Modifier.size(29.dp)
             )
         }
-        Image(
-            painter = painterResource(id = doctor.image),
-            contentDescription = "Doctor Avatar",
-            modifier = Modifier
-                .size(64.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop
-        )
+
         Spacer(modifier = Modifier.width(16.dp))
         Column {
             Text(
@@ -121,7 +114,7 @@ private fun ChatHeader(doctor: Doctor, onBack: () -> Unit) {
                 color = Color.Black
             )
             Text(
-                text = doctor.specialty,
+                text = doctor.specialization,
                 fontSize = 14.sp,
                 color = Color.Gray
             )

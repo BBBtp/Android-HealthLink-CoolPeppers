@@ -2,7 +2,6 @@ package com.CoolPeppers.android.presentation.navigation.bottomNavigation
 
 import ChatScreen
 import HomeScreen
-import LocalBottomBarVisibility
 import ProfileScreen
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -17,6 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.CoolPeppers.android.presentation.chat.LocalBottomBarVisibility
 import com.CoolPeppers.android.ui.theme.LightBgSecondary
 import com.CoolPeppers.android.ui.theme.LightTextHeaders
 import com.CoolPeppers.android.ui.theme.LightTextPrimary

@@ -141,10 +141,10 @@ fun LoginScreen(
                     label = { Text("Ваш еmail", color = LightTextPrimary) },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(25.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        containerColor = Color.Transparent,
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent
                     )
                 )
             }
@@ -178,10 +178,10 @@ fun LoginScreen(
                     label = { Text("Ваш пароль", color = LightTextPrimary) },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(25.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        containerColor = Color.Transparent,
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent
                     )
                 )
             }
@@ -319,10 +319,10 @@ fun RegisterScreen(
                     label = { Text("Ваше имя", color = LightTextPrimary) },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(25.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        containerColor = Color.Transparent, // Прозрачный фон
-                        focusedBorderColor = Color.Transparent, // Убираем стандартную рамку
-                        unfocusedBorderColor = Color.Transparent // Убираем стандартную рамку
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent
                     )
                 )
             }
@@ -356,10 +356,10 @@ fun RegisterScreen(
                     label = { Text("Ваш еmail", color = LightTextPrimary) },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(25.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        containerColor = Color.Transparent,
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent
                     )
                 )
             }
@@ -393,10 +393,10 @@ fun RegisterScreen(
                     label = { Text("Ваш пароль", color = LightTextPrimary) },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(25.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        containerColor = Color.Transparent,
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent
                     )
                 )
             }
@@ -488,10 +488,10 @@ fun ForgotPasswordScreen(
                             label = { Text(text = "Ваш email", color = LightTextPrimary) },
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(25.dp),
-                            colors = TextFieldDefaults.outlinedTextFieldColors(
-                                containerColor = Color.Transparent,
-                                focusedBorderColor = Color.Transparent,
-                                unfocusedBorderColor = Color.Transparent
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent
                             )
                         )
                     }
