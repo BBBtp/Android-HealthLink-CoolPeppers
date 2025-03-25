@@ -118,6 +118,7 @@ ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
