@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Android-HealthLink-CoolPeppers</string>
+    <string name="random">Рандомная ресурсная строка</string>
+    <string name="email">Электронная почта</string>
+    <string name="about_text">Приложение позволяет быстро и удобно записываться на приём к врачам, оплачивать услуги онлайн и взаимодействовать с клиниками через встроенный чат.     👨‍💻 Богдан Топорин     👨‍💻 Холматов Темур     👨‍💻 Алексей Утенков     👩‍💻 Анна Гладышева     👨‍💻 Александр Шубин</string>
+    <string name="language_setting">Язык</string>
+    <string name="dark_theme_setting">Темная тема</string>
+    <string name="first_name">Имя</string>
+    <string name="phone_number">Номер телефона</string>
+    <string name="last_name">Фамилия</string>
+    <string name="save_changes">Сохранить изменения</string>
+    <string name="avatar">Аватар</string>
+    <string name="edit_profile">Редактирование профиля</string>
+    <string name="settings">Настройки</string>
+    <string name="history">История записей</string>
+    <string name="about">О приложении</string>
+    <string name="log_out">Выйти</string>
+    <string name="username">Юзернейм</string>
+    <string name="blood_type">Группа крови</string>
+    <string name="age">Возраст</string>
+    <string name="unknown">Не задано</string>
+</resources>
