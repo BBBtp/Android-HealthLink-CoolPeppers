@@ -1,6 +1,7 @@
 package com.CoolPeppers.android.presentation.navigation.bottomNavigation
 
 import ChatScreen
+import ClinicDetailScreen
 import HomeScreen
 import ProfileScreen
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,6 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.CoolPeppers.android.presentation.authentication.AuthScreen
 import com.CoolPeppers.android.presentation.chat.LocalBottomBarVisibility
 import com.CoolPeppers.android.ui.theme.LightBgSecondary
 import com.CoolPeppers.android.ui.theme.LightTextHeaders
@@ -27,32 +29,42 @@ import com.CoolPeppers.android.util.getBottomNavItems
 @Composable
 fun NavHostContainer(
     navController: NavHostController,
-    padding: PaddingValues
+    padding: PaddingValues,
+    startDestination: String
 ) {
+        NavHost(
+            navController = navController,
+            startDestination = startDestination,
+            modifier = Modifier.padding(paddingValues = padding),
 
-    NavHost(
-        navController = navController,
-        startDestination = "home",
-        modifier = Modifier.padding(paddingValues = padding),
 
+            builder = {
+                composable("auth") {
+                    AuthScreen(navController = navController) // Передаем NavController в AuthScreen
+                }
 
-        builder = {
-            composable("home") {
-                HomeScreen()
-            }
-            composable("chat") {
-                ChatScreen()
-            }
-            composable("notifications") {
-                NotificationsScreen()
-            }
-            composable("request") {
-                RequestScreen()
-            }
-            composable("profile") {
-                ProfileScreen()
-            }
-        })
+                composable("home") {
+                    HomeScreen()
+                }
+                composable("chat") {
+                    ChatScreen()
+                }
+                composable("notifications") {
+                    NotificationsScreen()
+                }
+                composable("request") {
+                    RequestScreen(navController = navController)
+                }
+                composable("profile") {
+                    ProfileScreen(navController = navController)
+                }
+                composable("clinic_detail/{clinicId}") { backStackEntry ->
+                    val clinicId = backStackEntry.arguments?.getString("clinicId")?.toIntOrNull()
+                    clinicId?.let {
+                        ClinicDetailScreen(clinicId = it)
+                    }
+                }
+            })
 }
 
 @Composable

@@ -20,6 +20,10 @@ class ClinicViewModel @Inject constructor(
 
     val clinics: LiveData<List<Clinic>> get() = _clinics
 
+
+    private val _clinic =  MutableLiveData<List<Clinic>>()
+    val clinic: LiveData<List<Clinic>> get() = _clinic
+
     fun loadClinics(skip: Int, limit: Int, search: String) {
         viewModelScope.launch {
             try {
@@ -29,6 +33,18 @@ class ClinicViewModel @Inject constructor(
                     search = search,
                 )
                 _clinics.value = result
+            } catch (e: Exception) {
+                Log.e("ClinicViewModel", "Ошибка при загрузке клиник", e)
+            }
+        }
+    }
+    fun loadClinicByID(clinicId: Int) {
+        viewModelScope.launch {
+            try {
+                val result = clinicRepository.getClinicsById(
+                    clinicId = clinicId,
+                )
+                _clinic.postValue(listOf(result))
             } catch (e: Exception) {
                 Log.e("ClinicViewModel", "Ошибка при загрузке клиник", e)
             }

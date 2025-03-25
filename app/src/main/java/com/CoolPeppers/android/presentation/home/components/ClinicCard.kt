@@ -58,7 +58,14 @@ fun ClinicCard(clinic: Clinic) {
                     .padding(8.dp)
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-
+                    AsyncImage(
+                        model = clinic.logoUrl,
+                        contentDescription = "Clinic Image",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                     Column {
                         Text(
