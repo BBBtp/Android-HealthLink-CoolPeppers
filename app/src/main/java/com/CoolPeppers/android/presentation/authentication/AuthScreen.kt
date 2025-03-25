@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.CoolPeppers.android.data.model.MockAuthController
 import kotlinx.coroutines.launch
 import com.CoolPeppers.android.ui.theme.LightBgSecondary
@@ -38,6 +39,7 @@ import com.CoolPeppers.android.R
 fun AuthScreen(
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
+    navController: NavController,
 ) {
     var authState by remember {
         mutableStateOf(AuthState.LOGIN)
@@ -73,6 +75,7 @@ fun AuthScreen(
             AuthState.LOGIN -> LoginScreen(
                 viewModel = viewModel,
                 onSwitchToRegister = { authState = AuthState.REGISTER },
+                navController = navController
             )
             AuthState.REGISTER -> RegisterScreen(
                 viewModel = viewModel,
@@ -95,6 +98,7 @@ enum class AuthState {
 fun LoginScreen(
     viewModel: AuthViewModel,
     onSwitchToRegister: () -> Unit,
+    navController: NavController,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -168,6 +172,9 @@ fun LoginScreen(
             onClick = {
                 coroutineScope.launch {
                     viewModel.login()
+                    navController.navigate("home") {
+                        popUpTo("auth") { inclusive = true }
+                    }
                 }
             },
             modifier = Modifier

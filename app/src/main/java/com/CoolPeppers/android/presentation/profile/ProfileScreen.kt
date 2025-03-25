@@ -33,6 +33,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +41,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,19 +50,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.User
 import com.CoolPeppers.android.presentation.profile.ProfileViewModel
 
 import com.CoolPeppers.android.ui.theme.ShimmerColorShades
+import kotlinx.coroutines.launch
 
-
-@Preview(widthDp = 400, showBackground = true)
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val user by viewModel.userState.collectAsState()
     val loading by viewModel.loadingState
@@ -79,12 +82,17 @@ fun ProfileScreen(
             loadingState = loading,
             errorState = error
         )
-        OptionsList()
+        OptionsList(navController = navController)
     }
 }
 
 @Composable
-fun OptionsList(modifier: Modifier = Modifier) {
+fun OptionsList(modifier: Modifier = Modifier,
+                viewModel: ProfileViewModel = hiltViewModel(),
+                navController: NavController
+
+) {
+    val coroutineScope = rememberCoroutineScope()
     Column(
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -110,7 +118,12 @@ fun OptionsList(modifier: Modifier = Modifier) {
         Option(icon = Icons.AutoMirrored.Filled.ExitToApp,
             text = stringResource(R.string.log_out),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            onClick = {})
+            onClick = {
+                coroutineScope.launch {
+                    viewModel.logOut()
+                    navController.navigate("auth")
+                }
+            })
     }
 }
 
@@ -168,7 +181,7 @@ fun ProfileInfo(
             errorState = errorState
         )
         Text(
-            text = profile.firstName + profile.lastName,
+            text = profile.firstName +" "+ profile.lastName,
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp
         )
@@ -263,6 +276,7 @@ fun Avatar(
             .size(122.dp)
             .clip(CircleShape)
 
+
         if (loadingState) {
             ShimmerItem(brush = brush, height = 122.dp, cornerRadius = 1.dp)
         } else if (errorState != null) {
@@ -275,7 +289,8 @@ fun Avatar(
             AsyncImage(
                 model = avatarUrl,
                 contentDescription = stringResource(R.string.avatar),
-                modifier = customModifier
+                modifier = customModifier,
+                contentScale = ContentScale.Crop
             )
         }
         Surface(

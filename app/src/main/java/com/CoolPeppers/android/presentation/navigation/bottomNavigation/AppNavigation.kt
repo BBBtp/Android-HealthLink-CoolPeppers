@@ -29,19 +29,21 @@ import com.CoolPeppers.android.util.getBottomNavItems
 fun NavHostContainer(
     navController: NavHostController,
     padding: PaddingValues,
+    startDestination: String
 ) {
         NavHost(
             navController = navController,
-            startDestination = "login",
+            startDestination = startDestination,
             modifier = Modifier.padding(paddingValues = padding),
 
 
             builder = {
+                composable("auth") {
+                    AuthScreen(navController = navController) // Передаем NavController в AuthScreen
+                }
+
                 composable("home") {
                     HomeScreen()
-                }
-                composable("login") {
-                    AuthScreen()
                 }
                 composable("chat") {
                     ChatScreen()
@@ -53,7 +55,7 @@ fun NavHostContainer(
                     RequestScreen()
                 }
                 composable("profile") {
-                    ProfileScreen()
+                    ProfileScreen(navController = navController)
                 }
             })
 }

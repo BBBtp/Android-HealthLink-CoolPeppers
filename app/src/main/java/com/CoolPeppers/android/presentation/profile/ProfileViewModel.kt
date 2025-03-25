@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.CoolPeppers.android.data.api.local.TokenManager
 import com.CoolPeppers.android.data.model.User
 import com.CoolPeppers.android.data.repository.ProfileRepository
 import com.CoolPeppers.android.data.repository.Result.Error
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val tokenManager: TokenManager
 ) : ViewModel() {
     private val _userState = MutableStateFlow(User(
         username = "",
@@ -56,6 +58,12 @@ class ProfileViewModel @Inject constructor(
                 }
             }
             _loadingState.value = false
+        }
+    }
+
+    fun logOut() {
+        viewModelScope.launch {
+            tokenManager.clearTokens()
         }
     }
 
