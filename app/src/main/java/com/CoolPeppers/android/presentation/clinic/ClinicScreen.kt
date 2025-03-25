@@ -10,7 +10,8 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,85 +19,80 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
+import com.CoolPeppers.android.data.model.Clinic
 import com.CoolPeppers.android.data.model.ClinicDetail
+import com.CoolPeppers.android.presentation.clinic.ClinicViewModel
 import com.CoolPeppers.android.ui.theme.LightTextPrimary
-
-
-
-val clinic2 = ClinicDetail(
-    id = 1,
-    name = "Медицинский центр 'Здоровье'",
-    city = "Москва",
-    metro = "Красные Ворота",
-    schedule = "Понедельник - пятница | 9:30 - 18:00",
-    info = "Lorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet conseLorem ipsum dolor sit amet consectetur. Eget iaculis est cras ornare augue. Lorem ipsum dolor sit amet consectetur",
-    rating = 4,
-    price = 5000,
-    year = 2000,
-    clients = 5000,
-    reviews = 5000,
-    image = R.drawable.clinic1,
-    address = "ул. Киевская 11"
-)
-
-val clinicList = List(10) { clinic2 }
+import com.CoolPeppers.android.ui.theme.Montserrat
 
 @Composable
-fun ClinicScreen() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        Column(
+fun ClinicScreen(viewModelClinic: ClinicViewModel = hiltViewModel()) {
+    val clinics by viewModelClinic.clinics.observeAsState(emptyList())
+
+    LaunchedEffect(Unit) {
+        viewModelClinic.loadClinics(skip = 0, limit = 100, search = "")
+    }
+
+    if (clinics.isEmpty()) {
+        ShimmerAnimation()
+    } else {
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .background(Color.White)
         ) {
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .background(Color(0xFFffFfFf))
-                    .padding(5.dp, 0.dp),
-//                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxSize()
+                    .padding(16.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.clinic_blue),
-                    contentDescription = "List Icon",
-                    modifier = Modifier.size(20.dp)
-                )
-                Text(
-                    text = " Выберите клинику",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = LightTextPrimary
-                )
-            }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .background(Color(0xFFffFfFf))
+                        .padding(5.dp, 0.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.clinic_blue),
+                        contentDescription = "List Icon",
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Text(
+                        text = " Выберите клинику",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = LightTextPrimary
+                    )
+                }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                items(clinicList.size) { index ->
-                    HospitalCard(clinic = clinicList[index])
-                    Spacer(modifier = Modifier.height(10.dp))
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
+                    items(clinics.size) { index ->
+                        HospitalCard(clinic = clinics[index])
+
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
                 }
             }
-            
         }
     }
 }
 
 @Composable
-fun HospitalCard(clinic: ClinicDetail) {
+fun HospitalCard(clinic: Clinic) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -112,12 +108,13 @@ fun HospitalCard(clinic: ClinicDetail) {
                 .height(130.dp)
                 .background(Color.Gray, RoundedCornerShape(14.dp))
         ) {
-            Image(
-                painter = painterResource(id = clinic2.image),
+            AsyncImage(
+                model = clinic.logoUrl,
                 contentDescription = "Hospital Image",
-                modifier = Modifier.fillMaxSize()
-                    .clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.Crop
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .background(Color.Gray, RoundedCornerShape(14.dp)),
+                contentScale = ContentScale.Crop,
             )
         }
 
@@ -129,25 +126,30 @@ fun HospitalCard(clinic: ClinicDetail) {
             horizontalAlignment = Alignment.End
         ) {
             Text(
-                text = clinic2.address,
+                text = clinic.address,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = LightTextPrimary
             )
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(id = R.drawable.metro),
                     contentDescription = "Metro Icon",
                     modifier = Modifier.size(20.dp)
                 )
-                Text(
-                    text = clinic2.metro,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = LightTextPrimary
-                )
+                clinic.metro?.let {
+                    Text(
+                        text = it,
+                        style = androidx.compose.ui.text.TextStyle(
+                            fontFamily = Montserrat,
+                            fontWeight = FontWeight.Light,
+                            fontSize = 12.sp,
+                            color = LightTextPrimary
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
             Text(
                 text = "${clinic.price}₽",
@@ -160,14 +162,14 @@ fun HospitalCard(clinic: ClinicDetail) {
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                repeat(clinic.rating) {
+                repeat(clinic.rating.toInt()) {
                     Icon(
                         imageVector = Icons.Filled.Star,
                         contentDescription = null,
                         tint = LightTextPrimary
                     )
                 }
-                repeat(5 - clinic.rating) {
+                repeat(5 - clinic.rating.toInt()) {
                     Icon(
                         imageVector = Icons.Outlined.Star,
                         contentDescription = null,

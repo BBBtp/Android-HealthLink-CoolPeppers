@@ -24,6 +24,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Doctor
 import com.CoolPeppers.android.data.model.Message
@@ -105,7 +106,17 @@ private fun ChatHeader(doctor: Doctor, onBack: () -> Unit) {
                 modifier = Modifier.size(29.dp)
             )
         }
-
+        AsyncImage(
+            model = doctor.photoUrl, // URL изображения
+            contentDescription = "Doctor Avatar",
+            modifier = Modifier
+                .size(56.dp)
+                .padding(end = 10.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop,
+            placeholder = painterResource(R.drawable.smileface),
+            error = painterResource(R.drawable.smileface)
+        )
         Spacer(modifier = Modifier.width(16.dp))
         Column {
             Text(
