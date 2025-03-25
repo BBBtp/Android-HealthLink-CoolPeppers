@@ -30,6 +30,7 @@ import com.CoolPeppers.android.data.model.ClinicDetail
 import com.CoolPeppers.android.presentation.clinic.ClinicViewModel
 import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.ui.theme.Montserrat
+import com.CoolPeppers.android.util.PriceConversion
 
 @Composable
 fun ClinicScreen(viewModelClinic: ClinicViewModel = hiltViewModel()) {
@@ -113,7 +114,8 @@ fun HospitalCard(clinic: Clinic) {
                 contentDescription = "Hospital Image",
                 modifier = Modifier
                     .fillMaxHeight()
-                    .background(Color.Gray, RoundedCornerShape(14.dp)),
+                    .background(Color.Gray, RoundedCornerShape(14.dp))
+                    .clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Crop,
             )
         }
@@ -151,12 +153,7 @@ fun HospitalCard(clinic: Clinic) {
                     )
                 }
             }
-            Text(
-                text = "${clinic.price}₽",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-                color = LightTextPrimary
-            )
+            clinic.price?.let { PriceConversion(it.toInt()) }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,
