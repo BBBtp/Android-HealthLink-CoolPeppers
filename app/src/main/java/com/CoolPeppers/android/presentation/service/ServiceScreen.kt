@@ -104,7 +104,6 @@ fun ServiceItem(service: Service) {
                 model = service.logoUrl,
                 contentDescription = "Clinic Image",
                 modifier = Modifier
-                    .size(30.dp)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
