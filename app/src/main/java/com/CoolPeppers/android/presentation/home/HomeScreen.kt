@@ -19,8 +19,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.CoolPeppers.android.data.model.Appointment
 import com.CoolPeppers.android.presentation.clinic.ClinicViewModel
 import com.CoolPeppers.android.presentation.doctor.DoctorViewModel
+import com.CoolPeppers.android.presentation.home.HomeViewModel
 import com.CoolPeppers.android.presentation.home.components.ClinicCard
 import com.CoolPeppers.android.presentation.home.components.DoctorCard
 import com.CoolPeppers.android.presentation.home.components.UserInfoBlock
@@ -31,14 +33,19 @@ import com.CoolPeppers.android.ui.theme.Montserrat
 @Composable
 fun HomeScreen(
     viewModelDoctor: DoctorViewModel = hiltViewModel(),
-    viewModelClinic: ClinicViewModel = hiltViewModel()
+    viewModelClinic: ClinicViewModel = hiltViewModel(),
+    viewModelAppointment: HomeViewModel = hiltViewModel()
 ) {
     val doctors by viewModelDoctor.doctors.observeAsState(emptyList())
     val clinics by viewModelClinic.clinics.observeAsState(emptyList())
+    val appointments by viewModelAppointment.appointments.observeAsState(emptyList())
+    val doctor by viewModelAppointment.doctor.observeAsState()
+    val slot by viewModelAppointment.slot.observeAsState()
 
     LaunchedEffect(Unit) {
         viewModelDoctor.loadDoctors(skip = 0, limit = 100, search = "", serviceId = null, clinicId = null)
         viewModelClinic.loadClinics(skip = 0, limit = 100, search = "")
+        viewModelAppointment.getAppointments()
     }
     if (doctors.isEmpty() || clinics.isEmpty()) {
         ShimmerAnimation()

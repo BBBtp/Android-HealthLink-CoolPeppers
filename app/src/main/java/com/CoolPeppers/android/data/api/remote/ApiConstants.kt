@@ -34,6 +34,7 @@ object ApiConstants {
     const val GET_UPDATE_USER_PROFILE_URL = "/api/v1/users/me"
     //Слоты для записи
     const val CREATE_GET_APPOINTMENT_SLOT_SINGLE_URL = "/api/v1/appointment_slots/slots"
+    const val GET_SLOT_BY_ID_URL = "/api/v1/appointment_slots/slots/{slot_id}"
     const val GENERATE_APPOINTMENT_SLOTS_URL = "/api/v1/appointment_slots/generate_slots"
     const val SLOT_ID = "slot_id"
     const val SLOT_TIME = "slot_time"

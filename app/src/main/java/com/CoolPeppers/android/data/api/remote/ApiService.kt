@@ -158,7 +158,12 @@ interface  ApiService {
     @GET(ApiConstants.CREATE_GET_APPOINTMENT_SLOT_SINGLE_URL)
     suspend fun getSlots(
         @Query(ApiConstants.DOCTOR_ID) doctorId: Int
-    ) : SlotResponse
+    ) : List<SlotResponse>
+
+    @GET(ApiConstants.GET_SLOT_BY_ID_URL)
+    suspend fun getSlotById(
+        @Path("slot_id") slotId: Int
+    ): SlotResponse
 
     @POST(ApiConstants.GENERATE_APPOINTMENT_SLOTS_URL)
     suspend fun generateSlots(

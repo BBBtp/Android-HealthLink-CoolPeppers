@@ -1,3 +1,4 @@
+/*
 package com.CoolPeppers.android.presentation.home.components
 
 import androidx.compose.foundation.Image
@@ -29,7 +30,11 @@ import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.ui.theme.Montserrat
 
 @Composable
-fun RecordCard() {
+fun RecordCard(
+    appointment: Appointment,
+    doctor: Doctor
+
+) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = LightBgSecondary
@@ -43,14 +48,61 @@ fun RecordCard() {
                 .padding(8.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = "Здесь будут ващи записи", style = androidx.compose.ui.text.TextStyle(
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 12.sp,
-                    color = LightTextPrimary
-                )
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Image(
+                        painter = rememberAsyncImagePainter(appointment.doctor.image),
+                        contentDescription = "Avatar",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop,
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column {
+                        Text(
+                            text = appointment.doctor.fullName,
+                            style = androidx.compose.ui.text.TextStyle(
+                                fontFamily = Montserrat,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp,
+                                color = colorResource(id = R.color.light_text_primary)
+                            )
+                        )
+                        Text(
+                            text = appointment.doctor.specialty,
+                            style = androidx.compose.ui.text.TextStyle(
+                                fontFamily = Montserrat,
+                                fontWeight = FontWeight.Light,
+                                fontSize = 12.sp,
+                                color = colorResource(id = R.color.light_text_primary)
+                            )
+                        )
+                    }
+                }
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        text = appointment.date, style = androidx.compose.ui.text.TextStyle(
+                            fontFamily = Montserrat,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 14.sp,
+                            color = colorResource(id = R.color.light_text_primary)
+                        )
+                    )
+                    Text(
+                        text = appointment.timeRange, style = androidx.compose.ui.text.TextStyle(
+                            fontFamily = Montserrat,
+                            fontWeight = FontWeight.Light,
+                            fontSize = 12.sp,
+                            color = colorResource(id = R.color.light_text_primary)
+                        )
+                    )
+                }
+            }
         }
-    }
-}
+    }*/
