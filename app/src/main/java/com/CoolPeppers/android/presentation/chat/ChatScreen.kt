@@ -49,28 +49,29 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Doctor
 import com.CoolPeppers.android.data.model.Chat
 import com.CoolPeppers.android.data.model.Message
 import com.CoolPeppers.android.data.repository.ClinicRepository
 import com.CoolPeppers.android.presentation.chat.ChatViewModel
-import com.CoolPeppers.android.presentation.chat.ChatViewModelFactory
 import com.CoolPeppers.android.presentation.navigation.bottomNavigation.BottomNavigationBar
 import kotlinx.coroutines.delay
 
 
 
 @Composable
-fun ChatScreen() {
+fun ChatScreen(
+    viewModel: ChatViewModel = hiltViewModel()
+) {
     val navController = rememberNavController()
-    val viewModel: ChatViewModel = viewModel(
-
-    )
     val doctors by viewModel.doctors.collectAsState()
     val chats by viewModel.chats.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -87,7 +88,12 @@ fun ChatScreen() {
                     CircularProgressIndicator(color = Color(0xFF2F6690))
                 }
             } else {
-                ChatApp(navController, doctors, chats)
+                ChatApp(
+                    navController = navController,
+                    doctors = doctors,
+                    chats = chats,
+                    onRefresh = { viewModel.loadData() }
+                )
             }
         }
         composable("chatDialog/{doctorId}") { backStackEntry ->
@@ -107,15 +113,18 @@ fun ChatScreen() {
 fun ChatApp(
     navController: NavController,
     doctors: List<Doctor>,
-    chats: List<Chat>
+    chats: List<Chat>,
+    onRefresh: () -> Unit
 ) {
     val searchText = remember { mutableStateOf(TextFieldValue("")) }
+    val isRefreshing = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        // Поисковая строка (оставляем ваш оригинальный дизайн)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -142,9 +151,12 @@ fun ChatApp(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        val filteredDoctors = doctors.filter { doctor ->
-            doctor.firstName.contains(searchText.value.text, ignoreCase = true) ||
-                    doctor.lastName.contains(searchText.value.text, ignoreCase = true)
+        // Список докторов с горизонтальным скроллом
+        val filteredDoctors = remember(doctors, searchText.value.text) {
+            doctors.filter { doctor ->
+                doctor.firstName.contains(searchText.value.text, ignoreCase = true) ||
+                        doctor.lastName.contains(searchText.value.text, ignoreCase = true)
+            }
         }
 
         Row(
@@ -165,9 +177,12 @@ fun ChatApp(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        val filteredChats = chats.filter { chat ->
-            chat.doctor.firstName.contains(searchText.value.text, ignoreCase = true) ||
-                    chat.doctor.lastName.contains(searchText.value.text, ignoreCase = true)
+        // Список чатов
+        val filteredChats = remember(chats, searchText.value.text) {
+            chats.filter { chat ->
+                chat.doctor.firstName.contains(searchText.value.text, ignoreCase = true) ||
+                        chat.doctor.lastName.contains(searchText.value.text, ignoreCase = true)
+            }
         }
 
         if (filteredChats.isEmpty()) {
@@ -177,7 +192,10 @@ fun ChatApp(
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Нет активных чатов", fontSize = 18.sp, color = Color(0xFF2F6690))
+                Text(
+                    text = if (searchText.value.text.isNotEmpty()) "Ничего не найдено" else "Нет активных чатов",
+                    fontSize = 18.sp,
+                    color = Color(0xFF2F6690))
             }
         } else {
             LazyColumn {
@@ -194,7 +212,7 @@ fun ChatApp(
     }
 }
 
-
+// Ваши оригинальные компоненты остаются без изменений
 @Composable
 fun DoctorAvatar(doctor: Doctor, onClick: () -> Unit) {
     Column(
@@ -203,14 +221,16 @@ fun DoctorAvatar(doctor: Doctor, onClick: () -> Unit) {
             .padding(8.dp)
             .clickable(onClick = onClick)
     ) {
-//        Image(
-//            painter = painterResource(id = doctor.image),
-//            contentDescription = "Doctor Avatar",
-//            modifier = Modifier
-//                .size(64.dp)
-//                .clip(CircleShape),
-//            contentScale = ContentScale.Crop
-//        )
+        AsyncImage(
+            model = doctor.photoUrl, // URL изображения
+            contentDescription = "Doctor Avatar",
+            modifier = Modifier
+                .size(64.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop,
+            placeholder = painterResource(R.drawable.smileface),
+            error = painterResource(R.drawable.smileface)
+        )
         // Имя врача с обрезанием текста
         Text(
             text = "${doctor.firstName} ${doctor.lastName}",
@@ -236,18 +256,21 @@ fun ChatItem(chat: Chat, onClick: () -> Unit) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.weight(1f)
-        ) {
-//            Image(
-//                painter = painterResource(id = chat.doctor.image),
-//                contentDescription = "Doctor Avatar",
-//                modifier = Modifier
-//                    .size(56.dp)
-//                    .padding(end = 10.dp)
-//                    .clip(CircleShape),
-//                contentScale = ContentScale.Crop
-//            )
+        )
+        {
+            AsyncImage(
+                model = chat.doctor.photoUrl, // URL изображения
+                contentDescription = "Doctor Avatar",
+                modifier = Modifier
+                    .size(56.dp)
+                    .padding(end = 10.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(R.drawable.smileface),
+                error = painterResource(R.drawable.smileface)
+            )
             Column(modifier = Modifier.weight(1f)) {
-                // Имя врача с обрезанием текста
+
                 Text(
                     text = "${chat.doctor.firstName} ${chat.doctor.lastName}",
                     fontSize = 16.sp,
@@ -256,7 +279,6 @@ fun ChatItem(chat: Chat, onClick: () -> Unit) {
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                // Последнее сообщение с обрезанием текста
                 Text(
                     text = chat.lastMessage.text,
                     modifier = Modifier.padding(end = 13.dp),
