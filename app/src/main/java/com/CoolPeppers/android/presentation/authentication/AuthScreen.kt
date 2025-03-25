@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.CoolPeppers.android.data.model.MockAuthController
 import kotlinx.coroutines.launch
@@ -33,16 +34,13 @@ import com.CoolPeppers.android.ui.theme.Typography
 import com.CoolPeppers.android.R
 
 
-@Preview(showBackground = true)
 @Composable
 fun AuthScreen(
     modifier: Modifier = Modifier,
-    viewModel: AuthViewModel = viewModel(
-        factory = AuthViewModelFactory(MockAuthController())
-    )
+    viewModel: AuthViewModel = hiltViewModel(),
 ) {
     var authState by remember {
-        mutableStateOf(AuthState.FORGOT_PASSWORD)
+        mutableStateOf(AuthState.LOGIN)
     }
 
     IconButton(
@@ -75,22 +73,21 @@ fun AuthScreen(
             AuthState.LOGIN -> LoginScreen(
                 viewModel = viewModel,
                 onSwitchToRegister = { authState = AuthState.REGISTER },
-                onSwitchToForgotPassword = { authState = AuthState.FORGOT_PASSWORD }
             )
             AuthState.REGISTER -> RegisterScreen(
                 viewModel = viewModel,
                 onSwitchToLogin = { authState = AuthState.LOGIN }
             )
-            AuthState.FORGOT_PASSWORD -> ForgotPasswordScreen(
+           /* AuthState.FORGOT_PASSWORD -> ForgotPasswordScreen(
                 viewModel = viewModel,
                 onBackToLogin = { authState = AuthState.LOGIN }
-            )
+            )*/
         }
     }
 }
 
 enum class AuthState {
-    LOGIN, REGISTER, FORGOT_PASSWORD
+    LOGIN, REGISTER /*, FORGOT_PASSWORD*/
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -98,7 +95,6 @@ enum class AuthState {
 fun LoginScreen(
     viewModel: AuthViewModel,
     onSwitchToRegister: () -> Unit,
-    onSwitchToForgotPassword: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -114,82 +110,50 @@ fun LoginScreen(
             fontWeight = FontWeight.Bold,
             color = LightTextPrimary
         )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .border(
-                    width = 5.dp, // Толщина рамки
-                    color = LightBgSecondary, // Цвет рамки
-                    shape = RoundedCornerShape(25.dp) // Закругленные углы
-                )
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+
+        OutlinedTextField(
+            value = viewModel.loginUsername,
+            onValueChange = { viewModel.loginUsername = it },
+            label = { Text("Ваш email", color = LightTextPrimary) },
+            leadingIcon = {
                 Image(
                     painter = painterResource(id = R.drawable.email),
                     contentDescription = "Email Icon",
-                    modifier = Modifier
-                        .padding(start = 15.dp)
-                        .size(20.dp)
+                    modifier = Modifier.size(20.dp)
                 )
-                OutlinedTextField(
-                    value = viewModel.loginEmail,
-                    onValueChange = { viewModel.loginEmail = it },
-                    label = { Text("Ваш еmail", color = LightTextPrimary) },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(25.dp),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent
-                    )
-                )
-            }
-        }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(25.dp),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent
+            )
+        )
 
-        // Поле для ввода пароля
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .border(
-                    width = 5.dp, // Толщина рамки
-                    color = LightBgSecondary, // Цвет рамки
-                    shape = RoundedCornerShape(25.dp) // Закругленные углы
-                )
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+        OutlinedTextField(
+            value = viewModel.loginPassword,
+            onValueChange = { viewModel.loginPassword = it },
+            label = { Text("Ваш пароль", color = LightTextPrimary) },
+            leadingIcon = {
                 Image(
                     painter = painterResource(id = R.drawable.password),
                     contentDescription = "Password Icon",
-                    modifier = Modifier
-                        .padding(start = 15.dp)
-                        .size(20.dp)
+                    modifier = Modifier.size(20.dp)
                 )
-                OutlinedTextField(
-                    value = viewModel.loginPassword,
-                    onValueChange = { viewModel.loginPassword = it },
-                    label = { Text("Ваш пароль", color = LightTextPrimary) },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(25.dp),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent
-                    )
-                )
-            }
-        }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(25.dp),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent
+            )
+        )
 
         ClickableText(
             text = AnnotatedString("Забыли пароль?"),
-            onClick = { onSwitchToForgotPassword() },
+            onClick = { },
             style = TextStyle(
                 fontSize = 15.sp,
                 color = Color.DarkGray,
@@ -200,7 +164,6 @@ fun LoginScreen(
                 .align(Alignment.End)
         )
 
-
         Button(
             onClick = {
                 coroutineScope.launch {
@@ -209,10 +172,10 @@ fun LoginScreen(
             },
             modifier = Modifier
                 .fillMaxWidth(0.65f)
-                .height(48.dp), // Высота кнопки
-            shape = RoundedCornerShape(25.dp), // Закругленные углы
+                .height(48.dp),
+            shape = RoundedCornerShape(25.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = LightBgSecondary // Цвет кнопки
+                containerColor = LightBgSecondary
             )
         ) {
             Text(
@@ -232,14 +195,16 @@ fun LoginScreen(
             ),
             modifier = Modifier.padding(top = 8.dp)
         )
+
         Image(
             painter = painterResource(id = R.drawable.login_choise),
-            contentDescription = "login choise"
+            contentDescription = "login choice"
         )
+
         Button(
             onClick = {
                 coroutineScope.launch {
-                    /* TODO */
+                    viewModel.login()
                 }
             },
             modifier = Modifier
@@ -272,10 +237,9 @@ fun LoginScreen(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
-    viewModel: AuthViewModel,
+    viewModel: AuthViewModel = hiltViewModel(),
     onSwitchToLogin: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -438,6 +402,7 @@ fun RegisterScreen(
 }
 
 
+/*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForgotPasswordScreen(
@@ -544,3 +509,4 @@ fun ForgotPasswordScreen(
         )
     }
 }
+*/

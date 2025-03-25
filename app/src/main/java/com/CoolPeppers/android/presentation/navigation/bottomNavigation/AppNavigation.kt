@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.CoolPeppers.android.presentation.authentication.AuthScreen
 import com.CoolPeppers.android.presentation.chat.LocalBottomBarVisibility
 import com.CoolPeppers.android.ui.theme.LightBgSecondary
 import com.CoolPeppers.android.ui.theme.LightTextHeaders
@@ -27,32 +28,34 @@ import com.CoolPeppers.android.util.getBottomNavItems
 @Composable
 fun NavHostContainer(
     navController: NavHostController,
-    padding: PaddingValues
+    padding: PaddingValues,
 ) {
+        NavHost(
+            navController = navController,
+            startDestination = "login",
+            modifier = Modifier.padding(paddingValues = padding),
 
-    NavHost(
-        navController = navController,
-        startDestination = "home",
-        modifier = Modifier.padding(paddingValues = padding),
 
-
-        builder = {
-            composable("home") {
-                HomeScreen()
-            }
-            composable("chat") {
-                ChatScreen()
-            }
-            composable("notifications") {
-                NotificationsScreen()
-            }
-            composable("request") {
-                RequestScreen()
-            }
-            composable("profile") {
-                ProfileScreen()
-            }
-        })
+            builder = {
+                composable("home") {
+                    HomeScreen()
+                }
+                composable("login") {
+                    AuthScreen()
+                }
+                composable("chat") {
+                    ChatScreen()
+                }
+                composable("notifications") {
+                    NotificationsScreen()
+                }
+                composable("request") {
+                    RequestScreen()
+                }
+                composable("profile") {
+                    ProfileScreen()
+                }
+            })
 }
 
 @Composable

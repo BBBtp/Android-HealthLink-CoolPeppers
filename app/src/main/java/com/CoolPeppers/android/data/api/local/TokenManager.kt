@@ -2,8 +2,9 @@ package com.CoolPeppers.android.data.api.local
 
 import android.content.Context
 import android.content.SharedPreferences
+import javax.inject.Inject
 
-class TokenManager(context: Context) {
+class TokenManager @Inject constructor(context: Context) {
     private val prefs: SharedPreferences =
         context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 
