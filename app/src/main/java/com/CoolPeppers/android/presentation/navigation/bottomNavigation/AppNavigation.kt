@@ -3,6 +3,8 @@ package com.CoolPeppers.android.presentation.navigation.bottomNavigation
 import ChatScreen
 import HomeScreen
 import ProfileScreen
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -25,6 +27,7 @@ import com.CoolPeppers.android.presentation.notifications.NotificationsScreen
 import com.CoolPeppers.android.presentation.request.RequestScreen
 import com.CoolPeppers.android.util.getBottomNavItems
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavHostContainer(
     navController: NavHostController,
@@ -43,7 +46,7 @@ fun NavHostContainer(
                 }
 
                 composable("home") {
-                    HomeScreen()
+                    HomeScreen(navController = navController)
                 }
                 composable("chat") {
                     ChatScreen()

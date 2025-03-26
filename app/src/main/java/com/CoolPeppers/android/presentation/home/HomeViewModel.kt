@@ -20,25 +20,28 @@ class HomeViewModel @Inject constructor(
     private val doctorRepository: DoctorRepository,
     private val appointmentRepository: AppointmentRepository
 ) : ViewModel() {
-    private val _doctor = MutableLiveData<Doctor>()
+    private val _doctors = MutableLiveData<Map<Int,Doctor>>()
     private val _appointments = MutableLiveData<List<Appointment>>()
-    private val _slot = MutableLiveData<SlotResponse>()
-    val slot: LiveData<SlotResponse> get() = _slot
-    val doctor: LiveData<Doctor> get() = _doctor
+    private val _slots = MutableLiveData<Map<Int,SlotResponse>>()
+    val slots: LiveData<Map<Int, SlotResponse>> get() = _slots
+    val doctors: LiveData<Map<Int, Doctor>> get() = _doctors
     val appointments: LiveData<List<Appointment>> get() = _appointments
 
     fun getAppointments() {
         viewModelScope.launch {
             try{
                 val result = appointmentRepository.getAppointments()
-
-                result.map { appointment ->
+                val doctorMap = mutableMapOf<Int, Doctor>()
+                val slotMap = mutableMapOf<Int, SlotResponse>()
+                result.forEach { appointment ->
                     val doctor = doctorRepository.getDoctorById(appointment.doctorId)
                     val slot = appointmentRepository.getSlotById(appointment.appointmentSlotId)
-                    _doctor.value = doctor
-                    _slot.value = slot
+                    doctorMap[appointment.doctorId] = doctor
+                    slotMap[appointment.appointmentSlotId] = slot
                 }
                 _appointments.value = result
+                _doctors.value = doctorMap
+                _slots.value = slotMap
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Ошибка при загрузке записей", e)
             }
