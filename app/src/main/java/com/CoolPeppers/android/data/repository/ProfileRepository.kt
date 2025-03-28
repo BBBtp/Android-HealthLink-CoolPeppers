@@ -24,16 +24,16 @@ class ProfileRepository @Inject constructor(
     }
 
     suspend fun updateUser(
-        firstName: String,
-        lastName: String,
+        firstName: String?,
+        lastName: String?,
         age: Int?,
-        bloodType: String,
+        bloodType: String?,
         photo: File?
     ): Result<User> {
         return try {
-            val firstNameBody = firstName.toRequestBody()
-            val lastNameBody = lastName.toRequestBody()
-            val bloodTypeBody = bloodType.toRequestBody()
+            val firstNameBody = firstName?.toRequestBody()
+            val lastNameBody = lastName?.toRequestBody()
+            val bloodTypeBody = bloodType?.toRequestBody()
             val ageBody = age?.toString()?.toRequestBody()
 
             val photoPart = photo?.toMultipartBodyPart("photo")
@@ -62,9 +62,4 @@ class ProfileRepository @Inject constructor(
             name,
             asRequestBody("image/*".toMediaTypeOrNull())
         )
-}
-
-sealed class Result<T> {
-    data class Success<T>(val data: T) : Result<T>()
-    data class Error<T>(val message: String) : Result<T>()
 }
