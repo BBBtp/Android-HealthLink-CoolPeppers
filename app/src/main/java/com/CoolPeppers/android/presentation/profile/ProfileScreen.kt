@@ -1,3 +1,8 @@
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -45,11 +50,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
-import com.CoolPeppers.android.data.model.MockProfileController
 import com.CoolPeppers.android.data.model.User
 import com.CoolPeppers.android.presentation.profile.ProfileViewModel
 import com.CoolPeppers.android.presentation.profile.ProfileViewModelFactory
@@ -66,16 +71,33 @@ fun ProfileScreen(
     val loading by viewModel.loadingState
     val error by viewModel.errorState
 
+    var photoUri: Uri? = null
+
+    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            photoUri = uri
+            Log.d("PhotoPicker", "Selected URI: $uri")
+        } else {
+            Log.d("PhotoPicker", "No media selected")
+        }
+    }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxWidth()
     ) {
 
-        // TODO: сделать нормальное обновление аватарки
+
 
         ProfileInfo(profile = user,
-            onAvatarClick = { viewModel.updateUser(photo = blya) },
+            onAvatarClick = {
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                if (photoUri != null) {
+                    val photoFile = photoUri!!.toFile()
+                    viewModel.updateUser(user.firstName, user.lastName, user.age, user.bloodType, photoFile)
+                }
+            },
             loadingState = loading,
             errorState = error
         )
@@ -303,6 +325,12 @@ fun EditProfile(
 ) {
 
     val profile by viewModel.userState
+    var firstName = profile.firstName
+    var lastName = profile.lastName
+    var email = profile.email
+    var age = profile.age?.toString()
+    var bloodType = profile.bloodType
+    var username = profile.username
 
     Column(
         modifier = modifier
@@ -312,33 +340,33 @@ fun EditProfile(
     ) {
         ProfileTextField(
             label = stringResource(R.string.first_name),
-            value = (if (profile.firstName != null) profile.firstName else stringResource(R.string.unknown))!!,
-            onValueChange = viewModel::updateFirstName
+            value = (firstName?: stringResource(R.string.unknown))!!,
+            onValueChange = {firstName = it}
         )
         ProfileTextField(
             label = stringResource(R.string.last_name),
-            value = (if (profile.lastName != null) profile.lastName else stringResource(R.string.unknown))!!,
-            onValueChange = viewModel::updateLastName
+            value = (lastName ?: stringResource(R.string.unknown))!!,
+            onValueChange = {lastName = it}
         )
         ProfileTextField(
             label = stringResource(R.string.email),
-            value = profile.email,
-            onValueChange = viewModel::updateEmail
+            value = email,
+            onValueChange = {email = it}
         )
         ProfileTextField(
             label = stringResource(R.string.username),
-            value = profile.username,
-            onValueChange = viewModel::updateEmail
+            value = username,
+            onValueChange = { username = it }
         )
         ProfileTextField(
             label = stringResource(R.string.age),
-            value = (if (profile.age != null) profile.age.toString() else stringResource(R.string.unknown)),
-            onValueChange = viewModel::updateEmail
+            value = (age ?: stringResource(R.string.unknown)),
+            onValueChange = { age = it}
         )
         ProfileTextField(
             label = stringResource(R.string.blood_type),
-            value = (if (profile.bloodType != null) profile.bloodType else stringResource(R.string.unknown))!!,
-            onValueChange = viewModel::updateEmail
+            value = (bloodType ?: stringResource(R.string.unknown))!!,
+            onValueChange = {bloodType = it}
         )
 
 
@@ -347,11 +375,16 @@ fun EditProfile(
 //            onValueChange = {}
 //        )
 
+        // TODO: сделать изменение почты и юзернейма, + исправить изменение фотки
+
         Button(
-            onClick = viewModel::saveChanges, modifier = Modifier.fillMaxWidth()
+            onClick = { viewModel.updateUser(firstName, lastName, age?.toInt(), bloodType, photo = null) }, //тут так не должно быть
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.save_changes))
         }
+
+
     }
 }
 
