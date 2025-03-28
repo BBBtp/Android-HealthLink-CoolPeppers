@@ -3,6 +3,7 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -30,6 +31,9 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -37,6 +41,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,6 +58,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toFile
+import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
@@ -59,6 +67,7 @@ import com.CoolPeppers.android.data.model.User
 import com.CoolPeppers.android.presentation.profile.ProfileViewModel
 import com.CoolPeppers.android.presentation.profile.ProfileViewModelFactory
 import com.CoolPeppers.android.ui.theme.ShimmerColorShades
+import kotlin.math.exp
 
 
 @Preview(widthDp = 400, showBackground = true)
@@ -73,14 +82,16 @@ fun ProfileScreen(
 
     var photoUri: Uri? = null
 
-    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        if (uri != null) {
-            photoUri = uri
-            Log.d("PhotoPicker", "Selected URI: $uri")
-        } else {
-            Log.d("PhotoPicker", "No media selected")
+    val pickMedia =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                photoUri = uri
+                Log.d("PhotoPicker", "Selected URI: $uri")
+            } else {
+                Log.d("PhotoPicker", "No media selected")
+            }
         }
-    }
+
 
     Column(
         verticalArrangement = Arrangement.spacedBy(60.dp),
@@ -89,17 +100,20 @@ fun ProfileScreen(
     ) {
 
 
-
-        ProfileInfo(profile = user,
-            onAvatarClick = {
+        ProfileInfo(
+            profile = user, onAvatarClick = {
                 pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                 if (photoUri != null) {
                     val photoFile = photoUri!!.toFile()
-                    viewModel.updateUser(user.firstName, user.lastName, user.age, user.bloodType, photoFile)
+                    viewModel.updateUser(
+                        user.firstName,
+                        user.lastName,
+                        user.age,
+                        user.bloodType,
+                        photoFile
+                    )
                 }
-            },
-            loadingState = loading,
-            errorState = error
+            }, loadingState = loading, errorState = error
         )
         OptionsList()
     }
@@ -116,11 +130,11 @@ fun OptionsList(modifier: Modifier = Modifier) {
         Option(icon = Icons.Default.Face,
             text = stringResource(R.string.edit_profile),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            onClick = {})
+            onClick = {/*TODO: сделать навигацию в изменение профиля*/ })
         Option(icon = Icons.Default.Build,
             text = stringResource(R.string.settings),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            onClick = {})
+            onClick = {/*TODO: сделать навигацию в настройки*/ })
         Option(icon = Icons.Default.Refresh,
             text = stringResource(R.string.history),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
@@ -137,20 +151,45 @@ fun OptionsList(modifier: Modifier = Modifier) {
 }
 
 // TODO: сделать больше настроек, выпадающей окно изменения языка
-
+// вроде сделал но это брэд
+@ExperimentalMaterial3Api
 @Preview(showBackground = true)
 @Composable
 fun Settings(modifier: Modifier = Modifier) {
+    val localeOptions = mapOf(
+        R.string.en to "en",
+        R.string.ru to "ru",
+    )
     Column(
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxWidth()
 //            .padding(start = 16.dp, end = 8.dp, bottom = 4.dp)
     ) {
-        Option(icon = Icons.Default.Face,
+        /*Option(icon = Icons.Default.Face,
             text = stringResource(R.string.language_setting),
             buttonIcon = Icons.Default.KeyboardArrowDown,
-            onClick = {})
+            onClick = {})*/
+        var expanded by remember { mutableStateOf(false) }
+        ExposedDropdownMenuBox(
+            modifier = Modifier.fillMaxWidth(),
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded}
+        ) { localeOptions.keys.forEach { selectionLocale ->
+            DropdownMenuItem(
+                onClick = {
+                    expanded = false
+                    AppCompatDelegate.setApplicationLocales(
+                        LocaleListCompat.forLanguageTags(
+                            localeOptions[selectionLocale]
+                        )
+                    )
+                },
+                text = { stringResource(id = selectionLocale) }
+            )
+        }
+
+        }
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
         ) {
@@ -256,8 +295,6 @@ fun AvatarPreview() {
     )
 }
 
-// TODO: сделать шиммер при загрузке
-
 @Composable
 fun Avatar(
     modifier: Modifier = Modifier,
@@ -317,7 +354,6 @@ fun Avatar(
     }
 }
 
-// TODO: сделать навигацию из ProfileScreen в EditProfile
 
 @Composable
 fun EditProfile(
@@ -338,36 +374,24 @@ fun EditProfile(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        ProfileTextField(
-            label = stringResource(R.string.first_name),
-            value = (firstName?: stringResource(R.string.unknown))!!,
-            onValueChange = {firstName = it}
-        )
-        ProfileTextField(
-            label = stringResource(R.string.last_name),
-            value = (lastName ?: stringResource(R.string.unknown))!!,
-            onValueChange = {lastName = it}
-        )
-        ProfileTextField(
-            label = stringResource(R.string.email),
+        ProfileTextField(label = stringResource(R.string.first_name),
+            value = (firstName ?: stringResource(R.string.unknown)),
+            onValueChange = { firstName = it })
+        ProfileTextField(label = stringResource(R.string.last_name),
+            value = (lastName ?: stringResource(R.string.unknown)),
+            onValueChange = { lastName = it })
+        ProfileTextField(label = stringResource(R.string.email),
             value = email,
-            onValueChange = {email = it}
-        )
-        ProfileTextField(
-            label = stringResource(R.string.username),
+            onValueChange = { email = it })
+        ProfileTextField(label = stringResource(R.string.username),
             value = username,
-            onValueChange = { username = it }
-        )
-        ProfileTextField(
-            label = stringResource(R.string.age),
+            onValueChange = { username = it })
+        ProfileTextField(label = stringResource(R.string.age),
             value = (age ?: stringResource(R.string.unknown)),
-            onValueChange = { age = it}
-        )
-        ProfileTextField(
-            label = stringResource(R.string.blood_type),
-            value = (bloodType ?: stringResource(R.string.unknown))!!,
-            onValueChange = {bloodType = it}
-        )
+            onValueChange = { age = it })
+        ProfileTextField(label = stringResource(R.string.blood_type),
+            value = (bloodType ?: stringResource(R.string.unknown)),
+            onValueChange = { bloodType = it })
 
 
 //        PasswordField(
@@ -378,7 +402,15 @@ fun EditProfile(
         // TODO: сделать изменение почты и юзернейма, + исправить изменение фотки
 
         Button(
-            onClick = { viewModel.updateUser(firstName, lastName, age?.toInt(), bloodType, photo = null) }, //тут так не должно быть
+            onClick = {
+                viewModel.updateUser(
+                    firstName,
+                    lastName,
+                    age?.toInt(),
+                    bloodType,
+                    photo = null
+                )
+            }, //тут так не должно быть
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.save_changes))
