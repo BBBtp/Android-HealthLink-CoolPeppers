@@ -19,4 +19,6 @@
     <string name="blood_type">Blood type</string>
     <string name="age">Age</string>
     <string name="unknown">Unknown</string>
+    <string name="en" translatable="false">English</string>
+    <string name="ru" translatable="false">Русский</string>
 </resources>
