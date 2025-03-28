@@ -137,10 +137,10 @@ interface  ApiService {
     @Multipart
     @PUT(ApiConstants.GET_UPDATE_USER_PROFILE_URL)
     suspend fun updateUser(
-        @Part("first_name") firstName: RequestBody,
-        @Part("last_name") lastName: RequestBody,
+        @Part("first_name") firstName: RequestBody?,
+        @Part("last_name") lastName: RequestBody?,
         @Part("age") age: RequestBody?,
-        @Part("blood_type") bloodType: RequestBody,
+        @Part("blood_type") bloodType: RequestBody?,
         @Part photo: MultipartBody.Part?
     ): User
 

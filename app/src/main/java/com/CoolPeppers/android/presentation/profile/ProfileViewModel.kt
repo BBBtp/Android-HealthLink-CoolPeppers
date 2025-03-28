@@ -74,10 +74,10 @@ class ProfileViewModel(
     }
 
     fun updateUser(
-        firstName: String,
-        lastName: String,
+        firstName: String?,
+        lastName: String?,
         age: Int?,
-        bloodType: String,
+        bloodType: String?,
         photo: File?
     ) {
         viewModelScope.launch {
