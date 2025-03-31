@@ -1,0 +1,86 @@
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.CoolPeppers.android.R
+import com.CoolPeppers.android.data.model.Service
+import com.CoolPeppers.android.ui.theme.LightTextPrimary
+import androidx. compose. foundation. lazy. grid. LazyVerticalGrid
+import androidx. compose. foundation. lazy. grid. GridCells
+
+
+import androidx.compose.foundation.lazy.grid.items
+
+
+
+
+val service1 = Service(
+    id = 1,
+    name = "Стоматология",
+    description = "Лечение зубов",
+    price = 0,
+    duration = 0,
+    logoUrl = "https://avatars.mds.yandex.net/get-altay/5449402/2a0000017eaa39ecb506d56384833dca85f5/XXXL"
+)
+val serviceList = List(10) { service1 }
+
+@Composable
+fun CategoriesServiceScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .background(Color.White)
+                    .padding(horizontal = 5.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.service_blue),
+                    contentDescription = "List Icon",
+                    modifier = Modifier.size(20.dp)
+                )
+                Text(
+                    text = " Выберите услугу",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = LightTextPrimary
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(8.dp)
+            ) {
+                items(serviceList) { service ->
+                    ServiceItem(service = service)
+                }
+            }
+        }
+    }
+}

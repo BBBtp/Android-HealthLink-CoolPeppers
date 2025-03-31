@@ -84,6 +84,7 @@ interface  ApiService {
         @Query(ApiConstants.CLINIC_ID) clinicId: Int?
     ): List<Service>
 
+
     @GET(ApiConstants.GET_SERVICE_URL)
     suspend fun getServiceById(
         @Path(ApiConstants.SERVICE_ID) serviceId: Int

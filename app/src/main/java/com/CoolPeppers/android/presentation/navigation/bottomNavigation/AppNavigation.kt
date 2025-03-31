@@ -4,6 +4,7 @@ import ChatScreen
 import ClinicDetailScreen
 import HomeScreen
 import ProfileScreen
+import ServiceScreen
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -61,7 +62,13 @@ fun NavHostContainer(
                 composable("clinic_detail/{clinicId}") { backStackEntry ->
                     val clinicId = backStackEntry.arguments?.getString("clinicId")?.toIntOrNull()
                     clinicId?.let {
-                        ClinicDetailScreen(clinicId = it)
+                        ClinicDetailScreen(clinicId = it,navController = navController)
+                    }
+                }
+                composable("service/{clinicId}") { backStackEntry ->
+                    val clinicId = backStackEntry.arguments?.getString("clinicId")?.toIntOrNull()
+                    clinicId?.let {
+                        ServiceScreen(clinicId = it,navController = navController)
                     }
                 }
             })

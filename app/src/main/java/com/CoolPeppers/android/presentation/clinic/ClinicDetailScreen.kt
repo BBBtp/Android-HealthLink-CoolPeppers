@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Clinic
@@ -29,7 +30,7 @@ import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.ui.theme.Montserrat
 
 @Composable
-fun ClinicDetailScreen(clinicId: Int, viewModelClinic: ClinicViewModel = hiltViewModel()) {
+fun ClinicDetailScreen(clinicId: Int, navController: NavController, viewModelClinic: ClinicViewModel = hiltViewModel()) {
 
     val clinicById by viewModelClinic.clinic.observeAsState(emptyList())
 
@@ -216,7 +217,9 @@ fun ClinicDetailScreen(clinicId: Int, viewModelClinic: ClinicViewModel = hiltVie
             }
 
             Button(
-                onClick = {
+                onClick =
+                {
+                    navController.navigate("service/${clinic.id}")
                 },
                 modifier = Modifier
                     .fillMaxWidth()

@@ -1,5 +1,6 @@
 package com.CoolPeppers.android.presentation.request
 
+import CategoriesServiceScreen
 import ClinicScreen
 import DoctorScreen
 import ServiceScreen
@@ -45,7 +46,7 @@ fun RequestScreen(navController: NavController, viewModel: RequestViewModel = vi
 
         when (selectedTab) {
             0 -> ClinicScreen(navController = navController)
-            1 -> ServiceScreen()
+            1 -> CategoriesServiceScreen()
             2 -> DoctorScreen()
         }
     }
