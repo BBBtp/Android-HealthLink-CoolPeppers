@@ -46,6 +46,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,6 +54,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -242,7 +244,7 @@ fun ProfileInfo(
             errorState = errorState
         )
         Text(
-            text = profile.firstName + profile.lastName,
+            text = profile.firstName +" "+ profile.lastName,
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp
         )
@@ -337,6 +339,7 @@ fun Avatar(
             .size(122.dp)
             .clip(CircleShape)
 
+
         if (loadingState) {
             ShimmerItem(brush = brush, height = 122.dp, cornerRadius = 1.dp)
         } else if (errorState != null) {
@@ -349,7 +352,8 @@ fun Avatar(
             AsyncImage(
                 model = avatarUrl,
                 contentDescription = stringResource(R.string.avatar),
-                modifier = customModifier
+                modifier = customModifier,
+                contentScale = ContentScale.Crop
             )
         }
         Surface(
@@ -373,7 +377,7 @@ fun Avatar(
 
 @Composable
 fun EditProfile(
-    modifier: Modifier = Modifier, viewModel: ProfileViewModel
+    modifier: Modifier = Modifier,  viewModel: ProfileViewModel = hiltViewModel(),
 ) {
 
     val profile by viewModel.userState.collectAsState()
