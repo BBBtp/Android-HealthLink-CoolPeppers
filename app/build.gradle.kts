@@ -2,7 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt)
-    kotlin("kapt")
+    id("kotlin-kapt")
+}
+hilt {
+    enableAggregatingTask = false
 }
 android {
     namespace = "com.CoolPeppers.android"
@@ -39,6 +42,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -66,9 +70,14 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
-    implementation(libs.androidx.storage)
+    //implementation("androidx.storage:storage:1.1.0")
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.foundation.layout.android)
     kapt(libs.hilt.compiler)
     implementation (libs.androidx.hilt.navigation.compose.v110)
+
+
+    implementation("com.github.chaosleung:pinview:1.3.1")
 
     // Retrofit
     implementation(libs.retrofit)

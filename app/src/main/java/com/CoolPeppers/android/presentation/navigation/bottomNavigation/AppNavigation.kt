@@ -1,7 +1,10 @@
 package com.CoolPeppers.android.presentation.navigation.bottomNavigation
 
+import ChatScreen
 import HomeScreen
 import ProfileScreen
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -15,76 +18,80 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.CoolPeppers.android.presentation.authentication.AuthScreen
+import com.CoolPeppers.android.presentation.chat.LocalBottomBarVisibility
 import com.CoolPeppers.android.ui.theme.LightBgSecondary
 import com.CoolPeppers.android.ui.theme.LightTextHeaders
 import com.CoolPeppers.android.ui.theme.LightTextPrimary
-import com.CoolPeppers.android.presentation.chat.ChatScreen
 import com.CoolPeppers.android.presentation.notifications.NotificationsScreen
 import com.CoolPeppers.android.presentation.request.RequestScreen
 import com.CoolPeppers.android.util.getBottomNavItems
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavHostContainer(
     navController: NavHostController,
-    padding: PaddingValues
+    padding: PaddingValues,
+    startDestination: String
 ) {
+        NavHost(
+            navController = navController,
+            startDestination = startDestination,
+            modifier = Modifier.padding(paddingValues = padding),
 
-    NavHost(
-        navController = navController,
-        startDestination = "home",
-        modifier = Modifier.padding(paddingValues = padding),
 
-        builder = {
-            composable("home") {
-                HomeScreen()
-            }
-            composable("chat") {
-                ChatScreen()
-            }
-            composable("notifications") {
-                NotificationsScreen()
-            }
-            composable("request") {
-                RequestScreen()
-            }
-            composable("profile") {
-                ProfileScreen()
-            }
-        })
+            builder = {
+                composable("auth") {
+                    AuthScreen(navController = navController) // Передаем NavController в AuthScreen
+                }
+
+                composable("home") {
+                    HomeScreen(navController = navController)
+                }
+                composable("chat") {
+                    ChatScreen()
+                }
+                composable("notifications") {
+                    NotificationsScreen()
+                }
+                composable("request") {
+                    RequestScreen()
+                }
+                composable("profile") {
+                    ProfileScreen(navController = navController)
+                }
+            })
 }
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
+    val bottomBarVisibility = LocalBottomBarVisibility.current
+
+    if (!bottomBarVisibility.value) return
 
     NavigationBar(
-
         containerColor = LightTextHeaders
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
-
         val currentRoute = navBackStackEntry?.destination?.route
-        val buttomNavItems = getBottomNavItems()
-        buttomNavItems.forEach { navItem ->
-            NavigationBarItem(
+        val bottomNavItems = getBottomNavItems()
 
+        bottomNavItems.forEach { navItem ->
+            NavigationBarItem(
                 selected = currentRoute == navItem.route,
                 onClick = {
                     navController.navigate(navItem.route)
                 },
-
                 icon = {
                     Icon(imageVector = navItem.icon, contentDescription = null)
                 },
-
                 alwaysShowLabel = false,
-
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = LightTextPrimary,
                     unselectedIconColor = LightTextPrimary,
                     selectedTextColor = LightTextPrimary,
                     indicatorColor = LightBgSecondary
                 )
-
             )
         }
     }

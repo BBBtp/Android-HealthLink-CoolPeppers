@@ -14,6 +14,8 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -79,7 +81,7 @@ interface  ApiService {
         @Query("skip") skip: Int = 0,
         @Query("limit") limit: Int = 100,
         @Query("search") search: String = "",
-        @Query(ApiConstants.SERVICE_ID) serviceId: Int?
+        @Query(ApiConstants.CLINIC_ID) clinicId: Int?
     ): List<Service>
 
     @GET(ApiConstants.GET_SERVICE_URL)
@@ -120,9 +122,11 @@ interface  ApiService {
         @Body request: AuthRequest
     )
 
+    @FormUrlEncoded
     @POST(ApiConstants.LOGIN_USER_URL)
     suspend fun loginUser(
-       @Body request: LoginRequest
+        @Field("username") username: String,
+        @Field("password") password: String
     ): AuthResponse
 
     @POST(ApiConstants.REFRESH_TOKEN_URL)
@@ -154,7 +158,12 @@ interface  ApiService {
     @GET(ApiConstants.CREATE_GET_APPOINTMENT_SLOT_SINGLE_URL)
     suspend fun getSlots(
         @Query(ApiConstants.DOCTOR_ID) doctorId: Int
-    ) : SlotResponse
+    ) : List<SlotResponse>
+
+    @GET(ApiConstants.GET_SLOT_BY_ID_URL)
+    suspend fun getSlotById(
+        @Path("slot_id") slotId: Int
+    ): SlotResponse
 
     @POST(ApiConstants.GENERATE_APPOINTMENT_SLOTS_URL)
     suspend fun generateSlots(

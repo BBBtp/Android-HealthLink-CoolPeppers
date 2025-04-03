@@ -44,6 +44,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,21 +63,22 @@ import androidx.core.net.toFile
 import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.User
 import com.CoolPeppers.android.presentation.profile.ProfileViewModel
 import com.CoolPeppers.android.ui.theme.ShimmerColorShades
-import kotlin.math.exp
+import kotlinx.coroutines.launch
 
 
-@Preview(widthDp = 400, showBackground = true)
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel(),
+    navController: NavController
 ) {
-    val user by viewModel.userState
+    val user by viewModel.userState.collectAsState()
     val loading by viewModel.loadingState
     val error by viewModel.errorState
 
@@ -99,6 +101,7 @@ fun ProfileScreen(
         modifier = modifier.fillMaxWidth()
     ) {
 
+        // TODO: сделать нормальное обновление аватарки
 
         ProfileInfo(
             profile = user, onAvatarClick = {
@@ -115,12 +118,17 @@ fun ProfileScreen(
                 }
             }, loadingState = loading, errorState = error
         )
-        OptionsList()
+        OptionsList(navController = navController)
     }
 }
 
 @Composable
-fun OptionsList(modifier: Modifier = Modifier) {
+fun OptionsList(modifier: Modifier = Modifier,
+                viewModel: ProfileViewModel = hiltViewModel(),
+                navController: NavController
+
+) {
+    val coroutineScope = rememberCoroutineScope()
     Column(
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -146,7 +154,12 @@ fun OptionsList(modifier: Modifier = Modifier) {
         Option(icon = Icons.AutoMirrored.Filled.ExitToApp,
             text = stringResource(R.string.log_out),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            onClick = {})
+            onClick = {
+                coroutineScope.launch {
+                    viewModel.logOut()
+                    navController.navigate("auth")
+                }
+            })
     }
 }
 
@@ -295,6 +308,8 @@ fun AvatarPreview() {
     )
 }
 
+// TODO: сделать шиммер при загрузке
+
 @Composable
 fun Avatar(
     modifier: Modifier = Modifier,
@@ -354,13 +369,14 @@ fun Avatar(
     }
 }
 
+// TODO: сделать навигацию из ProfileScreen в EditProfile
 
 @Composable
 fun EditProfile(
     modifier: Modifier = Modifier, viewModel: ProfileViewModel
 ) {
 
-    val profile by viewModel.userState
+    val profile by viewModel.userState.collectAsState()
     var firstName = profile.firstName
     var lastName = profile.lastName
     var email = profile.email
