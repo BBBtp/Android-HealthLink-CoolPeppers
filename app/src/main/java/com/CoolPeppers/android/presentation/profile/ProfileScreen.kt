@@ -166,7 +166,7 @@ fun Settings(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth()
 //            .padding(start = 16.dp, end = 8.dp, bottom = 4.dp)
     ) {
-        /*Option(icon = Icons.Default.Face,
+        /*Option(icon = Icons.De= ccault.Face,
             text = stringResource(R.string.language_setting),
             buttonIcon = Icons.Default.KeyboardArrowDown,
             onClick = {})*/
