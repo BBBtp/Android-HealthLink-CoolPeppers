@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt)
     id("kotlin-kapt")
+    alias(libs.plugins.kotlin.compose)
 }
 hilt {
     enableAggregatingTask = false
@@ -53,6 +54,7 @@ android {
         }
     }
 }
+
 
 dependencies {
     // Core
@@ -146,4 +148,8 @@ dependencies {
     // Paging
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.paging.compose)
+
+    // Photo picker
+    implementation("commons-io:commons-io:2.7")
+
 }
