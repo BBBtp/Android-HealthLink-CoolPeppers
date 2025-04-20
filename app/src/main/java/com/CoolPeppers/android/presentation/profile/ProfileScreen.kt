@@ -55,6 +55,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -71,6 +72,8 @@ import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.User
 import com.CoolPeppers.android.presentation.profile.ProfileViewModel
 import com.CoolPeppers.android.ui.theme.ShimmerColorShades
+import com.CoolPeppers.android.util.createFileFromUri
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 
 
@@ -84,12 +87,19 @@ fun ProfileScreen(
     val loading by viewModel.loadingState
     val error by viewModel.errorState
 
-    var photoUri: Uri? = null
+    val context = LocalContext.current
 
     val pickMedia =
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
-                photoUri = uri
+                val photoFile = createFileFromUri("avatar", uri, context = context)
+                viewModel.updateUser(
+                    user.firstName,
+                    user.lastName,
+                    user.age,
+                    user.bloodType,
+                    photoFile
+                )
                 Log.d("PhotoPicker", "Selected URI: $uri")
             } else {
                 Log.d("PhotoPicker", "No media selected")
@@ -107,17 +117,10 @@ fun ProfileScreen(
 
         ProfileInfo(
             profile = user, onAvatarClick = {
+
+                // код не ждет photo picker, нужно сделать чтобы ждал!!!
+
                 pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                if (photoUri != null) {
-                    val photoFile = photoUri!!.toFile()
-                    viewModel.updateUser(
-                        user.firstName,
-                        user.lastName,
-                        user.age,
-                        user.bloodType,
-                        photoFile
-                    )
-                }
             }, loadingState = loading, errorState = error
         )
         OptionsList(navController = navController)
@@ -140,11 +143,11 @@ fun OptionsList(modifier: Modifier = Modifier,
         Option(icon = Icons.Default.Face,
             text = stringResource(R.string.edit_profile),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            onClick = {/*TODO: сделать навигацию в изменение профиля*/ })
+            onClick = { navController.navigate("profile edit") })
         Option(icon = Icons.Default.Build,
             text = stringResource(R.string.settings),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            onClick = {/*TODO: сделать навигацию в настройки*/ })
+            onClick = { navController.navigate("settings") })
         Option(icon = Icons.Default.Refresh,
             text = stringResource(R.string.history),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
@@ -310,8 +313,6 @@ fun AvatarPreview() {
     )
 }
 
-// TODO: сделать шиммер при загрузке
-
 @Composable
 fun Avatar(
     modifier: Modifier = Modifier,
@@ -341,7 +342,7 @@ fun Avatar(
 
 
         if (loadingState) {
-            ShimmerItem(brush = brush, height = 122.dp, cornerRadius = 1.dp)
+            ShimmerItem(brush = brush, height = 122.dp, cornerRadius = 1.dp, modifier = customModifier)
         } else if (errorState != null) {
             Image(
                 painter = painterResource(R.drawable.ic_launcher_background),
@@ -373,20 +374,24 @@ fun Avatar(
     }
 }
 
-// TODO: сделать навигацию из ProfileScreen в EditProfile
-
 @Composable
 fun EditProfile(
     modifier: Modifier = Modifier,  viewModel: ProfileViewModel = hiltViewModel(),
 ) {
 
     val profile by viewModel.userState.collectAsState()
-    var firstName = profile.firstName
-    var lastName = profile.lastName
-    var email = profile.email
-    var age = profile.age?.toString()
-    var bloodType = profile.bloodType
-    var username = profile.username
+//    var firstName = profile.firstName ?: stringResource(R.string.unknown)
+//    var lastName = profile.lastName ?: stringResource(R.string.unknown)
+//    var email = profile.email
+//    var age = profile.age?.toString() ?: stringResource(R.string.unknown)
+//    var bloodType = profile.bloodType ?: stringResource(R.string.unknown)
+//    var username = profile.username
+    var firstName by remember { mutableStateOf(profile.firstName ?: "Unknown") }
+    var lastName by remember { mutableStateOf(profile.lastName ?: "Unknown") }
+    var email by remember { mutableStateOf(profile.email) }
+    var age by remember { mutableStateOf(profile.age?.toString() ?: "Unknown") }
+    var bloodType by remember { mutableStateOf(profile.bloodType ?: "Unknown") }
+    var username by remember { mutableStateOf(profile.username) }
 
     Column(
         modifier = modifier
@@ -395,10 +400,10 @@ fun EditProfile(
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         ProfileTextField(label = stringResource(R.string.first_name),
-            value = (firstName ?: stringResource(R.string.unknown)),
+            value = firstName,
             onValueChange = { firstName = it })
         ProfileTextField(label = stringResource(R.string.last_name),
-            value = (lastName ?: stringResource(R.string.unknown)),
+            value = lastName,
             onValueChange = { lastName = it })
         ProfileTextField(label = stringResource(R.string.email),
             value = email,
@@ -407,10 +412,10 @@ fun EditProfile(
             value = username,
             onValueChange = { username = it })
         ProfileTextField(label = stringResource(R.string.age),
-            value = (age ?: stringResource(R.string.unknown)),
+            value = age,
             onValueChange = { age = it })
         ProfileTextField(label = stringResource(R.string.blood_type),
-            value = (bloodType ?: stringResource(R.string.unknown)),
+            value = bloodType,
             onValueChange = { bloodType = it })
 
 
@@ -426,7 +431,7 @@ fun EditProfile(
                 viewModel.updateUser(
                     firstName,
                     lastName,
-                    age?.toInt(),
+                    age.toIntOrNull(),
                     bloodType,
                     photo = null
                 )
@@ -445,6 +450,7 @@ fun EditProfile(
 fun EditProfilePreview() {
     EditProfile(
         viewModel = hiltViewModel(),
+        modifier = Modifier.fillMaxWidth().padding(16.dp)
     )
 }
 
