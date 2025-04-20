@@ -1,5 +1,6 @@
 package com.CoolPeppers.android.data.repository
 
+import android.util.Log
 import com.CoolPeppers.android.data.api.remote.ApiService
 import com.CoolPeppers.android.data.model.User
 import okhttp3.MediaType.Companion.toMediaType
@@ -31,13 +32,14 @@ class ProfileRepository @Inject constructor(
         photo: File?
     ): Result<User> {
         return try {
+            Log.d("rep updateUser", "trying")
             val firstNameBody = firstName?.toRequestBody()
             val lastNameBody = lastName?.toRequestBody()
             val bloodTypeBody = bloodType?.toRequestBody()
             val ageBody = age?.toString()?.toRequestBody()
-
+            Log.d("rep updateUser", "trying again")
             val photoPart = photo?.toMultipartBodyPart("photo")
-
+            Log.d("rep updateUser", "trying upload photo")
             val updatedUser = apiService.updateUser(
                 firstName = firstNameBody,
                 lastName = lastNameBody,
@@ -45,9 +47,10 @@ class ProfileRepository @Inject constructor(
                 bloodType = bloodTypeBody,
                 photo = photoPart
             )
-
+            Log.d("rep updateUser", "trying update user")
             Result.Success(updatedUser)
         } catch (e: Exception) {
+            Log.d("rep updateUser", "caught exception")
             Result.Error(e.message ?: "Update failed")
         }
     }
