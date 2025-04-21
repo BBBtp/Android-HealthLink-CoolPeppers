@@ -1,4 +1,6 @@
+import android.app.Activity
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -34,6 +36,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
@@ -75,6 +78,7 @@ import com.CoolPeppers.android.ui.theme.ShimmerColorShades
 import com.CoolPeppers.android.util.createFileFromUri
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 
 @Composable
@@ -94,11 +98,7 @@ fun ProfileScreen(
             if (uri != null) {
                 val photoFile = createFileFromUri("avatar", uri, context = context)
                 viewModel.updateUser(
-                    user.firstName,
-                    user.lastName,
-                    user.age,
-                    user.bloodType,
-                    photoFile
+                    user.firstName, user.lastName, user.age, user.bloodType, photoFile
                 )
                 Log.d("PhotoPicker", "Selected URI: $uri")
             } else {
@@ -128,9 +128,10 @@ fun ProfileScreen(
 }
 
 @Composable
-fun OptionsList(modifier: Modifier = Modifier,
-                viewModel: ProfileViewModel = hiltViewModel(),
-                navController: NavController
+fun OptionsList(
+    modifier: Modifier = Modifier,
+    viewModel: ProfileViewModel = hiltViewModel(),
+    navController: NavController
 
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -174,10 +175,11 @@ fun OptionsList(modifier: Modifier = Modifier,
 @Preview(showBackground = true)
 @Composable
 fun Settings(modifier: Modifier = Modifier) {
-    val localeOptions = mapOf(
-        R.string.en to "en",
-        R.string.ru to "ru",
+    val localeOptions = listOf(
+        Pair(R.string.en, "en"),
+        Pair(R.string.ru, "ru")
     )
+    val context = LocalContext.current
     Column(
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -188,26 +190,52 @@ fun Settings(modifier: Modifier = Modifier) {
             text = stringResource(R.string.language_setting),
             buttonIcon = Icons.Default.KeyboardArrowDown,
             onClick = {})*/
+        var selectedLocale by remember { mutableStateOf(Locale.getDefault().language) }
         var expanded by remember { mutableStateOf(false) }
         ExposedDropdownMenuBox(
             modifier = Modifier.fillMaxWidth(),
             expanded = expanded,
-            onExpandedChange = { expanded = !expanded}
-        ) { localeOptions.keys.forEach { selectionLocale ->
-            DropdownMenuItem(
-                onClick = {
-                    expanded = false
-                    AppCompatDelegate.setApplicationLocales(
-                        LocaleListCompat.forLanguageTags(
-                            localeOptions[selectionLocale]
-                        )
-                    )
-                },
-                text = { stringResource(id = selectionLocale) }
+            onExpandedChange = { expanded = !expanded },
+        ) {
+
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(),
+                readOnly = true,
+                value = stringResource( localeOptions.first { it.second == selectedLocale }.first ), //ищем подходящую пару и берем название языка
+                onValueChange = {},
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             )
+
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                localeOptions.forEach { (stringRes, langCode) ->
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(id = stringRes)) },
+                        onClick = {
+                            selectedLocale = langCode
+                            expanded = false // Закрываем меню
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                AppCompatDelegate.setApplicationLocales(
+                                    LocaleListCompat.forLanguageTags(langCode)
+                                )
+                            } else {
+                                // 3. Для старых версий (дополнительная обработка)
+                                AppCompatDelegate.setApplicationLocales(
+                                    LocaleListCompat.create(Locale(langCode)))
+                            }
+
+                        }
+                    )
+                }
+            }
         }
 
-        }
+
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
         ) {
@@ -247,7 +275,7 @@ fun ProfileInfo(
             errorState = errorState
         )
         Text(
-            text = profile.firstName +" "+ profile.lastName,
+            text = profile.firstName + " " + profile.lastName,
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp
         )
@@ -342,7 +370,12 @@ fun Avatar(
 
 
         if (loadingState) {
-            ShimmerItem(brush = brush, height = 122.dp, cornerRadius = 1.dp, modifier = customModifier)
+            ShimmerItem(
+                brush = brush,
+                height = 122.dp,
+                cornerRadius = 1.dp,
+                modifier = customModifier
+            )
         } else if (errorState != null) {
             Image(
                 painter = painterResource(R.drawable.ic_launcher_background),
@@ -376,7 +409,7 @@ fun Avatar(
 
 @Composable
 fun EditProfile(
-    modifier: Modifier = Modifier,  viewModel: ProfileViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier, viewModel: ProfileViewModel = hiltViewModel(),
 ) {
 
     val profile by viewModel.userState.collectAsState()
@@ -405,13 +438,15 @@ fun EditProfile(
         ProfileTextField(label = stringResource(R.string.last_name),
             value = lastName,
             onValueChange = { lastName = it })
-        ProfileTextField(label = stringResource(R.string.email),
+        ProfileTextField(
+            label = stringResource(R.string.email),
             value = email,
             onValueChange = { email = it })
         ProfileTextField(label = stringResource(R.string.username),
             value = username,
             onValueChange = { username = it })
-        ProfileTextField(label = stringResource(R.string.age),
+        ProfileTextField(
+            label = stringResource(R.string.age),
             value = age,
             onValueChange = { age = it })
         ProfileTextField(label = stringResource(R.string.blood_type),
@@ -429,11 +464,7 @@ fun EditProfile(
         Button(
             onClick = {
                 viewModel.updateUser(
-                    firstName,
-                    lastName,
-                    age.toIntOrNull(),
-                    bloodType,
-                    photo = null
+                    firstName, lastName, age.toIntOrNull(), bloodType, photo = null
                 )
             }, //тут так не должно быть
             modifier = Modifier.fillMaxWidth()
@@ -449,8 +480,9 @@ fun EditProfile(
 @Composable
 fun EditProfilePreview() {
     EditProfile(
-        viewModel = hiltViewModel(),
-        modifier = Modifier.fillMaxWidth().padding(16.dp)
+        viewModel = hiltViewModel(), modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
     )
 }
 
