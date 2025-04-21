@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -67,7 +68,7 @@ fun ClinicScreen(viewModelClinic: ClinicViewModel = hiltViewModel()) {
                         modifier = Modifier.size(20.dp)
                     )
                     Text(
-                        text = " Выберите клинику",
+                        text = stringResource(R.string.select_your_clinic),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = LightTextPrimary
