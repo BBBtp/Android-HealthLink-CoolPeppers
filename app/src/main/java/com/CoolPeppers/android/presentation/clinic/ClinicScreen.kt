@@ -1,5 +1,6 @@
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,6 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Clinic
@@ -34,7 +36,7 @@ import com.CoolPeppers.android.ui.theme.Montserrat
 import com.CoolPeppers.android.util.PriceConversion
 
 @Composable
-fun ClinicScreen(viewModelClinic: ClinicViewModel = hiltViewModel()) {
+fun ClinicScreen(navController: NavController, viewModelClinic: ClinicViewModel = hiltViewModel()) {
     val clinics by viewModelClinic.clinics.observeAsState(emptyList())
 
     LaunchedEffect(Unit) {
@@ -83,10 +85,12 @@ fun ClinicScreen(viewModelClinic: ClinicViewModel = hiltViewModel()) {
                         .weight(1f)
                 ) {
                     items(clinics.size) { index ->
-                        HospitalCard(clinic = clinics[index])
-
+                        HospitalCard(clinic = clinics[index], onClick = {
+                            navController.navigate("clinic_detail/${clinics[index].id}")
+                        })
                         Spacer(modifier = Modifier.height(10.dp))
                     }
+
                 }
             }
         }
@@ -94,13 +98,14 @@ fun ClinicScreen(viewModelClinic: ClinicViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun HospitalCard(clinic: Clinic) {
+fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
             .background(Color(0xFFEAF4F4), RoundedCornerShape(14.dp))
-            .padding(10.dp),
+            .padding(10.dp)
+            .clickable { onClick() },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -115,8 +120,7 @@ fun HospitalCard(clinic: Clinic) {
                 contentDescription = "Hospital Image",
                 modifier = Modifier
                     .fillMaxHeight()
-                    .background(Color.Gray, RoundedCornerShape(14.dp))
-                    .clip(RoundedCornerShape(16.dp)),
+                    .background(Color.Gray, RoundedCornerShape(14.dp)),
                 contentScale = ContentScale.Crop,
             )
         }
@@ -154,7 +158,12 @@ fun HospitalCard(clinic: Clinic) {
                     )
                 }
             }
-            clinic.price?.let { PriceConversion(it.toInt()) }
+            Text(
+                text = "${clinic.price}₽",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = LightTextPrimary
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,
