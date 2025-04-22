@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -24,6 +26,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Doctor
@@ -44,8 +47,8 @@ fun DoctorCard(doctor: Doctor) {
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = rememberAsyncImagePainter(doctor.photoUrl),
+            AsyncImage(
+                model = doctor.photoUrl,
                 contentDescription = "Avatar",
                 modifier = Modifier
                     .size(40.dp)
@@ -72,7 +75,7 @@ fun DoctorCard(doctor: Doctor) {
                 )
             }
             IconButton(onClick = {}) {
-                Icon(imageVector = ImageVector.vectorResource(id = R.drawable.message), contentDescription = "Message", tint = LightTextPrimary)
+                Icon(Icons.Outlined.Favorite, contentDescription = "Message", tint = LightTextPrimary)
             }
         }
     }

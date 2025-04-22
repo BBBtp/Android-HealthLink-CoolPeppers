@@ -5,6 +5,7 @@ import com.CoolPeppers.android.data.model.Appointment
 import com.CoolPeppers.android.data.model.AuthRequest
 import com.CoolPeppers.android.data.model.AuthResponse
 import com.CoolPeppers.android.data.model.LoginRequest
+import com.CoolPeppers.android.data.model.RefreshToken
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
@@ -16,6 +17,10 @@ class AuthRepository @Inject constructor(
 
     suspend fun register(request: AuthRequest) {
         return apiService.regUser(request = request)
+    }
+
+    suspend fun refreshToken(request: RefreshToken): AuthResponse {
+        return apiService.refreshToken(request = request)
     }
 
 }
