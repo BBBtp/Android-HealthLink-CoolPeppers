@@ -23,6 +23,7 @@ class ProfileViewModel @Inject constructor(
     private val tokenManager: TokenManager
 ) : ViewModel() {
     private val _userState = MutableStateFlow(User(
+        id = 1,
         username = "",
         email = "",
         firstName = null,

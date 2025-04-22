@@ -14,6 +14,7 @@ android {
     defaultConfig {
         applicationId = "com.CoolPeppers.android"
         minSdk = 24
+        //noinspection OldTargetApi
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -34,18 +35,24 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "21"
+            freeCompilerArgs = listOf(
+                "-Xjvm-default=all",
+                "-Xadd-opens=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED"
+            )
+        }
     }
     buildFeatures {
         compose = true
         viewBinding = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
     packaging {
         resources {
@@ -53,7 +60,13 @@ android {
         }
     }
 }
-
+kapt {
+    correctErrorTypes = true
+    javacOptions {
+        option("-Xadd-opens", "jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED")
+        option("-Xadd-opens", "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED")
+    }
+}
 dependencies {
     // Core
     implementation(libs.androidx.core.ktx.v1120)

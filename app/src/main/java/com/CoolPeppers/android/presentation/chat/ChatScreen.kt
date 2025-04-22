@@ -61,6 +61,7 @@ import com.CoolPeppers.android.data.model.Doctor
 import com.CoolPeppers.android.data.model.Chat
 import com.CoolPeppers.android.data.model.Message
 import com.CoolPeppers.android.data.repository.ClinicRepository
+import com.CoolPeppers.android.presentation.chat.ChatDialogViewModel
 import com.CoolPeppers.android.presentation.chat.ChatViewModel
 import com.CoolPeppers.android.presentation.navigation.bottomNavigation.BottomNavigationBar
 import kotlinx.coroutines.delay
@@ -92,13 +93,15 @@ fun ChatScreen(
                     navController = navController,
                     doctors = doctors,
                     chats = chats,
-                    onRefresh = { viewModel.loadData() }
+                    onRefresh = { viewModel.refreshData() },
+                    onCreateChat = { doctorId -> viewModel.createChat(doctorId) }
                 )
             }
         }
         composable("chatDialog/{doctorId}") { backStackEntry ->
             val doctorId = backStackEntry.arguments?.getString("doctorId")?.toIntOrNull()
-            val doctor = viewModel.getDoctorById(doctorId ?: -1)
+            val doctor = doctors.find { it.id == doctorId }
+
             if (doctor != null) {
                 ChatDialogScreen(
                     doctor = doctor,
@@ -109,12 +112,14 @@ fun ChatScreen(
     }
 }
 
+
 @Composable
 fun ChatApp(
     navController: NavController,
     doctors: List<Doctor>,
     chats: List<Chat>,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
+    onCreateChat: (Int) -> Unit
 ) {
     val searchText = remember { mutableStateOf(TextFieldValue("")) }
     val isRefreshing = remember { mutableStateOf(false) }
@@ -124,7 +129,7 @@ fun ChatApp(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Поисковая строка (оставляем ваш оригинальный дизайн)
+        // Поисковая строка
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -169,7 +174,15 @@ fun ChatApp(
                 DoctorAvatar(
                     doctor = doctor,
                     onClick = {
-                        navController.navigate("chatDialog/${doctor.id}")
+                        // Проверяем, есть ли уже чат с этим доктором
+                        val existingChat = chats.find { it.user2.id == doctor.id }
+                        if (existingChat != null) {
+                            navController.navigate("chatDialog/${doctor.id}")
+                        } else {
+                            // Создаем новый чат
+                            onCreateChat(doctor.id)
+                            navController.navigate("chatDialog/${doctor.id}")
+                        }
                     }
                 )
             }
@@ -180,8 +193,10 @@ fun ChatApp(
         // Список чатов
         val filteredChats = remember(chats, searchText.value.text) {
             chats.filter { chat ->
-                chat.doctor.firstName.contains(searchText.value.text, ignoreCase = true) ||
-                        chat.doctor.lastName.contains(searchText.value.text, ignoreCase = true)
+                val firstName = chat.user2.firstName
+                val lastName = chat.user2.lastName
+                (firstName != null && firstName.contains(searchText.value.text, ignoreCase = true)) ||
+                        (lastName != null && lastName.contains(searchText.value.text, ignoreCase = true))
             }
         }
 
@@ -203,7 +218,7 @@ fun ChatApp(
                     ChatItem(
                         chat = chat,
                         onClick = {
-                            navController.navigate("chatDialog/${chat.doctor.id}")
+                            navController.navigate("chatDialog/${chat.user2.id}")
                         }
                     )
                 }
@@ -259,7 +274,7 @@ fun ChatItem(chat: Chat, onClick: () -> Unit) {
         )
         {
             AsyncImage(
-                model = chat.doctor.photoUrl, // URL изображения
+                model = chat.user2.photoUrl, // URL изображения
                 contentDescription = "Doctor Avatar",
                 modifier = Modifier
                     .size(56.dp)
@@ -272,7 +287,7 @@ fun ChatItem(chat: Chat, onClick: () -> Unit) {
             Column(modifier = Modifier.weight(1f)) {
 
                 Text(
-                    text = "${chat.doctor.firstName} ${chat.doctor.lastName}",
+                    text = "${chat.user2.firstName} ${chat.user2.lastName}",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF2F6690),
