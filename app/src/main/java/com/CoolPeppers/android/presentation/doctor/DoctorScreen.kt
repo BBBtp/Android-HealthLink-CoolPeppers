@@ -113,7 +113,7 @@ fun DoctorScreen(clinicId: Int,serviceId: Int, navController: NavController, vie
                 ) {
                     items(doctorsByService) { doctor ->
                         DoctorCard(doctor = doctor, onClick = {
-                            navController.navigate("doctor_detail/${doctor.id}")
+                            navController.navigate("doctor_detail/${clinicId}/${serviceId}/${doctor.id}")
                         })
                         Spacer(modifier = Modifier.height(8.dp))
                     }
