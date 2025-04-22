@@ -1,7 +1,9 @@
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,7 +21,7 @@ import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Service
 import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import androidx. compose. foundation. lazy. grid. LazyVerticalGrid
-import androidx. compose. foundation. lazy. grid. GridCells
+
 
 
 import androidx.compose.foundation.lazy.grid.items
@@ -91,7 +93,9 @@ fun ServiceScreen(clinicId: Int, navController: NavController, viewModelService:
                     contentPadding = PaddingValues(8.dp)
                 ) {
                     items(services) { service ->
-                        ServiceItem(service = service)
+                        ServiceItem(service = service, onClick = {
+                            navController.navigate("doctor/${clinicId}/${service.id}")
+                        })
                     }
                 }
             }
@@ -100,11 +104,13 @@ fun ServiceScreen(clinicId: Int, navController: NavController, viewModelService:
 }
 
 @Composable
-fun ServiceItem(service: Service) {
+fun ServiceItem(service: Service, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable { onClick() },
+
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(

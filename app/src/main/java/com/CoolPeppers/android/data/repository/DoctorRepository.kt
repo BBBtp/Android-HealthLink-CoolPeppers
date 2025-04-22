@@ -17,4 +17,9 @@ class DoctorRepository @Inject constructor(
             clinicId = clinicId
         )
     }
+    suspend fun getDoctorById(doctorId: Int): Doctor {
+        return apiService.getDoctorById(
+            doctorId = doctorId
+        )
+    }
 }

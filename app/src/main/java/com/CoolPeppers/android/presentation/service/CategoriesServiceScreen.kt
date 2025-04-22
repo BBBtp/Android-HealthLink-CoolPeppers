@@ -19,7 +19,7 @@ import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Service
 import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import androidx. compose. foundation. lazy. grid. LazyVerticalGrid
-import androidx. compose. foundation. lazy. grid. GridCells
+import androidx.compose.foundation.lazy.grid.GridCells
 
 
 import androidx.compose.foundation.lazy.grid.items
@@ -78,7 +78,7 @@ fun CategoriesServiceScreen() {
                 contentPadding = PaddingValues(8.dp)
             ) {
                 items(serviceList) { service ->
-                    ServiceItem(service = service)
+                    ServiceItem(service = service,onClick = {})
                 }
             }
         }

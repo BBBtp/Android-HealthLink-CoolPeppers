@@ -47,7 +47,7 @@ fun RequestScreen(navController: NavController, viewModel: RequestViewModel = vi
         when (selectedTab) {
             0 -> ClinicScreen(navController = navController)
             1 -> CategoriesServiceScreen()
-            2 -> DoctorScreen()
+            2 -> DoctorScreen(clinicId = 0,serviceId = 0 ,navController = navController)
         }
     }
 }

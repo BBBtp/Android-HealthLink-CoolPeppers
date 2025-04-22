@@ -2,6 +2,8 @@ package com.CoolPeppers.android.presentation.navigation.bottomNavigation
 
 import ChatScreen
 import ClinicDetailScreen
+import DoctorDetailScreen
+import DoctorScreen
 import HomeScreen
 import ProfileScreen
 import ServiceScreen
@@ -69,6 +71,20 @@ fun NavHostContainer(
                     val clinicId = backStackEntry.arguments?.getString("clinicId")?.toIntOrNull()
                     clinicId?.let {
                         ServiceScreen(clinicId = it,navController = navController)
+                    }
+                }
+                composable("doctor/{clinicId}/{serviceId}") { backStackEntry ->
+                    val clinicId = backStackEntry.arguments?.getString("clinicId")?.toIntOrNull()
+                    val serviceId = backStackEntry.arguments?.getString("serviceId")?.toIntOrNull()
+
+                    if (clinicId != null && serviceId != null) {
+                        DoctorScreen(clinicId = clinicId, serviceId = serviceId, navController = navController)
+                    }
+                }
+                composable("doctor_detail/{doctorId}") { backStackEntry ->
+                    val doctorId = backStackEntry.arguments?.getString("doctorId")?.toIntOrNull()
+                    doctorId?.let {
+                        DoctorDetailScreen(doctorId = it,navController = navController)
                     }
                 }
             })
