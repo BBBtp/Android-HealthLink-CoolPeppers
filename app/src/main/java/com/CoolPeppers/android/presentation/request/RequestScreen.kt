@@ -1,5 +1,6 @@
 package com.CoolPeppers.android.presentation.request
 
+import CategoriesServiceScreen
 import ClinicScreen
 import DoctorScreen
 import ServiceScreen
@@ -12,9 +13,10 @@ import androidx.compose.ui.Modifier
 import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.util.getTabIndicatorItems
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 
 @Composable
-fun RequestScreen(viewModel: RequestViewModel = viewModel()) {
+fun RequestScreen(navController: NavController, viewModel: RequestViewModel = viewModel()) {
     val tabItems = getTabIndicatorItems()
     var selectedTab by remember { mutableIntStateOf(viewModel.selectedTab) }
 
@@ -43,9 +45,9 @@ fun RequestScreen(viewModel: RequestViewModel = viewModel()) {
         }
 
         when (selectedTab) {
-            0 -> ClinicScreen()
-            1 -> ServiceScreen()
-            2 -> DoctorScreen()
+            0 -> ClinicScreen(navController = navController)
+            1 -> CategoriesServiceScreen()
+            2 -> DoctorScreen(clinicId = 0,serviceId = 0 ,navController = navController)
         }
     }
 }

@@ -8,7 +8,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,7 +19,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,26 +26,29 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Clinic
+import com.CoolPeppers.android.data.model.Doctor
 import com.CoolPeppers.android.presentation.clinic.ClinicViewModel
 import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.ui.theme.Montserrat
+import androidx.compose.runtime.*
+import com.CoolPeppers.android.presentation.doctor.DoctorViewModel
 
 @Composable
-fun ClinicDetailScreen(clinicId: Int, navController: NavController, viewModelClinic: ClinicViewModel = hiltViewModel()) {
+fun DoctorDetailScreen(doctorId: Int, navController: NavController, viewModelDoctor: DoctorViewModel = hiltViewModel()) {
 
-    val clinicById by viewModelClinic.clinic.observeAsState(emptyList())
+    val doctorById by viewModelDoctor.doctor.observeAsState(emptyList())
 
     LaunchedEffect(Unit) {
-        viewModelClinic.loadClinicByID(clinicId = clinicId)
+        viewModelDoctor.loadDoctorByID(doctorId = doctorId)
     }
 
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-    if (clinicById.isEmpty()) {
+    if (doctorById.isEmpty()) {
         ShimmerAnimation()
     } else {
-        val clinic: Clinic = clinicById[0]
+        val doctor: Doctor = doctorById[0]
 
         Box(
             modifier = Modifier
@@ -57,6 +61,7 @@ fun ClinicDetailScreen(clinicId: Int, navController: NavController, viewModelCli
                     .padding(bottom = 80.dp)
             ) {
                 item {
+                    // Header with doctor info
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -73,15 +78,18 @@ fun ClinicDetailScreen(clinicId: Int, navController: NavController, viewModelCli
                                 .background(Color.Gray, RoundedCornerShape(14.dp))
                         ) {
                             AsyncImage(
-                                model = clinic.logoUrl,
-                                contentDescription = "Hospital Image",
+                                model = doctor.photoUrl,
+                                contentDescription = "Doctor Image",
                                 modifier = Modifier
                                     .fillMaxHeight()
                                     .background(Color.Gray, RoundedCornerShape(14.dp)),
                                 contentScale = ContentScale.Crop,
+                                placeholder = painterResource(id = R.drawable.doctor_blue)
                             )
                         }
+
                         Spacer(modifier = Modifier.width(10.dp))
+
                         Column(
                             modifier = Modifier
                                 .fillMaxHeight()
@@ -90,47 +98,37 @@ fun ClinicDetailScreen(clinicId: Int, navController: NavController, viewModelCli
                             horizontalAlignment = Alignment.End
                         ) {
                             Text(
-                                text = clinic.address,
+                                text = "${doctor.firstName} ${doctor.lastName}",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = LightTextPrimary
                             )
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.End,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.metro),
-                                    contentDescription = "Metro Icon",
-                                    modifier = Modifier.size(20.dp)
-                                )
+
+                            doctor.specialization?.let {
                                 Text(
-                                    text = clinic.metro.toString(),
+                                    text = it,
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Medium,
                                     color = LightTextPrimary
                                 )
                             }
-                            Text(
-                                text = "${clinic.price}₽",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = LightTextPrimary
-                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            // Rating
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.End,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                repeat(clinic.rating.toInt()) {
+                                repeat(doctor.rating.toInt()) {
                                     Icon(
                                         imageVector = Icons.Filled.Star,
                                         contentDescription = null,
                                         tint = LightTextPrimary
                                     )
                                 }
-                                repeat(5 - clinic.rating.toInt()) {
+                                repeat(5 - doctor.rating.toInt()) {
                                     Icon(
                                         imageVector = Icons.Outlined.Star,
                                         contentDescription = null,
@@ -142,7 +140,7 @@ fun ClinicDetailScreen(clinicId: Int, navController: NavController, viewModelCli
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-
+                    
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -150,30 +148,30 @@ fun ClinicDetailScreen(clinicId: Int, navController: NavController, viewModelCli
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-
                         InfoBox(
                             iconRes = R.drawable.person_clinic,
-                            value = "${clinic.customersCount}+",
-                            label = "Клиентов",
+                            value = "${doctor.customerCount ?: 0}+",
+                            label = "Пациентов",
                             modifier = Modifier.weight(1f)
                         )
+
                         InfoBox(
                             iconRes = R.drawable.suitcase,
-                            value = clinic.yearFoundation.toString(),
-                            label = "Год основания",
+                            value = "${doctor.experience ?: 0} лет",
+                            label = "Опыт работы",
                             modifier = Modifier.weight(1f)
                         )
 
                         InfoBox(
                             iconRes = R.drawable.star_clinic,
-                            value = clinic.rating.toString(),
+                            value = doctor.rating.toString(),
                             label = "Рейтинг",
                             modifier = Modifier.weight(1f)
                         )
 
                         InfoBox(
                             iconRes = R.drawable.message,
-                            value = "${clinic.reviewsCount}+",
+                            value = "${doctor.reviewsCount ?: 0}+",
                             label = "Отзывов",
                             modifier = Modifier.weight(1f)
                         )
@@ -181,32 +179,36 @@ fun ClinicDetailScreen(clinicId: Int, navController: NavController, viewModelCli
 
                     Spacer(modifier = Modifier.height(16.dp))
 
+                    // About doctor section
                     Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "О клинике",
+                            text = "О враче",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = LightTextPrimary
                         )
+
                         Text(
-                            text = clinic.description,
+                            text = doctor.description ?: "Информация о враче отсутствует",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
                             color = LightTextPrimary,
                             modifier = Modifier.padding(top = 8.dp)
                         )
+
                         Spacer(modifier = Modifier.height(16.dp))
+
                         Text(
                             text = "Время работы",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = LightTextPrimary
                         )
+
                         Text(
-                            text = clinic.workTime.toString(),
+                            text = "Понедельник - пятница | 9:30 - 18:00",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
                             color = LightTextPrimary,
@@ -216,11 +218,9 @@ fun ClinicDetailScreen(clinicId: Int, navController: NavController, viewModelCli
                 }
             }
 
+
             Button(
-                onClick =
-                {
-                    navController.navigate("service/${clinic.id}")
-                },
+                onClick = {  },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
@@ -234,12 +234,12 @@ fun ClinicDetailScreen(clinicId: Int, navController: NavController, viewModelCli
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.service),
-                    contentDescription = "Service Icon",
+                    contentDescription = "Schedule Icon",
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Выбрать услугу",
+                    text = "Расписание",
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -247,39 +247,4 @@ fun ClinicDetailScreen(clinicId: Int, navController: NavController, viewModelCli
         }
     }
 }
-@Composable
-fun InfoBox(iconRes: Int, value: String, label: String, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .size(60.dp)
-                .background(LightTextPrimary.copy(alpha = 0.08f), CircleShape)
-        ) {
-            Icon(
-                painter = painterResource(id = iconRes),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(32.dp)
-                    .align(Alignment.Center),
-                tint = LightTextPrimary
-            )
-        }
-        Text(
-            text = value,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
-            color = LightTextPrimary,
-            modifier = Modifier.padding(top = 8.dp)
-        )
-        Text(
-            text = label,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium,
-            color = LightTextPrimary.copy(alpha = 0.7f)
-        )
-    }
-}
+
