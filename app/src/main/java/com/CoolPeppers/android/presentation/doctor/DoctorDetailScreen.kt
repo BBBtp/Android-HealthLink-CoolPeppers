@@ -34,7 +34,7 @@ import androidx.compose.runtime.*
 import com.CoolPeppers.android.presentation.doctor.DoctorViewModel
 
 @Composable
-fun DoctorDetailScreen(doctorId: Int, navController: NavController, viewModelDoctor: DoctorViewModel = hiltViewModel()) {
+fun DoctorDetailScreen(doctorId: Int,clinicId: Int, serviceId: Int, navController: NavController, viewModelDoctor: DoctorViewModel = hiltViewModel()) {
 
     val doctorById by viewModelDoctor.doctor.observeAsState(emptyList())
 
@@ -140,7 +140,7 @@ fun DoctorDetailScreen(doctorId: Int, navController: NavController, viewModelDoc
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -220,7 +220,7 @@ fun DoctorDetailScreen(doctorId: Int, navController: NavController, viewModelDoc
 
 
             Button(
-                onClick = {  },
+                onClick = { navController.navigate("appointment/${clinicId}/${serviceId}/${doctorId}") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)

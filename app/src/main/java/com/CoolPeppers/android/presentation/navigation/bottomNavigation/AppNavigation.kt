@@ -1,5 +1,6 @@
 package com.CoolPeppers.android.presentation.navigation.bottomNavigation
 
+import AppointmentScreen
 import ChatScreen
 import ClinicDetailScreen
 import DoctorDetailScreen
@@ -81,12 +82,28 @@ fun NavHostContainer(
                         DoctorScreen(clinicId = clinicId, serviceId = serviceId, navController = navController)
                     }
                 }
-                composable("doctor_detail/{doctorId}") { backStackEntry ->
+                composable("doctor_detail/{clinicId}/{serviceId}/{doctorId}") { backStackEntry ->
+                    val clinicId = backStackEntry.arguments?.getString("clinicId")?.toIntOrNull()
+                    val serviceId = backStackEntry.arguments?.getString("serviceId")?.toIntOrNull()
                     val doctorId = backStackEntry.arguments?.getString("doctorId")?.toIntOrNull()
-                    doctorId?.let {
-                        DoctorDetailScreen(doctorId = it,navController = navController)
+                    if (clinicId != null && serviceId != null && doctorId != null) {
+                        DoctorDetailScreen(clinicId = clinicId,
+                            serviceId = serviceId,
+                            doctorId = doctorId,navController = navController)
                     }
                 }
+                composable("appointment/{clinicId}/{serviceId}/{doctorId}") { backStackEntry ->
+                    val clinicId = backStackEntry.arguments?.getString("clinicId")?.toIntOrNull()
+                    val serviceId = backStackEntry.arguments?.getString("serviceId")?.toIntOrNull()
+                    val doctorId = backStackEntry.arguments?.getString("doctorId")?.toIntOrNull()
+
+                    if (clinicId != null && serviceId != null && doctorId != null) {
+                        AppointmentScreen(clinicId = clinicId,
+                            serviceId = serviceId,
+                            doctorId = doctorId,navController = navController)
+                    }
+                }
+
             })
 }
 
