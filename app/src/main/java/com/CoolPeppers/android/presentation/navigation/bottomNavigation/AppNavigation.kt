@@ -1,12 +1,20 @@
 package com.CoolPeppers.android.presentation.navigation.bottomNavigation
 
+import AppointmentScreen
 import ChatScreen
+import ClinicDetailScreen
+import DoctorDetailScreen
+import DoctorScreen
+import EditProfile
 import HomeScreen
+import Settings
 import ProfileScreen
+import ServiceScreen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -27,6 +35,7 @@ import com.CoolPeppers.android.presentation.notifications.NotificationsScreen
 import com.CoolPeppers.android.presentation.request.RequestScreen
 import com.CoolPeppers.android.util.getBottomNavItems
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavHostContainer(
@@ -34,33 +43,91 @@ fun NavHostContainer(
     padding: PaddingValues,
     startDestination: String
 ) {
-        NavHost(
-            navController = navController,
-            startDestination = startDestination,
-            modifier = Modifier.padding(paddingValues = padding),
+    NavHost(
+        navController = navController,
+        startDestination = startDestination,
+        modifier = Modifier.padding(paddingValues = padding),
+        builder = {
+            // Основные экраны
+            composable("auth") {
+                AuthScreen(navController = navController)
+            }
+            composable("home") {
+                HomeScreen(navController = navController)
+            }
+            composable("chat") {
+                ChatScreen()
+            }
+            composable("notifications") {
+                NotificationsScreen()
+            }
+            composable("request") {
+                RequestScreen(navController = navController)
+            }
+            composable("profile") {
+                ProfileScreen(navController = navController)
+            }
+            composable("settings") {
+                Settings()
+            }
+            composable("profile edit") {
+                EditProfile()
+            }
 
+            // Экраны клиник и записей
+            composable("clinic_detail/{clinicId}") { backStackEntry ->
+                val clinicId = backStackEntry.arguments?.getString("clinicId")?.toIntOrNull()
+                clinicId?.let {
+                    ClinicDetailScreen(clinicId = it, navController = navController)
+                }
+            }
+            composable("service/{clinicId}") { backStackEntry ->
+                val clinicId = backStackEntry.arguments?.getString("clinicId")?.toIntOrNull()
+                clinicId?.let {
+                    ServiceScreen(clinicId = it, navController = navController)
+                }
+            }
+            composable("doctor/{clinicId}/{serviceId}") { backStackEntry ->
+                val clinicId = backStackEntry.arguments?.getString("clinicId")?.toIntOrNull()
+                val serviceId = backStackEntry.arguments?.getString("serviceId")?.toIntOrNull()
 
-            builder = {
-                composable("auth") {
-                    AuthScreen(navController = navController) // Передаем NavController в AuthScreen
+                if (clinicId != null && serviceId != null) {
+                    DoctorScreen(
+                        clinicId = clinicId,
+                        serviceId = serviceId,
+                        navController = navController
+                    )
                 }
+            }
+            composable("doctor_detail/{clinicId}/{serviceId}/{doctorId}") { backStackEntry ->
+                val clinicId = backStackEntry.arguments?.getString("clinicId")?.toIntOrNull()
+                val serviceId = backStackEntry.arguments?.getString("serviceId")?.toIntOrNull()
+                val doctorId = backStackEntry.arguments?.getString("doctorId")?.toIntOrNull()
+                if (clinicId != null && serviceId != null && doctorId != null) {
+                    DoctorDetailScreen(
+                        clinicId = clinicId,
+                        serviceId = serviceId,
+                        doctorId = doctorId,
+                        navController = navController
+                    )
+                }
+            }
+            composable("appointment/{clinicId}/{serviceId}/{doctorId}") { backStackEntry ->
+                val clinicId = backStackEntry.arguments?.getString("clinicId")?.toIntOrNull()
+                val serviceId = backStackEntry.arguments?.getString("serviceId")?.toIntOrNull()
+                val doctorId = backStackEntry.arguments?.getString("doctorId")?.toIntOrNull()
 
-                composable("home") {
-                    HomeScreen(navController = navController)
+                if (clinicId != null && serviceId != null && doctorId != null) {
+                    AppointmentScreen(
+                        clinicId = clinicId,
+                        serviceId = serviceId,
+                        doctorId = doctorId,
+                        navController = navController
+                    )
                 }
-                composable("chat") {
-                    ChatScreen()
-                }
-                composable("notifications") {
-                    NotificationsScreen()
-                }
-                composable("request") {
-                    RequestScreen(navController = navController)
-                }
-                composable("profile") {
-                    ProfileScreen(navController = navController)
-                }
-            })
+            }
+        }
+    )
 }
 
 @Composable
@@ -80,7 +147,14 @@ fun BottomNavigationBar(navController: NavHostController) {
             NavigationBarItem(
                 selected = currentRoute == navItem.route,
                 onClick = {
-                    navController.navigate(navItem.route)
+                    navController.navigate(navItem.route) {
+                        // Очистка стека навигации при переходе на основные экраны
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 },
                 icon = {
                     Icon(imageVector = navItem.icon, contentDescription = null)
