@@ -3,7 +3,9 @@ package com.CoolPeppers.android.data.api.remote
 import com.CoolPeppers.android.data.model.Appointment
 import com.CoolPeppers.android.data.model.AuthRequest
 import com.CoolPeppers.android.data.model.AuthResponse
+import com.CoolPeppers.android.data.model.Chat
 import com.CoolPeppers.android.data.model.Clinic
+import com.CoolPeppers.android.data.model.CreateChatRequest
 import com.CoolPeppers.android.data.model.Doctor
 import com.CoolPeppers.android.data.model.LoginRequest
 import com.CoolPeppers.android.data.model.RefreshToken
@@ -171,4 +173,22 @@ interface  ApiService {
         @Query(ApiConstants.START_TIME) startTime: String,
         @Query(ApiConstants.END_TIME) endTime: String
     )
+
+    // Получение конкретного чата по ID
+    @GET(ApiConstants.GET_CHAT_BY_ID_URL)
+    suspend fun getChatById(
+        @Path("chat_id") chatId: Int
+    ): Chat
+
+    // Получение чатов конкретного пользователя
+    @GET(ApiConstants.GET_USER_CHATS_URL)
+    suspend fun getUserChats(
+    ): List<Chat>
+
+    // Создание нового чата
+    @POST(ApiConstants.CREATE_CHAT_URL)
+    suspend fun createChat(
+        @Body createChatRequest: CreateChatRequest
+    ): Chat
+
 }

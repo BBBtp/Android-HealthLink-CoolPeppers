@@ -23,6 +23,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
@@ -35,13 +36,15 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun ChatDialogScreen(doctor: Doctor, onBack: () -> Unit) {
-    val viewModel = viewModel<ChatDialogViewModel>()
+fun ChatDialogScreen(
+    doctor: Doctor,
+    onBack: () -> Unit
+) {
+    val viewModel: ChatDialogViewModel = hiltViewModel()
     var messageText by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     val bottomBarVisibility = LocalBottomBarVisibility.current
 
-    // Скрываем нижний бар при входе на экран
     DisposableEffect(Unit) {
         bottomBarVisibility.value = false
         onDispose {
@@ -49,35 +52,31 @@ fun ChatDialogScreen(doctor: Doctor, onBack: () -> Unit) {
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // Заголовок с кнопкой "Назад" и аватаркой врача (фиксированная высота)
+    Column(modifier = Modifier.fillMaxSize()) {
         ChatHeader(doctor, onBack)
 
-        // Список сообщений (занимает все доступное пространство)
-        Box(
-            modifier = Modifier.weight(1f)
-        ) {
+        Box(modifier = Modifier.weight(1f)) {
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
+                modifier = Modifier.fillMaxSize(),
+                reverseLayout = true
             ) {
-                items(viewModel.messages) { message ->
-                    MessageBubble(message)
+                items(viewModel.messages.reversed()) { message ->
+                    MessageBubble(
+                        message = message,
+                    )
                 }
             }
         }
 
-        // Поле ввода сообщения (фиксированная высота)
         MessageInput(
             messageText = messageText,
             onMessageChange = { messageText = it },
             onSend = {
-                viewModel.sendMessage(messageText)
-                messageText = ""
-                keyboardController?.hide()
+                if (messageText.isNotBlank()) {
+                    viewModel.sendMessage(messageText)
+                    messageText = ""
+                    keyboardController?.hide()
+                }
             }
         )
     }

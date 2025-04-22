@@ -3,6 +3,7 @@ package com.CoolPeppers.android.data.model
 import com.google.gson.annotations.SerializedName
 
 data class User(
+    val id: Int,
     val username: String,
     val email: String,
     @SerializedName("first_name") val firstName: String?,
