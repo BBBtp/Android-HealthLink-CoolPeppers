@@ -144,10 +144,11 @@ fun ShimmerItem(
     width: Dp? = null,
     height: Dp,
     cornerRadius: Dp = 0.dp,
-    shape: androidx.compose.ui.graphics.Shape = RoundedCornerShape(cornerRadius)
+    shape: androidx.compose.ui.graphics.Shape = RoundedCornerShape(cornerRadius),
+    modifier: Modifier = Modifier
 ) {
     Spacer(
-        modifier = Modifier
+        modifier = modifier
             .then(
                 if (width != null) Modifier.size(width, height)
                 else Modifier.fillMaxWidth().height(height)

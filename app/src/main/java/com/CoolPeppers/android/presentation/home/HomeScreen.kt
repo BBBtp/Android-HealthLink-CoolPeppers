@@ -22,11 +22,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Appointment
 import com.CoolPeppers.android.presentation.clinic.ClinicViewModel
 import com.CoolPeppers.android.presentation.doctor.DoctorViewModel
@@ -71,7 +73,7 @@ fun HomeScreen(
         ) {
             UserInfoBlock(user, navController)
             Text(
-                text = "Записи",
+                text = stringResource(R.string.records),
                 style = androidx.compose.ui.text.TextStyle(
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Bold,
@@ -96,7 +98,7 @@ fun HomeScreen(
             }
             Spacer(modifier = Modifier.height(26.dp))
             Text(
-                text = "Врачи",
+                text = stringResource(R.string.doctors),
                 style = androidx.compose.ui.text.TextStyle(
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Bold,
@@ -116,7 +118,7 @@ fun HomeScreen(
             }
             Spacer(modifier = Modifier.height(26.dp))
             Text(
-                text = "Поликлиники",
+                text = stringResource(R.string.clinics),
                 style = androidx.compose.ui.text.TextStyle(
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Bold,

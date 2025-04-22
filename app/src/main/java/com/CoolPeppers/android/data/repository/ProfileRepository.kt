@@ -1,5 +1,6 @@
 package com.CoolPeppers.android.data.repository
 
+import android.util.Log
 import com.CoolPeppers.android.data.api.remote.ApiService
 import com.CoolPeppers.android.data.model.User
 import okhttp3.MediaType.Companion.toMediaType
@@ -24,20 +25,21 @@ class ProfileRepository @Inject constructor(
     }
 
     suspend fun updateUser(
-        firstName: String,
-        lastName: String,
+        firstName: String?,
+        lastName: String?,
         age: Int?,
-        bloodType: String,
+        bloodType: String?,
         photo: File?
     ): Result<User> {
         return try {
-            val firstNameBody = firstName.toRequestBody()
-            val lastNameBody = lastName.toRequestBody()
-            val bloodTypeBody = bloodType.toRequestBody()
+            Log.d("rep updateUser", "trying")
+            val firstNameBody = firstName?.toRequestBody()
+            val lastNameBody = lastName?.toRequestBody()
+            val bloodTypeBody = bloodType?.toRequestBody()
             val ageBody = age?.toString()?.toRequestBody()
-
+            Log.d("rep updateUser", "trying again")
             val photoPart = photo?.toMultipartBodyPart("photo")
-
+            Log.d("rep updateUser", "trying upload photo")
             val updatedUser = apiService.updateUser(
                 firstName = firstNameBody,
                 lastName = lastNameBody,
@@ -45,9 +47,10 @@ class ProfileRepository @Inject constructor(
                 bloodType = bloodTypeBody,
                 photo = photoPart
             )
-
+            Log.d("rep updateUser", "trying update user")
             Result.Success(updatedUser)
         } catch (e: Exception) {
+            Log.d("rep updateUser", "caught exception")
             Result.Error(e.message ?: "Update failed")
         }
     }
@@ -62,11 +65,4 @@ class ProfileRepository @Inject constructor(
             name,
             asRequestBody("image/*".toMediaTypeOrNull())
         )
-
-}
-
-sealed class Result<T> {
-
-    data class Success<T>(val data: T) : Result<T>()
-    data class Error<T>(val message: String) : Result<T>()
 }

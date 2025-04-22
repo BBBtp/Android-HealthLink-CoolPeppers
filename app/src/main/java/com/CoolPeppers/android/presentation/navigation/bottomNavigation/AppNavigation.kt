@@ -1,12 +1,15 @@
 package com.CoolPeppers.android.presentation.navigation.bottomNavigation
 
 import ChatScreen
+import EditProfile
 import HomeScreen
 import ProfileScreen
+import Settings
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -27,6 +30,7 @@ import com.CoolPeppers.android.presentation.notifications.NotificationsScreen
 import com.CoolPeppers.android.presentation.request.RequestScreen
 import com.CoolPeppers.android.util.getBottomNavItems
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavHostContainer(
@@ -59,6 +63,12 @@ fun NavHostContainer(
                 }
                 composable("profile") {
                     ProfileScreen(navController = navController)
+                }
+                composable("settings") {
+                    Settings()
+                }
+                composable("profile edit") {
+                    EditProfile()
                 }
             })
 }

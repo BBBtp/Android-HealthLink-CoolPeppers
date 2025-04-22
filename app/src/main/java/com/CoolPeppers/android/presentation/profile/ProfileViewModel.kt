@@ -1,5 +1,6 @@
 package com.CoolPeppers.android.presentation.profile
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -69,10 +70,10 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun updateUser(
-        firstName: String,
-        lastName: String,
+        firstName: String?,
+        lastName: String?,
         age: Int?,
-        bloodType: String,
+        bloodType: String?,
         photo: File?
     ) {
         viewModelScope.launch {
@@ -89,11 +90,14 @@ class ProfileViewModel @Inject constructor(
                 is Success -> {
                     _userState.value = result.data
                     _errorState.value = null
+                    Log.d("update user", "success")
                 }
                 is Error -> {
                     _errorState.value = result.message
+                    Log.d("update user", "fail: " + result.message)
                 }
             }
+
             _loadingState.value = false
         }
     }

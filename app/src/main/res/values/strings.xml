@@ -19,4 +19,25 @@
     <string name="blood_type">Blood type</string>
     <string name="age">Age</string>
     <string name="unknown">Unknown</string>
+    <string name="en" translatable="false">English</string>
+    <string name="ru" translatable="false">Русский</string>
+    <string name="search">Search</string>
+    <string name="services" translatable="false">Services</string>
+    <string name="clinics">Clinics</string>
+    <string name="doctors">Doctors</string>
+    <string name="select_your_clinic">Select your clinic</string>
+    <string name="select_a_service">Select a service</string>
+    <string name="notifications">Notifications</string>
+    <string name="login">Log in</string>
+    <string name="password">Password</string>
+    <string name="login_button">Log in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="your_name">Your name</string>
+    <string name="register_button">Register</string>
+    <string name="have_an_account">Have an account? Log in!</string>
+    <string name="dont_have_an_account">Don\'t have an account? Create!</string>
+    <string name="or">Or</string>
+    <string name="login_with_google">Log in with Google</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="records">Records</string>
 </resources>
