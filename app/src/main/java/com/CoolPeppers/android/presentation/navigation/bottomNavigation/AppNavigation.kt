@@ -68,7 +68,7 @@ fun NavHostContainer(
                     Settings()
                 }
                 composable("profile edit") {
-                    EditProfile()
+                    EditProfile(navController = navController)
                 }
             })
 }

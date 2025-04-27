@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -73,6 +74,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.User
+import com.CoolPeppers.android.presentation.home.components.HealthLinkTextField
 import com.CoolPeppers.android.presentation.profile.ProfileViewModel
 import com.CoolPeppers.android.ui.theme.ShimmerColorShades
 import com.CoolPeppers.android.util.createFileFromUri
@@ -113,15 +115,12 @@ fun ProfileScreen(
         modifier = modifier.fillMaxWidth()
     ) {
 
-        // TODO: сделать нормальное обновление аватарки
-
         ProfileInfo(
-            profile = user, onAvatarClick = {
-
-                // код не ждет photo picker, нужно сделать чтобы ждал!!!
-
+            profile = user,
+            onAvatarClick = {
                 pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-            }, loadingState = loading, errorState = error
+            },
+            loadingState = loading, errorState = error
         )
         OptionsList(navController = navController)
     }
@@ -200,10 +199,9 @@ fun Settings(modifier: Modifier = Modifier) {
 
             TextField(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor(),
+                    .fillMaxWidth(),
                 readOnly = true,
-                value = stringResource( localeOptions.first { it.second == selectedLocale }.first ), //ищем подходящую пару и берем название языка
+                value = stringResource(localeOptions.first { it.second == selectedLocale }.first), //ищем подходящую пару и берем название языка
                 onValueChange = {},
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             )
@@ -226,7 +224,8 @@ fun Settings(modifier: Modifier = Modifier) {
                             } else {
                                 // 3. Для старых версий (дополнительная обработка)
                                 AppCompatDelegate.setApplicationLocales(
-                                    LocaleListCompat.create(Locale(langCode)))
+                                    LocaleListCompat.create(Locale(langCode))
+                                )
                             }
 
                         }
@@ -275,7 +274,7 @@ fun ProfileInfo(
             errorState = errorState
         )
         Text(
-            text = profile.firstName + " " + profile.lastName,
+            text = (profile.firstName ?: "") + " " + (profile.lastName ?: " "),
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp
         )
@@ -409,49 +408,77 @@ fun Avatar(
 
 @Composable
 fun EditProfile(
-    modifier: Modifier = Modifier, viewModel: ProfileViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier,
+    viewModel: ProfileViewModel = hiltViewModel(),
+    navController: NavController,
 ) {
-
     val profile by viewModel.userState.collectAsState()
-//    var firstName = profile.firstName ?: stringResource(R.string.unknown)
-//    var lastName = profile.lastName ?: stringResource(R.string.unknown)
-//    var email = profile.email
-//    var age = profile.age?.toString() ?: stringResource(R.string.unknown)
-//    var bloodType = profile.bloodType ?: stringResource(R.string.unknown)
-//    var username = profile.username
-    var firstName by remember { mutableStateOf(profile.firstName ?: "Unknown") }
-    var lastName by remember { mutableStateOf(profile.lastName ?: "Unknown") }
-    var email by remember { mutableStateOf(profile.email) }
-    var age by remember { mutableStateOf(profile.age?.toString() ?: "Unknown") }
-    var bloodType by remember { mutableStateOf(profile.bloodType ?: "Unknown") }
-    var username by remember { mutableStateOf(profile.username) }
-
+/*
+    Log.d("edit profile", "accuired profile:"
+            + "\nfirst name = " + profile.firstName
+            + "\nlast name = " + profile.lastName
+            + "\nemail = " + profile.email
+            + "\nage = " + profile.age
+            + "\nblood = " + profile.bloodType
+            + "\nusername = " + profile.username)
+    */
+    var firstName by remember(profile) { mutableStateOf(profile.firstName ?: "") }
+    var lastName by remember(profile) { mutableStateOf(profile.lastName ?: "") }
+    var email by remember(profile) { mutableStateOf(profile.email) }
+    var age by remember(profile) { mutableStateOf(profile.age?.toString() ?: "") }
+    var bloodType by remember(profile) { mutableStateOf(profile.bloodType ?: "") }
+    var username by remember(profile) { mutableStateOf(profile.username) }
+/*
+    Log.d("edit profile", "working profile:"
+            + "\nfirst name = " + firstName
+            + "\nlast name = " + lastName
+            + "\nemail = " + email
+            + "\nage = " + age
+            + "\nblood = " + bloodType
+            + "\nusername = " + username)
+    */
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        ProfileTextField(label = stringResource(R.string.first_name),
+        HealthLinkTextField(
+            label = { Text(stringResource(R.string.first_name)) },
             value = firstName,
-            onValueChange = { firstName = it })
-        ProfileTextField(label = stringResource(R.string.last_name),
+            onValueChange = { firstName = it },
+            modifier = Modifier.fillMaxWidth()
+        )
+        HealthLinkTextField(
+            label = { Text(stringResource(R.string.last_name)) },
             value = lastName,
-            onValueChange = { lastName = it })
-        ProfileTextField(
-            label = stringResource(R.string.email),
+            onValueChange = { lastName = it },
+            modifier = Modifier.fillMaxWidth()
+        )
+        HealthLinkTextField(
+            label = { Text(stringResource(R.string.email)) },
             value = email,
-            onValueChange = { email = it })
-        ProfileTextField(label = stringResource(R.string.username),
+            onValueChange = { email = it },
+            modifier = Modifier.fillMaxWidth()
+        )
+        HealthLinkTextField(
+            label = { Text(stringResource(R.string.username)) },
             value = username,
-            onValueChange = { username = it })
-        ProfileTextField(
-            label = stringResource(R.string.age),
+            onValueChange = { username = it },
+            modifier = Modifier.fillMaxWidth()
+        )
+        HealthLinkTextField(
+            label = { Text(stringResource(R.string.age)) },
             value = age,
-            onValueChange = { age = it })
-        ProfileTextField(label = stringResource(R.string.blood_type),
+            onValueChange = { age = it },
+            modifier = Modifier.fillMaxWidth()
+        )
+        HealthLinkTextField(
+            label = { Text(stringResource(R.string.blood_type)) },
             value = bloodType,
-            onValueChange = { bloodType = it })
+            onValueChange = { bloodType = it },
+            modifier = Modifier.fillMaxWidth()
+        )
 
 
 //        PasswordField(
@@ -459,13 +486,12 @@ fun EditProfile(
 //            onValueChange = {}
 //        )
 
-        // TODO: сделать изменение почты и юзернейма, + исправить изменение фотки
-
         Button(
             onClick = {
                 viewModel.updateUser(
                     firstName, lastName, age.toIntOrNull(), bloodType, photo = null
                 )
+                navController.navigate("profile")
             }, //тут так не должно быть
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -476,23 +502,28 @@ fun EditProfile(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun EditProfilePreview() {
-    EditProfile(
-        viewModel = hiltViewModel(), modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun EditProfilePreview() {
+//    EditProfile(
+//        viewModel = hiltViewModel(), modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(16.dp),
+//    )
+//}
 
 @Composable
 fun ProfileTextField(
-    modifier: Modifier = Modifier, label: String, value: String, onValueChange: (String) -> Unit
+    modifier: Modifier = Modifier,
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    @StringRes placeholder: Int
 ) {
     TextField(
         value = value,
         onValueChange = onValueChange,
+        placeholder = { Text(stringResource(placeholder)) },
         label = { Text(label) },
         modifier = modifier.fillMaxWidth()
     )
@@ -501,6 +532,11 @@ fun ProfileTextField(
 @Preview(showBackground = true)
 @Composable
 fun ProfileTextFieldPreview() {
-    ProfileTextField(label = "textfield", value = "placeholder", onValueChange = {})
+    ProfileTextField(
+        label = "textfield",
+        value = "placeholder",
+        onValueChange = {},
+        placeholder = R.string.avatar
+    )
 }
 
