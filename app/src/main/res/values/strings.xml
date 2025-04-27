@@ -22,7 +22,7 @@
     <string name="en" translatable="false">English</string>
     <string name="ru" translatable="false">Русский</string>
     <string name="search">Search</string>
-    <string name="services" translatable="false">Services</string>
+    <string name="services">Services</string>
     <string name="clinics">Clinics</string>
     <string name="doctors">Doctors</string>
     <string name="select_your_clinic">Select your clinic</string>
