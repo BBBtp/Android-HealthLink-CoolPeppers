@@ -1,28 +1,12 @@
-package com.CoolPeppers.android.presentation.home.components
+package com.CoolPeppers.android.presentation.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.CoolPeppers.android.R
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
 
 @Composable
 fun HealthLinkTextField(
@@ -32,7 +16,9 @@ fun HealthLinkTextField(
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
-    singleLine: Boolean = true
+    trailingIcon: @Composable (() -> Unit)? = null,
+    singleLine: Boolean = true,
+    readOnly: Boolean = false,
 ) {
     OutlinedTextField(
         value = value,
@@ -42,6 +28,8 @@ fun HealthLinkTextField(
         placeholder = placeholder,
         modifier = modifier,
         singleLine = singleLine,
+        readOnly = readOnly,
+        trailingIcon = trailingIcon,
         shape = RoundedCornerShape(25.dp),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
