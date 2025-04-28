@@ -32,6 +32,7 @@ fun HealthLinkTextField(
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
+    singleLine: Boolean = true
 ) {
     OutlinedTextField(
         value = value,
@@ -40,6 +41,7 @@ fun HealthLinkTextField(
         leadingIcon = leadingIcon,
         placeholder = placeholder,
         modifier = modifier,
+        singleLine = singleLine,
         shape = RoundedCornerShape(25.dp),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
