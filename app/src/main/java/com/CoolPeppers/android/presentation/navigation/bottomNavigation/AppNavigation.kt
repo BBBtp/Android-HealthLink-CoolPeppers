@@ -4,7 +4,6 @@ import ChatScreen
 import EditProfile
 import HomeScreen
 import ProfileScreen
-import Settings
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,6 +16,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,6 +28,7 @@ import com.CoolPeppers.android.ui.theme.LightTextHeaders
 import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.presentation.notifications.NotificationsScreen
 import com.CoolPeppers.android.presentation.request.RequestScreen
+import com.CoolPeppers.android.presentation.settings.Settings
 import com.CoolPeppers.android.util.getBottomNavItems
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,10 +63,10 @@ fun NavHostContainer(
                     RequestScreen()
                 }
                 composable("profile") {
-                    ProfileScreen(navController = navController)
+                    ProfileScreen(navController = navController, modifier = Modifier.padding(16.dp))
                 }
                 composable("settings") {
-                    Settings()
+                    Settings(modifier = Modifier.padding(16.dp))
                 }
                 composable("profile edit") {
                     EditProfile(navController = navController)
