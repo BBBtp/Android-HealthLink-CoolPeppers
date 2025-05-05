@@ -1,5 +1,5 @@
 import android.app.Activity
-import android.net.Uri
+import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -15,6 +15,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,7 +32,6 @@ import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
@@ -50,7 +50,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,19 +65,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toFile
 import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.User
-import com.CoolPeppers.android.presentation.home.components.HealthLinkTextField
+import com.CoolPeppers.android.presentation.components.HealthLinkTextField
+import com.CoolPeppers.android.presentation.components.Option
 import com.CoolPeppers.android.presentation.profile.ProfileViewModel
 import com.CoolPeppers.android.ui.theme.ShimmerColorShades
 import com.CoolPeppers.android.util.createFileFromUri
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -162,94 +159,14 @@ fun OptionsList(
             onClick = {
                 coroutineScope.launch {
                     viewModel.logOut()
-                    navController.navigate("auth")
+                    navController.navigate("auth") {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
                 }
             })
-    }
-}
-
-// TODO: сделать больше настроек, выпадающей окно изменения языка
-// вроде сделал но это брэд
-@ExperimentalMaterial3Api
-@Preview(showBackground = true)
-@Composable
-fun Settings(modifier: Modifier = Modifier) {
-    val localeOptions = listOf(
-        Pair(R.string.en, "en"),
-        Pair(R.string.ru, "ru")
-    )
-    val context = LocalContext.current
-    Column(
-        verticalArrangement = Arrangement.spacedBy(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxWidth()
-//            .padding(start = 16.dp, end = 8.dp, bottom = 4.dp)
-    ) {
-        /*Option(icon = Icons.De= ccault.Face,
-            text = stringResource(R.string.language_setting),
-            buttonIcon = Icons.Default.KeyboardArrowDown,
-            onClick = {})*/
-        var selectedLocale by remember { mutableStateOf(Locale.getDefault().language) }
-        var expanded by remember { mutableStateOf(false) }
-        ExposedDropdownMenuBox(
-            modifier = Modifier.fillMaxWidth(),
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded },
-        ) {
-
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                readOnly = true,
-                value = stringResource(localeOptions.first { it.second == selectedLocale }.first), //ищем подходящую пару и берем название языка
-                onValueChange = {},
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            )
-
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                localeOptions.forEach { (stringRes, langCode) ->
-                    DropdownMenuItem(
-                        text = { Text(text = stringResource(id = stringRes)) },
-                        onClick = {
-                            selectedLocale = langCode
-                            expanded = false // Закрываем меню
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                AppCompatDelegate.setApplicationLocales(
-                                    LocaleListCompat.forLanguageTags(langCode)
-                                )
-                            } else {
-                                // 3. Для старых версий (дополнительная обработка)
-                                AppCompatDelegate.setApplicationLocales(
-                                    LocaleListCompat.create(Locale(langCode))
-                                )
-                            }
-
-                        }
-                    )
-                }
-            }
-        }
-
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
-        ) {
-            Option(icon = Icons.Default.Build,
-                text = stringResource(R.string.dark_theme_setting),
-                modifier = Modifier.weight(1f),
-                onClick = {})
-            Switch(
-                checked = false,
-                onCheckedChange = {},
-                modifier = Modifier
-                    .size(40.dp, 20.dp)
-                    .scale(0.7f)
-            )
-        }
     }
 }
 
@@ -281,43 +198,6 @@ fun ProfileInfo(
         Text(
             text = profile.email, fontWeight = FontWeight.Medium, fontSize = 12.sp
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun OptionPreview() {
-    Option(onClick = {}, text = "random", icon = Icons.Default.AccountCircle)
-}
-
-
-@Composable
-fun Option(
-    modifier: Modifier = Modifier,
-    icon: ImageVector,
-    text: String,
-    onClick: (() -> Unit),
-    buttonIcon: ImageVector? = null
-) {
-    Row(horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .then(if (onClick != {}) Modifier.clickable { onClick() } else Modifier)) {
-        Icon(
-            imageVector = icon, contentDescription = null, modifier = Modifier.size(20.dp)
-        )
-        Text(
-            text = text,
-            fontWeight = FontWeight.Bold,
-            fontSize = 14.sp,
-            modifier = Modifier.weight(1f)
-        )
-        if (buttonIcon != null) {
-            Icon(
-                imageVector = buttonIcon, contentDescription = null, modifier = Modifier.size(20.dp)
-            )
-        }
     }
 }
 
