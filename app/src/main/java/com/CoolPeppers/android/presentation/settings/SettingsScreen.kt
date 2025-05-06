@@ -48,7 +48,6 @@ import java.util.Locale
 @Composable
 fun Settings(
     modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val localeOptions = listOf(
         Pair(R.string.en, "en"),
