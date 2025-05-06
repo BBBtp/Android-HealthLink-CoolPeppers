@@ -55,16 +55,21 @@ fun Settings(
         Pair(R.string.ru, "ru")
     )
     val context = LocalContext.current
+    Log.d("ContextCheck", "SettingsScreen context: $context")
+
+    val sharedPreferences = context.getSharedPreferences("Theme", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
 
     Column(
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxWidth()
     ) {
-        var expanded by remember { mutableStateOf(false) }
 
-
-        val themeOptions = listOf(R.string.light_theme_setting, R.string.dark_theme_setting)
+        val themeOptions = listOf(
+            Pair(R.string.light_theme_setting, AppCompatDelegate.MODE_NIGHT_NO),
+            Pair(R.string.dark_theme_setting, AppCompatDelegate.MODE_NIGHT_YES),
+            Pair(R.string.system_theme_setting, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM))
 
         var themeExpanded by remember { mutableStateOf(false) }
 
@@ -85,11 +90,16 @@ fun Settings(
                 expanded = themeExpanded,
                 onDismissRequest = { themeExpanded = false }
             ) {
-                themeOptions.forEach { listItem ->
+                themeOptions.forEach { (res, mode) ->
                     DropdownMenuItem(
-                        text = { Text(stringResource(listItem)) },
+                        text = { Text(stringResource(res)) },
                         onClick = {
-                           /*under construction*/
+                            editor.putInt("mode", mode)
+                            editor.apply()
+                            val shareMode = sharedPreferences.getInt("mode", AppCompatDelegate.MODE_NIGHT_NO)
+                            Log.d("themecheck", "theme mode (settings) = $shareMode")
+                            themeExpanded = false
+                            (context as? Activity)?.recreate()
                         }
                     )
                 }
