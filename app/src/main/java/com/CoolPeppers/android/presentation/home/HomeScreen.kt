@@ -38,7 +38,7 @@ import com.CoolPeppers.android.presentation.home.components.DoctorCard
 import com.CoolPeppers.android.presentation.home.components.RecordCard
 import com.CoolPeppers.android.presentation.home.components.UserInfoBlock
 import com.CoolPeppers.android.presentation.profile.ProfileViewModel
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.ui.theme.Montserrat
 
 
@@ -78,7 +78,7 @@ fun HomeScreen(
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = LightTextPrimary
+//                    color = LightTextPrimary
                 ),
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -103,7 +103,7 @@ fun HomeScreen(
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = LightTextPrimary
+//                    color = LightTextPrimary
                 ),
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -123,7 +123,7 @@ fun HomeScreen(
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = LightTextPrimary
+//                    color = LightTextPrimary
                 ),
             )
             Spacer(modifier = Modifier.height(12.dp))

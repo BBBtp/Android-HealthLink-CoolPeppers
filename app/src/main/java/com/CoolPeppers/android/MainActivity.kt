@@ -12,14 +12,13 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.CoolPeppers.android.data.api.local.TokenManager
 import com.CoolPeppers.android.data.repository.AuthRepository
-import com.CoolPeppers.android.ui.theme.AndroidHealthLinkCoolPeppersTheme
 import com.CoolPeppers.android.presentation.navigation.bottomNavigation.BottomNavigationBar
 import com.CoolPeppers.android.presentation.navigation.bottomNavigation.NavHostContainer
+import com.CoolPeppers.android.ui.theme.AndroidHealthLinkCoolPeppersTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

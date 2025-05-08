@@ -75,6 +75,7 @@ dependencies {
     //implementation("androidx.storage:storage:1.1.0")
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.foundation.layout.android)
+    implementation(libs.androidx.ui.text.google.fonts)
     kapt(libs.hilt.compiler)
     implementation (libs.androidx.hilt.navigation.compose.v110)
 
@@ -152,4 +153,7 @@ dependencies {
     // Photo picker
     implementation("commons-io:commons-io:2.7")
 
+
+    // Langauge "picker"
+//    implementation("com.github.YarikSOffice:lingver:1.3.0")
 }
