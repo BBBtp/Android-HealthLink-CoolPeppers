@@ -23,9 +23,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.CoolPeppers.android.presentation.authentication.AuthScreen
 import com.CoolPeppers.android.presentation.chat.LocalBottomBarVisibility
-import com.CoolPeppers.android.ui.theme.LightBgSecondary
-import com.CoolPeppers.android.ui.theme.LightTextHeaders
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.LightBgSecondary
+//import com.CoolPeppers.android.ui.theme.LightTextHeaders
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.presentation.notifications.NotificationsScreen
 import com.CoolPeppers.android.presentation.request.RequestScreen
 import com.CoolPeppers.android.presentation.settings.Settings
@@ -81,7 +81,7 @@ fun BottomNavigationBar(navController: NavHostController) {
     if (!bottomBarVisibility.value) return
 
     NavigationBar(
-        containerColor = LightTextHeaders
+//        containerColor = LightTextHeaders
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
@@ -98,10 +98,10 @@ fun BottomNavigationBar(navController: NavHostController) {
                 },
                 alwaysShowLabel = false,
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = LightTextPrimary,
-                    unselectedIconColor = LightTextPrimary,
-                    selectedTextColor = LightTextPrimary,
-                    indicatorColor = LightBgSecondary
+//                    selectedIconColor = LightTextPrimary,
+//                    unselectedIconColor = LightTextPrimary,
+//                    selectedTextColor = LightTextPrimary,
+//                    indicatorColor = LightBgSecondary
                 )
             )
         }

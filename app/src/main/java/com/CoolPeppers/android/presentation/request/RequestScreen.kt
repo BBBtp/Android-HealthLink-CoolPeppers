@@ -9,7 +9,7 @@ import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.util.getTabIndicatorItems
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -26,7 +26,7 @@ fun RequestScreen(viewModel: RequestViewModel = viewModel()) {
             indicator = { tabPositions ->
                 SecondaryIndicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
-                    color = LightTextPrimary
+//                    color = LightTextPrimary
                 )
             }
         ) {
@@ -36,8 +36,8 @@ fun RequestScreen(viewModel: RequestViewModel = viewModel()) {
                     onClick = { selectedTab = index },
                     icon = { Icon(item.icon, contentDescription = null) },
                     text = { Text(text = item.label) },
-                    unselectedContentColor = LightTextPrimary,
-                    selectedContentColor = LightTextPrimary
+//                    unselectedContentColor = LightTextPrimary,
+//                    selectedContentColor = LightTextPrimary
                 )
             }
         }

@@ -29,7 +29,7 @@ import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Clinic
 import com.CoolPeppers.android.data.model.ClinicDetail
 import com.CoolPeppers.android.presentation.clinic.ClinicViewModel
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.ui.theme.Montserrat
 import com.CoolPeppers.android.util.PriceConversion
 
@@ -71,7 +71,7 @@ fun ClinicScreen(viewModelClinic: ClinicViewModel = hiltViewModel()) {
                         text = stringResource(R.string.select_your_clinic),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = LightTextPrimary
+//                        color = LightTextPrimary
                     )
                 }
 
@@ -132,7 +132,7 @@ fun HospitalCard(clinic: Clinic) {
                 text = clinic.address,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = LightTextPrimary
+//                color = LightTextPrimary
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
@@ -147,7 +147,7 @@ fun HospitalCard(clinic: Clinic) {
                             fontFamily = Montserrat,
                             fontWeight = FontWeight.Light,
                             fontSize = 12.sp,
-                            color = LightTextPrimary
+//                            color = LightTextPrimary
                         ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -164,7 +164,7 @@ fun HospitalCard(clinic: Clinic) {
                     Icon(
                         imageVector = Icons.Filled.Star,
                         contentDescription = null,
-                        tint = LightTextPrimary
+//                        tint = LightTextPrimary
                     )
                 }
                 repeat(5 - clinic.rating.toInt()) {

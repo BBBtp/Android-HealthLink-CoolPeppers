@@ -1,6 +1,4 @@
-import android.app.Activity
 import android.content.Context
-import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -19,7 +17,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,20 +24,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -53,19 +45,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -75,9 +66,10 @@ import com.CoolPeppers.android.presentation.components.HealthLinkTextField
 import com.CoolPeppers.android.presentation.components.Option
 import com.CoolPeppers.android.presentation.profile.ProfileViewModel
 import com.CoolPeppers.android.ui.theme.ShimmerColorShades
+import com.CoolPeppers.android.ui.theme.secondaryDark
+import com.CoolPeppers.android.ui.theme.secondaryLight
 import com.CoolPeppers.android.util.createFileFromUri
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 
 @Composable
@@ -193,10 +185,11 @@ fun ProfileInfo(
         Text(
             text = (profile.firstName ?: "") + " " + (profile.lastName ?: " "),
             fontWeight = FontWeight.Bold,
-            fontSize = 24.sp
+            fontSize = 24.sp,
+            color = MaterialTheme.colorScheme.secondary
         )
         Text(
-            text = profile.email, fontWeight = FontWeight.Medium, fontSize = 12.sp
+            text = profile.email, fontWeight = FontWeight.Medium, fontSize = 12.sp, color = MaterialTheme.colorScheme.secondary
         )
     }
 }
@@ -205,7 +198,7 @@ fun ProfileInfo(
 @Composable
 fun About(modifier: Modifier = Modifier) {
     Text(
-        fontSize = 20.sp, fontWeight = FontWeight.Medium, text = stringResource(R.string.about_text)
+        fontSize = 20.sp, fontWeight = FontWeight.Medium, text = stringResource(R.string.about_text), color = MaterialTheme.colorScheme.secondary
     )
 }
 
@@ -372,7 +365,7 @@ fun EditProfile(
                     firstName, lastName, age.toIntOrNull(), bloodType, photo = null
                 )
                 navController.navigate("profile")
-            }, //тут так не должно быть
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.save_changes))

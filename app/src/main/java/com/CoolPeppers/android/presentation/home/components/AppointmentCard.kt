@@ -33,8 +33,8 @@ import coil.compose.AsyncImage
 import com.CoolPeppers.android.data.model.Appointment
 import com.CoolPeppers.android.data.model.Doctor
 import com.CoolPeppers.android.data.model.SlotResponse
-import com.CoolPeppers.android.ui.theme.LightBgSecondary
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.LightBgSecondary
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.ui.theme.Montserrat
 import com.CoolPeppers.android.util.ParseSLotTime
 
@@ -49,7 +49,7 @@ fun RecordCard(
 
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = LightBgSecondary
+//            containerColor = LightBgSecondary
         ),
         modifier = Modifier
             .size(width = 240.dp, height = 120.dp)
@@ -83,7 +83,7 @@ fun RecordCard(
                                 fontFamily = Montserrat,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp,
-                                color = LightTextPrimary
+//                                color = LightTextPrimary
                             )
                         )
                         Text(
@@ -92,7 +92,7 @@ fun RecordCard(
                                 fontFamily = Montserrat,
                                 fontWeight = FontWeight.Light,
                                 fontSize = 12.sp,
-                                color = LightTextPrimary
+//                                color = LightTextPrimary
                             )
                         )
                     }
@@ -111,7 +111,7 @@ fun RecordCard(
                                 fontFamily = Montserrat,
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 14.sp,
-                                color = LightTextPrimary
+//                                color = LightTextPrimary
                             )
                         )
                         Text(
@@ -120,7 +120,7 @@ fun RecordCard(
                                 fontFamily = Montserrat,
                                 fontWeight = FontWeight.Light,
                                 fontSize = 12.sp,
-                                color = LightTextPrimary
+//                                color = LightTextPrimary
                             )
                         )
                     }
@@ -128,7 +128,7 @@ fun RecordCard(
                         Icon(
                             Icons.Filled.Info,
                             contentDescription = "Info",
-                            tint = LightTextPrimary
+//                            tint = LightTextPrimary
                         )
                     }
                 }

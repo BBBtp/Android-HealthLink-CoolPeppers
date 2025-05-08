@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.ClinicDetail
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import kotlin.repeat
 
 
@@ -90,7 +90,7 @@ fun ClinicDetailScreen() {
                             text = clinic.address,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = LightTextPrimary
+//                            color = LightTextPrimary
                         )
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -106,14 +106,14 @@ fun ClinicDetailScreen() {
                                 text = clinic.metro,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = LightTextPrimary
+//                                color = LightTextPrimary
                             )
                         }
                         Text(
                             text = "${clinic.price}₽",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium,
-                            color = LightTextPrimary
+//                            color = LightTextPrimary
                         )
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -124,7 +124,7 @@ fun ClinicDetailScreen() {
                                 Icon(
                                     imageVector = Icons.Filled.Star,
                                     contentDescription = null,
-                                    tint = LightTextPrimary
+//                                    tint = LightTextPrimary
                                 )
                             }
                             repeat(5 - clinic.rating) {
@@ -186,13 +186,13 @@ fun ClinicDetailScreen() {
                         text = "О клинике",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = LightTextPrimary
+//                        color = LightTextPrimary
                     )
                     Text(
                         text = clinic.info,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
-                        color = LightTextPrimary,
+//                        color = LightTextPrimary,
                         modifier = Modifier.padding(top = 8.dp)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -200,13 +200,13 @@ fun ClinicDetailScreen() {
                         text = "Время работы",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = LightTextPrimary
+//                        color = LightTextPrimary
                     )
                     Text(
                         text = clinic.schedule,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
-                        color = LightTextPrimary,
+//                        color = LightTextPrimary,
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 }
@@ -224,7 +224,7 @@ fun ClinicDetailScreen() {
             shape = CircleShape,
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFEAF4F4),
-                contentColor = LightTextPrimary
+//                contentColor = LightTextPrimary
             )
         ) {
             Icon(
@@ -252,7 +252,7 @@ fun InfoBox(iconRes: Int, value: String, label: String, modifier: Modifier = Mod
         Box(
             modifier = Modifier
                 .size(60.dp)
-                .background(LightTextPrimary.copy(alpha = 0.08f), CircleShape)
+                .background(Color.Red.copy(alpha = 0.08f), CircleShape)
         ) {
             Icon(
                 painter = painterResource(id = iconRes),
@@ -260,21 +260,21 @@ fun InfoBox(iconRes: Int, value: String, label: String, modifier: Modifier = Mod
                 modifier = Modifier
                     .size(32.dp)
                     .align(Alignment.Center),
-                tint = LightTextPrimary
+//                tint = LightTextPrimary
             )
         }
         Text(
             text = value,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            color = LightTextPrimary,
+//            color = LightTextPrimary,
             modifier = Modifier.padding(top = 8.dp)
         )
         Text(
             text = label,
             fontSize = 12.sp,
             fontWeight = FontWeight.Medium,
-            color = LightTextPrimary.copy(alpha = 0.7f)
+//            color = LightTextPrimary.copy(alpha = 0.7f)
         )
     }
 }

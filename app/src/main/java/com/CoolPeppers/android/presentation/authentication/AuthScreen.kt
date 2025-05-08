@@ -29,8 +29,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.CoolPeppers.android.data.model.MockAuthController
 import kotlinx.coroutines.launch
-import com.CoolPeppers.android.ui.theme.LightBgSecondary
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.LightBgSecondary
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.ui.theme.Typography
 import com.CoolPeppers.android.R
 
@@ -112,13 +112,13 @@ fun LoginScreen(
             text = "Вход",
             style = Typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = LightTextPrimary
+//            color = LightTextPrimary
         )
 
         OutlinedTextField(
             value = viewModel.loginUsername,
             onValueChange = { viewModel.loginUsername = it },
-            label = { Text("Ваш email", color = LightTextPrimary) },
+            label = { Text("Ваш email", /*color = LightTextPrimary*/) },
             leadingIcon = {
                 Image(
                     painter = painterResource(id = R.drawable.email),
@@ -138,7 +138,7 @@ fun LoginScreen(
         OutlinedTextField(
             value = viewModel.loginPassword,
             onValueChange = { viewModel.loginPassword = it },
-            label = { Text("Ваш пароль", color = LightTextPrimary) },
+            label = { Text("Ваш пароль",/* color = LightTextPrimary*/) },
             leadingIcon = {
                 Image(
                     painter = painterResource(id = R.drawable.password),
@@ -182,12 +182,12 @@ fun LoginScreen(
                 .height(48.dp),
             shape = RoundedCornerShape(25.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = LightBgSecondary
+                /*containerColor = *//*LightBgSecondary*/
             )
         ) {
             Text(
                 text = "Войти",
-                color = LightTextPrimary,
+                /*color = *//*LightTextPrimary*//*,*/
                 fontSize = 18.sp
             )
         }
@@ -219,7 +219,7 @@ fun LoginScreen(
                 .height(48.dp),
             shape = RoundedCornerShape(25.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = LightBgSecondary
+               /* containerColor = *//*LightBgSecondary*/
             )
         ) {
             Row(
@@ -235,7 +235,7 @@ fun LoginScreen(
                 )
                 Text(
                     text = "Войти через Google",
-                    color = LightTextPrimary,
+                    /*color = *//*LightTextPrimary*//*,*/
                     fontSize = 18.sp
                 )
             }
@@ -261,7 +261,7 @@ fun RegisterScreen(
             text = "Регистрация",
             style = Typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = LightTextPrimary
+//            color = LightTextPrimary
         )
         Box(
             modifier = Modifier
@@ -269,7 +269,7 @@ fun RegisterScreen(
                 .height(50.dp)
                 .border(
                     width = 5.dp, // Толщина рамки
-                    color = LightBgSecondary, // Цвет рамки
+                    color = Color.Red, // Цвет рамки
                     shape = RoundedCornerShape(25.dp) // Закругленные углы
                 )
         ) {
@@ -287,7 +287,7 @@ fun RegisterScreen(
                 OutlinedTextField(
                     value = viewModel.username,
                     onValueChange = { viewModel.username = it },
-                    label = { Text("Ваше имя", color = LightTextPrimary) },
+                    label = { Text("Ваше имя", /*color = LightTextPrimary*/) },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(25.dp),
                     colors = TextFieldDefaults.colors(
@@ -306,7 +306,7 @@ fun RegisterScreen(
                 .height(50.dp)
                 .border(
                     width = 5.dp, // Толщина рамки
-                    color = LightBgSecondary, // Цвет рамки
+                    color = Color.Red, // Цвет рамки
                     shape = RoundedCornerShape(25.dp) // Закругленные углы
                 )
         ) {
@@ -324,7 +324,7 @@ fun RegisterScreen(
                 OutlinedTextField(
                     value = viewModel.email,
                     onValueChange = { viewModel.email = it },
-                    label = { Text("Ваш еmail", color = LightTextPrimary) },
+                    label = { Text("Ваш еmail", /*color = LightTextPrimary*/) },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(25.dp),
                     colors = TextFieldDefaults.colors(
@@ -343,7 +343,7 @@ fun RegisterScreen(
                 .height(50.dp)
                 .border(
                     width = 5.dp, // Толщина рамки
-                    color = LightBgSecondary, // Цвет рамки
+                    color = Color.Red, // Цвет рамки
                     shape = RoundedCornerShape(25.dp) // Закругленные углы
                 )
         ) {
@@ -361,7 +361,7 @@ fun RegisterScreen(
                 OutlinedTextField(
                     value = viewModel.password,
                     onValueChange = { viewModel.password = it },
-                    label = { Text("Ваш пароль", color = LightTextPrimary) },
+                    label = { Text("Ваш пароль", /*color = LightTextPrimary*/) },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(25.dp),
                     colors = TextFieldDefaults.colors(
@@ -385,12 +385,12 @@ fun RegisterScreen(
                 .height(48.dp), // Высота кнопки
             shape = RoundedCornerShape(25.dp), // Закругленные углы
             colors = ButtonDefaults.buttonColors(
-                containerColor = LightBgSecondary // Цвет кнопки
+                /*containerColor = LightBgSecondary*/ // Цвет кнопки
             )
         ) {
             Text(
                 text = "Регистрация",
-                color = LightTextPrimary,
+                /*color = LightTextPrimary,*/
                 fontSize = 18.sp
             )
         }
