@@ -41,7 +41,9 @@ object ApiConstants {
     const val START_TIME = "start_time"
     const val END_TIME = "end_time"
     //Чаты
-    const val GET_CHAT_BY_ID_URL = "/api/v1/chat/chats/{chat_id}"
-    const val GET_USER_CHATS_URL = "/api/v1/chat/chats/user"
-    const val CREATE_CHAT_URL = "/api/v1/chat/chats"
+    const val GET_CHAT_BY_ID_URL = "/api/v1/chat/chats/{chat_id}/"
+    const val GET_USER_CHATS_URL = "/api/v1/chat/chats/user/"
+    const val CREATE_CHAT_URL = "/api/v1/chat/chats/"
+    //Вебсокет
+    const val  GET_WEBSOCKET = "api/v1//ws/{user_id}"
 }

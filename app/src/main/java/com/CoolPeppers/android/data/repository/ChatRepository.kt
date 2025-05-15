@@ -11,14 +11,12 @@ class ChatRepository @Inject constructor(
     suspend fun getChatById(chatId: Int): Chat {
         return apiService.getChatById(chatId = chatId)
     }
-
     suspend fun getUserChats(
     ): List<Chat> {
         return apiService.getUserChats(
         )
     }
 
-    // Создание нового чата
     suspend fun createChat(
         doctorId: Int,
         userId: Int

@@ -27,12 +27,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.CoolPeppers.android.presentation.authentication.AuthScreen
-import com.CoolPeppers.android.presentation.chat.LocalBottomBarVisibility
 import com.CoolPeppers.android.ui.theme.LightBgSecondary
 import com.CoolPeppers.android.ui.theme.LightTextHeaders
 import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.presentation.notifications.NotificationsScreen
 import com.CoolPeppers.android.presentation.request.RequestScreen
+import com.CoolPeppers.android.ui.theme.LocalBottomBarVisibility
 import com.CoolPeppers.android.util.getBottomNavItems
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
@@ -148,7 +148,6 @@ fun BottomNavigationBar(navController: NavHostController) {
                 selected = currentRoute == navItem.route,
                 onClick = {
                     navController.navigate(navItem.route) {
-                        // Очистка стека навигации при переходе на основные экраны
                         popUpTo(navController.graph.startDestinationId) {
                             saveState = true
                         }

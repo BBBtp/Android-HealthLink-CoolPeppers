@@ -174,18 +174,15 @@ interface  ApiService {
         @Query(ApiConstants.END_TIME) endTime: String
     )
 
-    // Получение конкретного чата по ID
     @GET(ApiConstants.GET_CHAT_BY_ID_URL)
     suspend fun getChatById(
         @Path("chat_id") chatId: Int
     ): Chat
 
-    // Получение чатов конкретного пользователя
     @GET(ApiConstants.GET_USER_CHATS_URL)
     suspend fun getUserChats(
     ): List<Chat>
 
-    // Создание нового чата
     @POST(ApiConstants.CREATE_CHAT_URL)
     suspend fun createChat(
         @Body createChatRequest: CreateChatRequest
