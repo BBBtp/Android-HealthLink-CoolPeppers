@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt)
     id("kotlin-kapt")
+    alias(libs.plugins.kotlin.compose)
 }
 hilt {
     enableAggregatingTask = false
@@ -52,6 +53,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
 
 dependencies {
@@ -146,4 +148,5 @@ dependencies {
     // Paging
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.paging.compose)
+    implementation("commons-io:commons-io:2.7")
 }
