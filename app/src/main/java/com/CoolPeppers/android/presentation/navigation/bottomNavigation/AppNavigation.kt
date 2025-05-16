@@ -7,6 +7,7 @@ import DoctorDetailScreen
 import DoctorScreen
 import EditProfile
 import HomeScreen
+import PaymentScreen
 import Settings
 import ProfileScreen
 import ServiceScreen
@@ -32,6 +33,7 @@ import com.CoolPeppers.android.ui.theme.LightBgSecondary
 import com.CoolPeppers.android.ui.theme.LightTextHeaders
 import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.presentation.notifications.NotificationsScreen
+import com.CoolPeppers.android.presentation.payment.PaymentSuccessScreen
 import com.CoolPeppers.android.presentation.request.RequestScreen
 import com.CoolPeppers.android.util.getBottomNavItems
 
@@ -125,6 +127,25 @@ fun NavHostContainer(
                         navController = navController
                     )
                 }
+            }
+            composable("payment/{clinicId}/{serviceId}/{doctorId}/{slotId}") { backStackEntry ->
+                val clinicId = backStackEntry.arguments?.getString("clinicId")?.toIntOrNull()
+                val serviceId = backStackEntry.arguments?.getString("serviceId")?.toIntOrNull()
+                val doctorId = backStackEntry.arguments?.getString("doctorId")?.toIntOrNull()
+                val slotId = backStackEntry.arguments?.getString("slotId")?.toIntOrNull()
+
+                if (clinicId != null && serviceId != null && doctorId != null && slotId != null) {
+                    PaymentScreen(
+                        clinicId = clinicId,
+                        serviceId = serviceId,
+                        doctorId = doctorId,
+                        slotId = slotId,
+                        navController = navController,
+                    )
+                }
+            }
+            composable("paymentsuccess") {
+                PaymentSuccessScreen(navController = navController)
             }
         }
     )

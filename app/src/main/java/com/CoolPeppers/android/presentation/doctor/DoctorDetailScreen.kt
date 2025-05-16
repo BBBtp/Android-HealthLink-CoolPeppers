@@ -34,7 +34,10 @@ import androidx.compose.runtime.*
 import com.CoolPeppers.android.presentation.doctor.DoctorViewModel
 
 @Composable
-fun DoctorDetailScreen(doctorId: Int,clinicId: Int, serviceId: Int, navController: NavController, viewModelDoctor: DoctorViewModel = hiltViewModel()) {
+fun DoctorDetailScreen(
+    doctorId: Int, clinicId: Int, serviceId: Int, navController: NavController,
+    viewModelDoctor: DoctorViewModel = hiltViewModel()
+) {
 
     val doctorById by viewModelDoctor.doctor.observeAsState(emptyList())
 
