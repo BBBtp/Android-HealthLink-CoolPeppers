@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Clinic
-import com.CoolPeppers.android.ui.theme.LightBgSecondary
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.LightBgSecondary
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.ui.theme.Montserrat
 import com.CoolPeppers.android.util.PriceConversion
 import com.CoolPeppers.android.util.RatingStars
@@ -46,7 +46,7 @@ import com.CoolPeppers.android.util.RatingStars
 fun ClinicCard(clinic: Clinic) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = LightBgSecondary
+//            containerColor = LightBgSecondary
         ),
         modifier = Modifier
             .size(width = 290.dp, height = 152.dp)
@@ -74,7 +74,7 @@ fun ClinicCard(clinic: Clinic) {
                                 fontFamily = Montserrat,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp,
-                                color = LightTextPrimary
+//                                color = LightTextPrimary
                             ),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -85,7 +85,7 @@ fun ClinicCard(clinic: Clinic) {
                                 fontFamily = Montserrat,
                                 fontWeight = FontWeight.Light,
                                 fontSize = 12.sp,
-                                color = LightTextPrimary
+//                                color = LightTextPrimary
                             ),
                             maxLines = 3,
                             overflow = TextOverflow.Ellipsis
@@ -106,7 +106,7 @@ fun ClinicCard(clinic: Clinic) {
                                         fontFamily = Montserrat,
                                         fontWeight = FontWeight.Light,
                                         fontSize = 12.sp,
-                                        color = LightTextPrimary
+//                                        color = LightTextPrimary
                                     ),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
@@ -144,7 +144,7 @@ fun ClinicCard(clinic: Clinic) {
                 Icon(
                     imageVector = Icons.Default.Info,
                     contentDescription = "Info",
-                    tint = LightTextPrimary
+//                    tint = LightTextPrimary
                 )
             }
         }

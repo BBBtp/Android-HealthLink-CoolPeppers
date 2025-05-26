@@ -1,23 +1,24 @@
 package com.CoolPeppers.android
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.CoolPeppers.android.data.api.local.TokenManager
-import com.CoolPeppers.android.data.model.AuthResponse
 import com.CoolPeppers.android.data.repository.AuthRepository
-import com.CoolPeppers.android.presentation.authentication.AuthScreen
-import com.CoolPeppers.android.ui.theme.AndroidHealthLinkCoolPeppersTheme
 import com.CoolPeppers.android.presentation.navigation.bottomNavigation.BottomNavigationBar
 import com.CoolPeppers.android.presentation.navigation.bottomNavigation.NavHostContainer
+import com.CoolPeppers.android.ui.theme.AndroidHealthLinkCoolPeppersTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -30,15 +31,31 @@ class MainActivity : ComponentActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        Log.d("ContextCheck", "MainActivity context: $this")
+
+        val sharedPreferences = getSharedPreferences("Theme", Context.MODE_PRIVATE)
+        val mode = sharedPreferences.getInt("mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        Log.d("themecheck", "theme mode (mainactivity) = $mode")
+//        AppCompatDelegate.setDefaultNightMode(mode)
+
+        var darkTheme: Boolean
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+
         setContent {
-            AndroidHealthLinkCoolPeppersTheme {
+            when (mode) {
+                AppCompatDelegate.MODE_NIGHT_NO -> darkTheme = false
+                AppCompatDelegate.MODE_NIGHT_YES -> darkTheme = true
+                else -> darkTheme = isSystemInDarkTheme()
+            }
+            AndroidHealthLinkCoolPeppersTheme(darkTheme = darkTheme) {
                 val navController = rememberNavController()
                 val startDestination = if (isUserAuthenticated()) "home" else "auth"
 
-                Surface(color = Color.White) {
+                Surface {
                     Scaffold(
                         bottomBar = {
                             val currentBackStackEntry = navController.currentBackStackEntryAsState().value

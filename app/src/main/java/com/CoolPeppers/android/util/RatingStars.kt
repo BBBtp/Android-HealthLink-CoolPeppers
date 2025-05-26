@@ -8,7 +8,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 
 @Composable
 fun RatingStars(rating: Int, maxRating: Int = 5) {
@@ -17,7 +17,7 @@ fun RatingStars(rating: Int, maxRating: Int = 5) {
             Icon(
                 imageVector = Icons.Filled.Star,
                 contentDescription = null,
-                tint = LightTextPrimary
+//                tint = LightTextPrimary
             )
         }
         repeat(maxRating - 5) {

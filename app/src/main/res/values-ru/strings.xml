@@ -39,4 +39,6 @@
     <string name="login_with_google">Войти с помощью Google</string>
     <string name="forgot_password">Забыли пароль?</string>
     <string name="records">Записи</string>
+    <string name="light_theme_setting">Светлая тема</string>
+    <string name="system_theme_setting">Системная тема</string>
 </resources>

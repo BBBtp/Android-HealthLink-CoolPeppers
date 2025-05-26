@@ -30,14 +30,14 @@ import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Doctor
-import com.CoolPeppers.android.ui.theme.LightBgSecondary
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.LightBgSecondary
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.ui.theme.Montserrat
 
 @Composable
 fun DoctorCard(doctor: Doctor) {
     Card(
-        colors = CardDefaults.cardColors(LightBgSecondary),
+//        colors = CardDefaults.cardColors(LightBgSecondary),
         modifier = Modifier
             .size(width = 380.dp, height = 70.dp),
     ) {
@@ -62,7 +62,7 @@ fun DoctorCard(doctor: Doctor) {
                         fontFamily = Montserrat,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
-                        color = LightTextPrimary
+//                        color = LightTextPrimary
                     )
                 )
                 Text(
@@ -70,12 +70,12 @@ fun DoctorCard(doctor: Doctor) {
                         fontFamily = Montserrat,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 12.sp,
-                        color = LightTextPrimary
+//                        color = LightTextPrimary
                     )
                 )
             }
             IconButton(onClick = {}) {
-                Icon(Icons.Outlined.Favorite, contentDescription = "Message", tint = LightTextPrimary)
+                Icon(Icons.Outlined.Favorite, contentDescription = "Message", /*tint = LightTextPrimary*/)
             }
         }
     }

@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.data.model.User
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.ui.theme.Montserrat
 
 @Composable
@@ -40,7 +40,7 @@ fun UserInfoBlock(
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp,
-                    color = LightTextPrimary
+//                    color = LightTextPrimary
                 )
             )
 
@@ -50,7 +50,7 @@ fun UserInfoBlock(
                         fontFamily = Montserrat,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 12.sp,
-                        color = LightTextPrimary
+//                        color = LightTextPrimary
                     )
                 )
                 Text(text = " ", style = MaterialTheme.typography.bodySmall)
@@ -59,7 +59,7 @@ fun UserInfoBlock(
                         fontFamily = Montserrat,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 12.sp,
-                        color = LightTextPrimary
+//                        color = LightTextPrimary
                     )
                 )
             }

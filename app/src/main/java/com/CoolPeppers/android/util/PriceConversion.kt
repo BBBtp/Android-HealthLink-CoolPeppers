@@ -3,7 +3,7 @@ package com.CoolPeppers.android.util
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 
 @Composable
 fun PriceConversion(price: Int) {
@@ -11,7 +11,7 @@ fun PriceConversion(price: Int) {
         repeat(price) {
             Text(
                 text = "₽",
-                color = LightTextPrimary
+//                color = LightTextPrimary
             )
         }
     }
