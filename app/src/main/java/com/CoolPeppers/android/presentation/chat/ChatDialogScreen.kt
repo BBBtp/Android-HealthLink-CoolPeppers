@@ -1,4 +1,3 @@
-
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -14,6 +13,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,6 +29,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -37,6 +43,7 @@ import com.CoolPeppers.android.data.model.Message
 import com.CoolPeppers.android.presentation.chat.ChatDialogViewModel
 import com.CoolPeppers.android.ui.theme.LocalBottomBarVisibility
 import com.CoolPeppers.android.util.MessageTimeFormatter
+import com.google.android.gms.maps.model.Circle
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -120,21 +127,14 @@ fun ChatDialogScreen(
                 ) {
                     Column {
                         Text(
-                            text = "Здесь пока ничего нет...",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF2F6690)
+                            text = stringResource(R.string.empty_chat),
+                            style = MaterialTheme.typography.bodyMedium
                         )
-
-                        Spacer(modifier = Modifier.height(6.dp))
-
                         Text(
-                            text = "Отправьте сообщение.",
-                            fontSize = 18.sp,
-                            color = Color(0xFF2F6690)
+                            text = stringResource(R.string.send_message),
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     }
-
                 }
             } else {
                 LazyColumn(
@@ -198,37 +198,27 @@ private fun ChatHeader(chat: Chat, onBack: () -> Unit) {
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Button(
-            onClick = onBack,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent,
-                contentColor = Color.Transparent
-            ),
-            contentPadding = PaddingValues(0.dp)
+        IconButton(
+            onClick = { onBack() },
+            modifier = Modifier.padding(8.dp)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.back_btn),
-                contentDescription = "Назад",
-                modifier = Modifier.size(29.dp)
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.back)
             )
         }
-        AsyncImage(
-            model = chat.user2.photoUrl,
-            contentDescription = "Doctor Avatar",
+        Image(
+            painter = painterResource(id = R.drawable.doctor),
+            contentDescription = stringResource(R.string.doctor_avatar),
             modifier = Modifier
-                .size(56.dp)
-                .padding(end = 10.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop,
-            placeholder = painterResource(R.drawable.smileface),
-            error = painterResource(R.drawable.smileface)
+                .size(50.dp)
+                .clip(CircleShape)
         )
         Spacer(modifier = Modifier.width(16.dp))
         Column {
             Text(
-                text = "${chat.user2.firstName} ${chat.user2.lastName}",
-                fontSize = 20.sp,
-                color = Color.Black
+                text = stringResource(R.string.doctor).format(chat.user2.firstName, chat.user2.lastName),
+                style = MaterialTheme.typography.titleMedium
             )
         }
     }
@@ -413,8 +403,8 @@ private fun MessageInput(
                 enabled = enabled && messageText.isNotBlank()
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.send_icon),
-                    contentDescription = "Отправить",
+                    imageVector = Icons.AutoMirrored.Filled.Send,
+                    contentDescription = stringResource(R.string.send),
                     tint = Color.White
                 )
             }
@@ -496,15 +486,9 @@ private fun MessageBubble(
                         )
                         if (isCurrentUser) {
                             Icon(
-                                painter = painterResource(
-                                    when (message.status) {
-                                        "read" -> R.drawable.tooth
-                                        "delivered" -> R.drawable.tooth
-                                        else -> R.drawable.broke
-                                    }
-                                ),
-                                contentDescription = "Status",
-                                tint = textColor.copy(alpha = 0.7f),
+                                imageVector = Icons.Default.CheckCircle,
+                                contentDescription = stringResource(R.string.status),
+                                tint = if (message.status == "delivered") Color.Green else Color.Gray,
                                 modifier = Modifier.size(12.dp)
                             )
                         }

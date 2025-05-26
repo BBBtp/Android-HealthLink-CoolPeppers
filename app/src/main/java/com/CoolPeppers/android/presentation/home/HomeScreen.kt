@@ -2,6 +2,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,15 +16,20 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -57,85 +63,211 @@ fun HomeScreen(
     val doctorsMap by viewModelAppointment.doctors.observeAsState(emptyMap())
     val slotsMap by viewModelAppointment.slots.observeAsState(emptyMap())
     val user by viewModelProfile.userState.collectAsState()
+    
+    // Состояния загрузки
+    val isLoadingAppointments by viewModelAppointment.isLoadingAppointments.observeAsState(false)
+    val isLoadingDoctors by viewModelAppointment.isLoadingDoctors.observeAsState(false)
+    val isLoadingSlots by viewModelAppointment.isLoadingSlots.observeAsState(false)
+    
+    // Состояния ошибок
+    val appointmentsError by viewModelAppointment.appointmentsError.observeAsState(null)
+    val doctorsError by viewModelAppointment.doctorsError.observeAsState(null)
+    val slotsError by viewModelAppointment.slotsError.observeAsState(null)
 
+    // Эффект для начальной загрузки данных
     LaunchedEffect(Unit) {
-        viewModelDoctor.loadDoctors(skip = 0, limit = 100, search = "", serviceId = null, clinicId = null)
-        viewModelClinic.loadClinics(skip = 0, limit = 100, search = "")
+        viewModelDoctor.loadDoctors(skip = 0, limit = 20, search = "", serviceId = null, clinicId = null)
+        viewModelClinic.loadClinics(skip = 0, limit = 20, search = "")
         viewModelAppointment.getAppointments()
     }
-    if (doctors.isEmpty() || clinics.isEmpty() || appointments.isEmpty()) {
-        ShimmerAnimation()
-    } else {
+
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(26.dp)
         ) {
             UserInfoBlock(user, navController)
+            
+            // Секция записей
             Text(
                 text = stringResource(R.string.records),
                 style = androidx.compose.ui.text.TextStyle(
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-//                    color = LightTextPrimary
                 ),
             )
+            
             Spacer(modifier = Modifier.height(12.dp))
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(appointments) { appointment ->
-                    val doctor = doctorsMap[appointment.doctorId]
-                    val slot = slotsMap[appointment.appointmentSlotId]
-
-                    if (doctor != null && slot != null) {
-                        RecordCard(appointment,doctor,slot)
+            
+            when {
+                isLoadingAppointments -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(120.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
                     }
                 }
+                appointmentsError != null -> {
+                    ErrorView(
+                        message = appointmentsError!!,
+                        onRetry = { viewModelAppointment.retryLoading() }
+                    )
+                }
+                appointments.isNotEmpty() -> {
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(appointments) { appointment ->
+                            val doctor = doctorsMap[appointment.doctorId]
+                            val slot = slotsMap[appointment.appointmentSlotId]
+
+                            if (doctor != null && slot != null) {
+                                RecordCard(appointment, doctor, slot)
+                            }
+                        }
+                    }
+                }
+                else -> {
+                    EmptyStateView(message = "У вас пока нет записей")
+                }
             }
+            
             Spacer(modifier = Modifier.height(26.dp))
+            
+            // Секция врачей
             Text(
                 text = stringResource(R.string.doctors),
                 style = androidx.compose.ui.text.TextStyle(
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-//                    color = LightTextPrimary
                 ),
             )
+            
             Spacer(modifier = Modifier.height(12.dp))
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(doctors) { doctor ->
-                    DoctorCard(doctor)
+            
+            when {
+                isLoadingDoctors -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+                doctorsError != null -> {
+                    ErrorView(
+                        message = doctorsError!!,
+                        onRetry = { viewModelDoctor.loadDoctors(0, 20, "", null, null) }
+                    )
+                }
+                doctors.isNotEmpty() -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(doctors) { doctor ->
+                            DoctorCard(doctor)
+                        }
+                    }
+                }
+                else -> {
+                    EmptyStateView(message = "Врачи не найдены")
                 }
             }
+            
             Spacer(modifier = Modifier.height(26.dp))
+            
+            // Секция клиник
             Text(
                 text = stringResource(R.string.clinics),
                 style = androidx.compose.ui.text.TextStyle(
                     fontFamily = Montserrat,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-//                    color = LightTextPrimary
                 ),
             )
+            
             Spacer(modifier = Modifier.height(12.dp))
-            LazyRow (
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(clinics) { clinic ->
-                    ClinicCard(clinic)
+            
+            when {
+                isLoadingSlots -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+                slotsError != null -> {
+                    ErrorView(
+                        message = slotsError!!,
+                        onRetry = { viewModelClinic.loadClinics(0, 20, "") }
+                    )
+                }
+                clinics.isNotEmpty() -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(clinics) { clinic ->
+                            ClinicCard(clinic)
+                        }
+                    }
+                }
+                else -> {
+                    EmptyStateView(message = "Клиники не найдены")
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ErrorView(
+    message: String,
+    onRetry: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = message,
+            color = Color.Red,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(onClick = onRetry) {
+            Text("Повторить")
+        }
+    }
+}
+
+@Composable
+fun EmptyStateView(message: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = message,
+            color = Color.Gray,
+            textAlign = TextAlign.Center
+        )
     }
 }

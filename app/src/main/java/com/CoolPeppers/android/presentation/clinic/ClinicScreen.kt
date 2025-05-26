@@ -65,9 +65,10 @@ fun ClinicScreen(navController: NavController, viewModelClinic: ClinicViewModel 
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.clinic_blue),
-                        contentDescription = "List Icon",
-                        modifier = Modifier.size(20.dp)
+                        painter = painterResource(id = R.drawable.clinic),
+                        contentDescription = stringResource(R.string.hospital_image),
+                        modifier = Modifier
+                            .size(20.dp)
                     )
                     Text(
                         text = stringResource(R.string.select_your_clinic),
@@ -141,7 +142,7 @@ fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(id = R.drawable.metro),
-                    contentDescription = "Metro Icon",
+                    contentDescription = stringResource(R.string.metro_icon),
                     modifier = Modifier.size(20.dp)
                 )
                 clinic.metro?.let {
@@ -165,10 +166,11 @@ fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
                 //color = LightTextPrimary
             )
             Text(
-                text = "${clinic.price}₽",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-               // color = LightTextPrimary
+                text = stringResource(R.string.currency_symbol).format(clinic.price),
+                style = androidx.compose.ui.text.TextStyle(
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp
+                )
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),

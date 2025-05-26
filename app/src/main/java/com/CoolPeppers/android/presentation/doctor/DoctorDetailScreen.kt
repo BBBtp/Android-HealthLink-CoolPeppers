@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -82,7 +83,7 @@ fun DoctorDetailScreen(
                         ) {
                             AsyncImage(
                                 model = doctor.photoUrl,
-                                contentDescription = "Doctor Image",
+                                contentDescription = stringResource(R.string.doctor_photo),
                                 modifier = Modifier
                                     .fillMaxHeight()
                                     .background(Color.Gray, RoundedCornerShape(14.dp)),
@@ -101,10 +102,8 @@ fun DoctorDetailScreen(
                             horizontalAlignment = Alignment.End
                         ) {
                             Text(
-                                text = "${doctor.firstName} ${doctor.lastName}",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold,
-                               // color = LightTextPrimary
+                                text = stringResource(R.string.doctor).format(doctor.firstName, doctor.lastName),
+                                style = MaterialTheme.typography.titleLarge
                             )
 
                             doctor.specialization?.let {
@@ -187,10 +186,8 @@ fun DoctorDetailScreen(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "О враче",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            //color = LightTextPrimary
+                            text = stringResource(R.string.about_doctor),
+                            style = MaterialTheme.typography.titleLarge
                         )
 
                         Text(
@@ -204,18 +201,13 @@ fun DoctorDetailScreen(
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Text(
-                            text = "Время работы",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                           // color = LightTextPrimary
+                            text = stringResource(R.string.working_hours),
+                            style = MaterialTheme.typography.titleLarge
                         )
 
                         Text(
-                            text = "Понедельник - пятница | 9:30 - 18:00",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium,
-                           // color = LightTextPrimary,
-                            modifier = Modifier.padding(top = 8.dp)
+                            text = stringResource(R.string.monday_friday),
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     }
                 }
@@ -235,16 +227,15 @@ fun DoctorDetailScreen(
                     //contentColor = LightTextPrimary
                 )
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.service),
-                    contentDescription = "Schedule Icon",
-                    modifier = Modifier.size(24.dp)
+                Image(
+                    painter = painterResource(id = R.drawable.tooth),
+                    contentDescription = stringResource(R.string.schedule_icon),
+                    modifier = Modifier.size(20.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Расписание",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold
+                    text = stringResource(R.string.schedule),
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
         }

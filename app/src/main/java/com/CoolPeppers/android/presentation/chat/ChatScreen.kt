@@ -1,3 +1,4 @@
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -51,6 +52,7 @@ import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Chat
 import com.CoolPeppers.android.presentation.chat.ChatViewModel
 import com.CoolPeppers.android.util.MessageTimeFormatter
+import com.CoolPeppers.android.ui.theme.Typography
 
 
 @Composable
@@ -203,10 +205,8 @@ fun ChatApp(
         }
         if (searchText.value.text.isNotEmpty() && matchedByUser.isNotEmpty()) {
             Text(
-                text = "Чаты:",
-                fontSize = 16.sp,
-                color = Color(0xFF2F6690),
-                modifier = Modifier.padding(vertical = 8.dp)
+                text = stringResource(R.string.chats),
+                style = Typography.titleLarge
             )
             LazyColumn {
                 items(matchedByUser) { chat ->
@@ -233,10 +233,8 @@ fun ChatApp(
         // Секция сообщений
         if(matchedByMessage.isNotEmpty()) {
             Text(
-                text = "Сообщения:",
-                fontSize = 16.sp,
-                color = Color(0xFF2F6690),
-                modifier = Modifier.padding(vertical = 8.dp)
+                text = stringResource(R.string.messages),
+                style = Typography.titleLarge
             )
             LazyColumn {
                 items(matchedByMessage) { chat ->
@@ -259,9 +257,9 @@ fun ChatApp(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Ничего не найдено",
-                    fontSize = 18.sp,
-                    color = Color(0xFF2F6690))
+                    text = stringResource(R.string.nothing_found),
+                    style = Typography.bodyMedium
+                )
             }
         }
     }
@@ -276,24 +274,16 @@ fun EmptyChatItem(chat: Chat, onClick: () -> Unit) {
             .padding(8.dp)
             .clickable(onClick = onClick)
     ) {
-        AsyncImage(
-            model = chat.user2.photoUrl,
-            contentDescription = "Doctor Avatar",
+        Image(
+            painter = painterResource(id = R.drawable.doctor),
+            contentDescription = stringResource(R.string.doctor_avatar),
             modifier = Modifier
-                .size(56.dp)
-                .padding(end = 10.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop,
-            placeholder = painterResource(R.drawable.smileface),
-            error = painterResource(R.drawable.smileface)
+                .size(50.dp)
+                .clip(CircleShape)
         )
         Text(
-            text = "${chat.user2.firstName} ${chat.user2.lastName}",
-            fontSize = 12.sp,
-            color = Color(0xFF2F6690),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.width(80.dp)
+            text = stringResource(R.string.doctor).format(chat.user2.firstName, chat.user2.lastName),
+            style = Typography.titleMedium
         )
     }
 }
@@ -327,32 +317,22 @@ fun ChatItem(
             modifier = Modifier.weight(1f)
         )
         {
-            AsyncImage(
-                model = chat.user2.photoUrl,
-                contentDescription = "Doctor Avatar",
+            Image(
+                painter = painterResource(id = R.drawable.doctor),
+                contentDescription = stringResource(R.string.doctor_avatar),
                 modifier = Modifier
-                    .size(56.dp)
-                    .padding(end = 10.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop,
-                placeholder = painterResource(R.drawable.smileface),
-                error = painterResource(R.drawable.smileface)
+                    .size(50.dp)
+                    .clip(CircleShape)
             )
             Column(modifier = Modifier.weight(1f)) {
-
                 Text(
-                    text = "${chat.user2.firstName} ${chat.user2.lastName}",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF2F6690),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    text = stringResource(R.string.doctor).format(chat.user2.firstName, chat.user2.lastName),
+                    style = Typography.titleMedium
                 )
                 Text(
                     text = messageToShow?.text ?: "Нет сообщений",
                     modifier = Modifier.padding(end = 13.dp),
-                    fontSize = 14.sp,
-                    color = Color(0xFF2F6690),
+                    style = Typography.bodyMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -363,8 +343,7 @@ fun ChatItem(
                 text = message.created_at?.let {
                     MessageTimeFormatter.formatSmartDateTime(it)
                 } ?: "",
-                fontSize = 12.sp,
-                color = Color(0xFF2F6690)
+                style = Typography.bodySmall
             )
         }
     }

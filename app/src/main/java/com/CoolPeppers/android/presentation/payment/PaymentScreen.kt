@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,17 +25,22 @@ import com.CoolPeppers.android.presentation.appointment.AppointmentViewModel
 import com.CoolPeppers.android.presentation.clinic.ClinicViewModel
 import com.CoolPeppers.android.presentation.doctor.DoctorViewModel
 import com.CoolPeppers.android.presentation.service.ServiceViewModel
-//import com.CoolPeppers.android.ui.theme.LightTextPrimary
+import com.CoolPeppers.android.ui.theme.Typography
 import kotlinx.coroutines.launch
 
-
 import android.widget.Toast
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 
 import java.text.SimpleDateFormat
 import java.util.Locale
-
 
 @Composable
 fun PaymentScreen(
@@ -59,7 +65,6 @@ fun PaymentScreen(
         viewModelService.loadServiceByID(serviceId = serviceId)
         viewModelClinic.loadClinicByID(clinicId = clinicId)
         viewModelDoctor.loadDoctorByID(doctorId = doctorId)
-
     }
 
     if ( clinicById.isEmpty() || doctorById.isEmpty() || serviceById.isEmpty() ) {
@@ -78,16 +83,17 @@ fun PaymentScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.goback),
-                    contentDescription = "Back",
-                    modifier = Modifier
-                        .size(29.dp)
-                        .clickable { navController.popBackStack() }
-                )
+                IconButton(
+                    onClick = { navController.popBackStack() },
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back)
+                    )
+                }
             }
             LazyColumn(
                 modifier = Modifier
@@ -95,10 +101,6 @@ fun PaymentScreen(
                     .padding(bottom = 96.dp)
             ) {
                 item {
-
-
-
-
                     AppointmentInfoCard(
                         serviceName = service.name,
                         serviceDescription = service.description ?: "",
@@ -110,11 +112,8 @@ fun PaymentScreen(
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Text(
-                        text = "Ваши карты",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                       // color = LightTextPrimary,
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        text = stringResource(R.string.your_cards),
+                        style = Typography.titleLarge
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -126,35 +125,34 @@ fun PaymentScreen(
                         shape = RoundedCornerShape(16.dp),
                         colors = CardDefaults.cardColors(
                             containerColor = Color(0xFFEAF4F4)
-                    )
-                    ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-
-                        PaymentCard(
-                            isSelected = selectedCard.value == 0,
-                            onClick = { selectedCard.value = 0 },
-                            iconRes = R.drawable.mastercard,
-                            bankName = "Axis Bank",
-                            cardNumber = "**** **** **** 8395"
                         )
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            PaymentCard(
+                                isSelected = selectedCard.value == 0,
+                                onClick = { selectedCard.value = 0 },
+                                iconRes = R.drawable.mastercard,
+                                bankName = "Axis Bank",
+                                cardNumber = "**** **** **** 8395"
+                            )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        PaymentCard(
-                            isSelected = selectedCard.value == 1,
-                            onClick = { selectedCard.value = 1 },
-                            iconRes = R.drawable.visa,
-                            bankName = "HDFC Bank",
-                            cardNumber = "**** **** **** 6246"
-                        )
+                            PaymentCard(
+                                isSelected = selectedCard.value == 1,
+                                onClick = { selectedCard.value = 1 },
+                                iconRes = R.drawable.visa,
+                                bankName = "HDFC Bank",
+                                cardNumber = "**** **** **** 6246"
+                            )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
 
-                        AddNewCardButton()
+                            AddNewCardButton()
+                        }
                     }
-                }
 
                     Spacer(modifier = Modifier.height(20.dp))
 
@@ -178,23 +176,17 @@ fun PaymentScreen(
             ) {
                 Column {
                     Text(
-                        text = "${service.price} ₽",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        //color = LightTextPrimary
+                        text = stringResource(R.string.currency_symbol).format(service.price),
+                        style = Typography.titleLarge
                     )
                     Text(
-                        text = "Детали",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        //color = LightTextPrimary,
-                        modifier = Modifier.clickable { /* Show details */ }
+                        text = stringResource(R.string.details),
+                        style = Typography.bodyMedium
                     )
                 }
 
                 Button(
                     onClick = {
-
                         coroutineScope.launch {
                             try {
                                 slotId?.let { slot ->
@@ -218,28 +210,21 @@ fun PaymentScreen(
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
-                    }
+                        }
                     },
                     modifier = Modifier
                         .width(214.dp)
                         .height(49.dp),
                     shape = RoundedCornerShape(42.dp),
                     colors = ButtonDefaults.buttonColors(
-                        //containerColor = LightTextPrimary
                     )
                 ) {
                     Text(
-                        text = "Оплатить",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.White
+                        text = stringResource(R.string.pay),
+                        style = Typography.bodyLarge
                     )
                 }
             }
-
-
-
-
         }
     }
 }
@@ -259,7 +244,7 @@ private fun AppointmentInfoCard(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFFEAF4F4)
-    )
+        )
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -272,11 +257,10 @@ private fun AppointmentInfoCard(
                 Box(
                     modifier = Modifier
                         .size(60.dp)
-                       //TODO: тут был круг
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.service_blue),
-                        contentDescription = "Service",
+                        painter = painterResource(id = R.drawable.service),
+                        contentDescription = stringResource(R.string.service_icon),
                         modifier = Modifier
                             .size(30.dp)
                             .align(Alignment.Center)
@@ -287,30 +271,22 @@ private fun AppointmentInfoCard(
                     modifier = Modifier.weight(1f).padding(start = 16.dp)
                 ) {
                     Text(
-                        text = "Запись на прием",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        //color = LightTextPrimary
+                        text = stringResource(R.string.appointment),
+                        style = Typography.titleMedium
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = serviceName,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        //color = LightTextPrimary
+                        style = Typography.bodyMedium
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Врач: $doctorName",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        //color = LightTextPrimary
+                        text = stringResource(R.string.doctor).format(doctorName),
+                        style = Typography.bodyMedium
                     )
                     Text(
-                        text = "Клиника: $clinicName",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        //color = LightTextPrimary
+                        text = stringResource(R.string.clinic).format(clinicName),
+                        style = Typography.bodyMedium
                     )
                 }
             }
@@ -322,16 +298,17 @@ private fun AppointmentInfoCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Итого",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    //color = LightTextPrimary
+                    text = stringResource(R.string.total),
+                    style = Typography.titleMedium
                 )
                 Text(
                     text = "$price ₽",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                   // color = LightTextPrimary
+                    style = Typography.titleLarge
+                )
+                Text(
+
+                    text = stringResource(R.string.currency_symbol).format(price),
+                    style = Typography.titleLarge
                 )
             }
         }
@@ -366,37 +343,33 @@ private fun PaymentCard(
             ) {
                 Image(
                     painter = painterResource(id = iconRes),
-                    contentDescription = "Card",
+                    contentDescription = stringResource(R.string.card),
                     modifier = Modifier.size(32.dp, 20.dp)
                 )
                 Column {
                     Text(
                         text = bankName,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Normal,
-                        //color = LightTextPrimary
+                        style = Typography.bodyMedium
                     )
                     Text(
                         text = cardNumber,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Normal,
-                       // color = LightTextPrimary
+                        style = Typography.bodyMedium
                     )
                 }
             }
 
             Box(modifier = Modifier.size(20.dp)) {
                 if (isSelected) {
-                    Image(
+                    Icon(
                         painter = painterResource(id = R.drawable.selected_card),
-                        contentDescription = "Selected",
-                        modifier = Modifier.size(20.dp)
+                        contentDescription = stringResource(R.string.selected),
+                        tint = Color.Green
                     )
                 } else {
-                    Image(
+                    Icon(
                         painter = painterResource(id = R.drawable.unelected_card),
-                        contentDescription = "Not selected",
-                        modifier = Modifier.size(20.dp)
+                        contentDescription = stringResource(R.string.not_selected),
+                        tint = Color.Gray
                     )
                 }
             }
@@ -411,7 +384,6 @@ private fun AddNewCardButton() {
             .fillMaxWidth()
             .clickable { /* Handle add new card */ },
         shape = RoundedCornerShape(8.dp),
-        //colors = CardDefaults.cardColors(containerColor = LightTextPrimary)
     ) {
         Row(
             modifier = Modifier
@@ -420,17 +392,15 @@ private fun AddNewCardButton() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.add_icon),
-                contentDescription = "Add",
-                modifier = Modifier.size(24.dp)
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = stringResource(R.string.add),
+                modifier = Modifier.size(20.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
-                text = "Добавить новую карту",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color.White
+                text = stringResource(R.string.add_new_card),
+                style = Typography.bodyMedium
             )
         }
     }
@@ -444,11 +414,10 @@ private fun OrDivider() {
             .padding(horizontal = 16.dp)
             .height(32.dp)
     ) {
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.Center),
-            //color = LightTextPrimary,
             thickness = 1.dp
         )
         Box(
@@ -458,10 +427,8 @@ private fun OrDivider() {
                 .background(Color.White)
         )
         Text(
-            text = "ИЛИ",
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
-            //color = LightTextPrimary,
+            text = stringResource(R.string.or_payment),
+            style = Typography.bodyMedium,
             modifier = Modifier.align(Alignment.Center)
         )
     }
@@ -492,7 +459,6 @@ private fun PaymentSystemsList() {
             text = "ВК Пэй",
             backgroundColor = Color(0xFF0077FF)
         )
-
     }
 }
 
@@ -522,9 +488,6 @@ private fun PaymentSystemButton(
         }
     }
 }
-private fun PaymentSystemButton()
-{
 
-}
 
 

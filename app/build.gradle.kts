@@ -76,6 +76,8 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.foundation.layout.android)
     implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.androidx.espresso.core.v351)
+    implementation(libs.play.services.maps)
     kapt(libs.hilt.compiler)
     implementation (libs.androidx.hilt.navigation.compose.v110)
 

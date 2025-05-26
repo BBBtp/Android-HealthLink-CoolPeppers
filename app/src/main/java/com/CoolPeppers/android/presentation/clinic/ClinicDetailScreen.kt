@@ -1,3 +1,4 @@
+import android.content.res.Resources.Theme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -106,7 +108,7 @@ fun ClinicDetailScreen(
                             ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.metro),
-                                    contentDescription = "Metro Icon",
+                                    contentDescription = stringResource(R.string.metro_icon),
                                     modifier = Modifier.size(20.dp)
                                 )
                                 Text(
@@ -123,10 +125,8 @@ fun ClinicDetailScreen(
                                // color = LightTextPrimary
                             )
                             Text(
-                                text = "${clinic.price}₽",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium,
-                              //  color = LightTextPrimary
+                                text = stringResource(R.string.currency_symbol).format(clinic.price),
+                                style = MaterialTheme.typography.titleLarge
                             )
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -197,10 +197,8 @@ fun ClinicDetailScreen(
                             .fillMaxWidth()
                     ) {
                         Text(
-                            text = "О клинике",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                           // color = LightTextPrimary
+                            text = stringResource(R.string.about_clinic),
+                            style = MaterialTheme.typography.titleLarge
                         )
                         Text(
                             text = clinic.description,
@@ -211,10 +209,8 @@ fun ClinicDetailScreen(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "Время работы",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                           // color = LightTextPrimary
+                            text = stringResource(R.string.working_hours),
+                            style = MaterialTheme.typography.titleLarge
                         )
                         Text(
                             text = clinic.workTime.toString(),
@@ -243,16 +239,15 @@ fun ClinicDetailScreen(
                     //contentColor = LightTextPrimary
                 )
             ) {
-                Icon(
+                Image(
                     painter = painterResource(id = R.drawable.service),
-                    contentDescription = "Service Icon",
-                    modifier = Modifier.size(24.dp)
+                    contentDescription = stringResource(R.string.service_icon),
+                    modifier = Modifier.size(20.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Выбрать услугу",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold
+                    text = stringResource(R.string.select_service),
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
         }

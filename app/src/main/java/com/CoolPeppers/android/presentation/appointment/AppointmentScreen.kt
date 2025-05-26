@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -30,6 +31,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.ui.text.style.TextOverflow
+import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.SlotResponse
 import com.CoolPeppers.android.presentation.appointment.AppointmentViewModel
 import java.text.SimpleDateFormat
@@ -82,21 +84,17 @@ fun AppointmentScreen(
         ) {
             IconButton(
                 onClick = { navController.popBackStack() },
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .padding(start = 8.dp)
+                modifier = Modifier.padding(8.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    tint = Color(0xFF2F6690))
+                    contentDescription = stringResource(R.string.back)
+                )
             }
 
             Text(
-                text = "Расписание",
-                color = Color(0xFF2F6690),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
+                text = stringResource(R.string.schedule),
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.align(Alignment.Center))
         }
 
@@ -111,10 +109,8 @@ fun AppointmentScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Выберите дату",
-                    color = Color(0xFF2F6690),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
+                    text = stringResource(R.string.select_date),
+                    style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(bottom = 8.dp))
 
                 Button(
@@ -137,10 +133,8 @@ fun AppointmentScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
-                    text = "Выберите время",
-                    color = Color(0xFF2F6690),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
+                    text = stringResource(R.string.select_time),
+                    style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(bottom = 8.dp))
             }
 
@@ -153,9 +147,8 @@ fun AppointmentScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Выберите дату для просмотра доступных слотов",
-                            color = Color.Gray,
-                            fontSize = 16.sp
+                            text = stringResource(R.string.select_date_for_slots),
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     }
                 }
@@ -168,9 +161,8 @@ fun AppointmentScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Нет доступных слотов на выбранную дату",
-                            color = Color.Gray,
-                            fontSize = 16.sp
+                            text = stringResource(R.string.no_available_slots),
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     }
                 }
@@ -235,8 +227,8 @@ fun AppointmentScreen(
                 .height(49.dp)
             ) {
             Text(
-                text = "Далее",
-                fontSize = 15.sp,
+                text = stringResource(R.string.next),
+                style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold
             )
         }

@@ -35,13 +35,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.CoolPeppers.android.R
-
-
-
+import com.CoolPeppers.android.ui.theme.Typography
 
 import androidx.compose.foundation.layout.*
 
@@ -49,9 +49,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -92,15 +89,13 @@ fun DoctorScreen(clinicId: Int,serviceId: Int, navController: NavController, vie
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.doctor_blue),
-                        contentDescription = "Doctors Icon",
+                        painter = painterResource(id = R.drawable.doctor),
+                        contentDescription = stringResource(R.string.doctors_icon),
                         modifier = Modifier.size(20.dp)
                     )
                     Text(
-                        text = " Врачи по услуге",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                       // color = LightTextPrimary
+                        text = stringResource(R.string.doctors_by_service),
+                        style = Typography.titleLarge
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -144,12 +139,12 @@ fun DoctorCard(doctor: Doctor, onClick: () -> Unit) {
 
             AsyncImage(
                 model = doctor.photoUrl,
-                contentDescription = "Doctor Photo",
+                contentDescription = stringResource(R.string.doctor_photo),
                 modifier = Modifier
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(8.dp)),
+                    .size(60.dp)
+                    .clip(CircleShape),
                 contentScale = ContentScale.Crop,
-                placeholder = painterResource(id = R.drawable.doctor_blue)
+                placeholder = painterResource(id = R.drawable.doctor)
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -158,10 +153,8 @@ fun DoctorCard(doctor: Doctor, onClick: () -> Unit) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "${doctor.firstName} ${doctor.lastName}",
-                    color = Color(0xFF2F6690),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+                    text = stringResource(R.string.doctor).format(doctor.firstName, doctor.lastName),
+                    style = Typography.titleMedium
                 )
 
                 doctor.specialization?.let {
@@ -194,9 +187,8 @@ fun DoctorCard(doctor: Doctor, onClick: () -> Unit) {
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "(${doctor.reviewsCount ?: 0} отзывов)",
-                        color = Color(0xFF2F6690).copy(alpha = 0.7f),
-                        fontSize = 12.sp
+                        text = stringResource(R.string.reviews_count).format(doctor.reviewsCount ?: 0),
+                        style = Typography.bodySmall
                     )
                 }
             }

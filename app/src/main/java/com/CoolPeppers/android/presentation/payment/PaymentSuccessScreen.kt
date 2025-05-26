@@ -12,12 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.CoolPeppers.android.R
+import com.CoolPeppers.android.ui.theme.Typography
 //import com.CoolPeppers.android.ui.theme.LightTextPrimary
 
 @Composable
@@ -39,38 +41,31 @@ fun PaymentSuccessScreen(
 
             Box(
                 modifier = Modifier
-                    .size(100.dp),
-                contentAlignment = Alignment.Center
+                    .size(120.dp),
+                    contentAlignment = Alignment.Center
             ) {
-
-                    Image(
-                        painter = painterResource(id = R.drawable.success),
-                        contentDescription = "Success",
-                        modifier = Modifier.size(100.dp)
-                    )
-                }
-
-
-            Spacer(modifier = Modifier.height(20.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.success),
+                    contentDescription = stringResource(R.string.success),
+                    modifier = Modifier
+                        .size(120.dp)
+                        .padding(bottom = 16.dp)
+                )
+            }
 
             Text(
-                text = "Оплата прошла успешно!\nСпасибо, что вы выбираете нас",
-                //color = LightTextPrimary,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                lineHeight = 30.sp,
-                modifier = Modifier.width(343.dp)
+                text = stringResource(R.string.payment_success),
+                style = Typography.titleLarge,
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(40.dp))
 
-
             Button(
-                onClick = {navController.navigate("home")},
+                onClick = { navController.navigate("home") },
                 modifier = Modifier
-                    .width(200.dp)
-                    .height(50.dp),
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFEAF4F4),
@@ -78,8 +73,8 @@ fun PaymentSuccessScreen(
                 )
             ) {
                 Text(
-                    text = "На главную",
-                    fontSize = 16.sp
+                    text = stringResource(R.string.to_home),
+                    style = Typography.bodyLarge
                 )
             }
         }

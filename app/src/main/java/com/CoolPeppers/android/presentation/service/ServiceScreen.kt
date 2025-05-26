@@ -1,4 +1,3 @@
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,7 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.CoolPeppers.android.R
@@ -35,6 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.presentation.service.ServiceViewModel
+import com.CoolPeppers.android.ui.theme.Typography
 
 
 @Composable
@@ -70,19 +72,24 @@ fun ServiceScreen(clinicId: Int, navController: NavController, viewModelService:
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.service_blue),
-                        contentDescription = "List Icon",
+                        painter = painterResource(id = R.drawable.service),
+                        contentDescription = stringResource(R.string.service_icon),
                         modifier = Modifier.size(20.dp)
                     )
                     Text(
-                        text = " Выберите услугу",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        //color = LightTextPrimary
+                        text = stringResource(R.string.select_service),
+                        style = Typography.titleLarge
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
+                Image(
+                    painter = painterResource(id = R.drawable.clinic),
+                    contentDescription = stringResource(R.string.hospital_image),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                )
 
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
