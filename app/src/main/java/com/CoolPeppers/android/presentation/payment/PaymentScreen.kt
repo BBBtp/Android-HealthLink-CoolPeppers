@@ -24,7 +24,7 @@ import com.CoolPeppers.android.presentation.appointment.AppointmentViewModel
 import com.CoolPeppers.android.presentation.clinic.ClinicViewModel
 import com.CoolPeppers.android.presentation.doctor.DoctorViewModel
 import com.CoolPeppers.android.presentation.service.ServiceViewModel
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import kotlinx.coroutines.launch
 
 
@@ -113,7 +113,7 @@ fun PaymentScreen(
                         text = "Ваши карты",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = LightTextPrimary,
+                       // color = LightTextPrimary,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
 
@@ -181,13 +181,13 @@ fun PaymentScreen(
                         text = "${service.price} ₽",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = LightTextPrimary
+                        //color = LightTextPrimary
                     )
                     Text(
                         text = "Детали",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color = LightTextPrimary,
+                        //color = LightTextPrimary,
                         modifier = Modifier.clickable { /* Show details */ }
                     )
                 }
@@ -225,7 +225,7 @@ fun PaymentScreen(
                         .height(49.dp),
                     shape = RoundedCornerShape(42.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = LightTextPrimary
+                        //containerColor = LightTextPrimary
                     )
                 ) {
                     Text(
@@ -272,10 +272,7 @@ private fun AppointmentInfoCard(
                 Box(
                     modifier = Modifier
                         .size(60.dp)
-                        .background(
-                            color = LightTextPrimary.copy(alpha = 0.08f),
-                            shape = CircleShape
-                        )
+                       //TODO: тут был круг
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.service_blue),
@@ -293,27 +290,27 @@ private fun AppointmentInfoCard(
                         text = "Запись на прием",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color = LightTextPrimary
+                        //color = LightTextPrimary
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = serviceName,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
-                        color = LightTextPrimary
+                        //color = LightTextPrimary
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "Врач: $doctorName",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
-                        color = LightTextPrimary
+                        //color = LightTextPrimary
                     )
                     Text(
                         text = "Клиника: $clinicName",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,
-                        color = LightTextPrimary
+                        //color = LightTextPrimary
                     )
                 }
             }
@@ -328,13 +325,13 @@ private fun AppointmentInfoCard(
                     text = "Итого",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
-                    color = LightTextPrimary
+                    //color = LightTextPrimary
                 )
                 Text(
                     text = "$price ₽",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = LightTextPrimary
+                   // color = LightTextPrimary
                 )
             }
         }
@@ -377,13 +374,13 @@ private fun PaymentCard(
                         text = bankName,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Normal,
-                        color = LightTextPrimary
+                        //color = LightTextPrimary
                     )
                     Text(
                         text = cardNumber,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Normal,
-                        color = LightTextPrimary
+                       // color = LightTextPrimary
                     )
                 }
             }
@@ -414,7 +411,7 @@ private fun AddNewCardButton() {
             .fillMaxWidth()
             .clickable { /* Handle add new card */ },
         shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = LightTextPrimary)
+        //colors = CardDefaults.cardColors(containerColor = LightTextPrimary)
     ) {
         Row(
             modifier = Modifier
@@ -451,7 +448,7 @@ private fun OrDivider() {
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.Center),
-            color = LightTextPrimary,
+            //color = LightTextPrimary,
             thickness = 1.dp
         )
         Box(
@@ -464,7 +461,7 @@ private fun OrDivider() {
             text = "ИЛИ",
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            color = LightTextPrimary,
+            //color = LightTextPrimary,
             modifier = Modifier.align(Alignment.Center)
         )
     }

@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.CoolPeppers.android.R
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 
 @Composable
 fun PaymentSuccessScreen(
@@ -55,7 +55,7 @@ fun PaymentSuccessScreen(
 
             Text(
                 text = "Оплата прошла успешно!\nСпасибо, что вы выбираете нас",
-                color = LightTextPrimary,
+                //color = LightTextPrimary,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -74,7 +74,7 @@ fun PaymentSuccessScreen(
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFEAF4F4),
-                    contentColor = LightTextPrimary
+                //    contentColor = LightTextPrimary
                 )
             ) {
                 Text(

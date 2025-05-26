@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Service
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import androidx. compose. foundation. lazy. grid. LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.GridCells
 
@@ -66,7 +66,7 @@ fun CategoriesServiceScreen() {
                     text = " Выберите услугу",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = LightTextPrimary
+                   // color = LightTextPrimary
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))

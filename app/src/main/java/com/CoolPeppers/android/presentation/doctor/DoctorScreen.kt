@@ -60,8 +60,8 @@ import com.CoolPeppers.android.data.model.Clinic
 import com.CoolPeppers.android.data.model.Doctor
 import com.CoolPeppers.android.presentation.clinic.ClinicViewModel
 import com.CoolPeppers.android.presentation.doctor.DoctorViewModel
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
-import com.CoolPeppers.android.ui.theme.Montserrat
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.Montserrat
 @Composable
 fun DoctorScreen(clinicId: Int,serviceId: Int, navController: NavController, viewModelDoctor: DoctorViewModel = hiltViewModel()) {
     val doctorsByService by viewModelDoctor.doctors.observeAsState(emptyList())
@@ -100,7 +100,7 @@ fun DoctorScreen(clinicId: Int,serviceId: Int, navController: NavController, vie
                         text = " Врачи по услуге",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = LightTextPrimary
+                       // color = LightTextPrimary
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -184,7 +184,7 @@ fun DoctorCard(doctor: Doctor, onClick: () -> Unit) {
                         contentDescription = null,
                         modifier = Modifier
                             .size(16.dp),
-                        tint = LightTextPrimary
+                        //tint = LightTextPrimary
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(

@@ -1,5 +1,7 @@
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -17,70 +19,81 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Service
-//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import androidx. compose. foundation. lazy. grid. LazyVerticalGrid
 import androidx. compose. foundation. lazy. grid. GridCells
 
 
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.CoolPeppers.android.presentation.service.ServiceViewModel
 
-
-val service1 = Service(
-    id = 1,
-    name = "Стоматология",
-    description = "Лечение зубов",
-    price = 0,
-    duration = 0,
-    logoUrl = "https://avatars.mds.yandex.net/get-altay/5449402/2a0000017eaa39ecb506d56384833dca85f5/XXXL"
-)
-val serviceList = List(10) { service1 }
 
 @Composable
-fun ServiceScreen() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        Column(
+fun ServiceScreen(clinicId: Int, navController: NavController, viewModelService: ServiceViewModel = hiltViewModel()) {
+    val services by viewModelService.services.observeAsState(emptyList())
+
+    LaunchedEffect(Unit) {
+        viewModelService.loadService(0, 100, "", clinicId = clinicId)
+    }
+
+
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    if (services.isEmpty()) {
+        ShimmerAnimation()
+    } else {
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .background(Color.White)
         ) {
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .background(Color.White)
-                    .padding(horizontal = 5.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxSize()
+                    .padding(16.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.service_blue),
-                    contentDescription = "List Icon",
-                    modifier = Modifier.size(20.dp)
-                )
-                Text(
-                    text = " Выберите услугу",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-//                    color = LightTextPrimary
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .background(Color.White)
+                        .padding(horizontal = 5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.service_blue),
+                        contentDescription = "List Icon",
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Text(
+                        text = " Выберите услугу",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        //color = LightTextPrimary
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
 
 
-            LazyVerticalGrid(
-                columns = androidx.compose.foundation.lazy.grid.GridCells.Fixed(3),
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(8.dp)
-            ) {
-                items(serviceList) { service ->
-                    ServiceItem(service = service)
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(3),
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(8.dp)
+                ) {
+                    items(services) { service ->
+                        ServiceItem(service = service, onClick = {
+                            navController.navigate("doctor/${clinicId}/${service.id}")
+                        })
+                    }
                 }
             }
         }
@@ -88,11 +101,13 @@ fun ServiceScreen() {
 }
 
 @Composable
-fun ServiceItem(service: Service) {
+fun ServiceItem(service: Service, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable { onClick() },
+
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
@@ -104,6 +119,7 @@ fun ServiceItem(service: Service) {
                 model = service.logoUrl,
                 contentDescription = "Clinic Image",
                 modifier = Modifier
+                    .size(30.dp)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )

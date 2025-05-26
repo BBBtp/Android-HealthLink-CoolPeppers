@@ -28,7 +28,7 @@ import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Clinic
 import com.CoolPeppers.android.data.model.Doctor
 import com.CoolPeppers.android.presentation.clinic.ClinicViewModel
-import com.CoolPeppers.android.ui.theme.LightTextPrimary
+//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.ui.theme.Montserrat
 import androidx.compose.runtime.*
 import com.CoolPeppers.android.presentation.doctor.DoctorViewModel
@@ -104,7 +104,7 @@ fun DoctorDetailScreen(
                                 text = "${doctor.firstName} ${doctor.lastName}",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = LightTextPrimary
+                               // color = LightTextPrimary
                             )
 
                             doctor.specialization?.let {
@@ -112,7 +112,7 @@ fun DoctorDetailScreen(
                                     text = it,
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Medium,
-                                    color = LightTextPrimary
+                                   // color = LightTextPrimary
                                 )
                             }
 
@@ -128,7 +128,7 @@ fun DoctorDetailScreen(
                                     Icon(
                                         imageVector = Icons.Filled.Star,
                                         contentDescription = null,
-                                        tint = LightTextPrimary
+                                    //    tint = LightTextPrimary
                                     )
                                 }
                                 repeat(5 - doctor.rating.toInt()) {
@@ -190,14 +190,14 @@ fun DoctorDetailScreen(
                             text = "О враче",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = LightTextPrimary
+                            //color = LightTextPrimary
                         )
 
                         Text(
                             text = doctor.description ?: "Информация о враче отсутствует",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
-                            color = LightTextPrimary,
+                           // color = LightTextPrimary,
                             modifier = Modifier.padding(top = 8.dp)
                         )
 
@@ -207,14 +207,14 @@ fun DoctorDetailScreen(
                             text = "Время работы",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = LightTextPrimary
+                           // color = LightTextPrimary
                         )
 
                         Text(
                             text = "Понедельник - пятница | 9:30 - 18:00",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
-                            color = LightTextPrimary,
+                           // color = LightTextPrimary,
                             modifier = Modifier.padding(top = 8.dp)
                         )
                     }
@@ -232,7 +232,7 @@ fun DoctorDetailScreen(
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFEAF4F4),
-                    contentColor = LightTextPrimary
+                    //contentColor = LightTextPrimary
                 )
             ) {
                 Icon(

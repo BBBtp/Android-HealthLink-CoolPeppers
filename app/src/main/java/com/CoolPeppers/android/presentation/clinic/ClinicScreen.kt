@@ -32,7 +32,7 @@ import com.CoolPeppers.android.data.model.Clinic
 import com.CoolPeppers.android.data.model.ClinicDetail
 import com.CoolPeppers.android.presentation.clinic.ClinicViewModel
 //import com.CoolPeppers.android.ui.theme.LightTextPrimary
-import com.CoolPeppers.android.ui.theme.Montserrat
+//import com.CoolPeppers.android.ui.theme.Montserrat
 import com.CoolPeppers.android.util.PriceConversion
 
 @Composable
@@ -73,7 +73,7 @@ fun ClinicScreen(navController: NavController, viewModelClinic: ClinicViewModel 
                         text = stringResource(R.string.select_your_clinic),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-//                        color = LightTextPrimary
+                       // color = LightTextPrimary
                     )
                 }
 
@@ -136,7 +136,7 @@ fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
                 text = clinic.name,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
-//                color = LightTextPrimary
+              //  color = LightTextPrimary
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
@@ -148,10 +148,10 @@ fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
                     Text(
                         text = it,
                         style = androidx.compose.ui.text.TextStyle(
-                            fontFamily = Montserrat,
+                           // fontFamily = Montserrat,
                             fontWeight = FontWeight.Light,
                             fontSize = 12.sp,
-//                            color = LightTextPrimary
+                           // color = LightTextPrimary
                         ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -162,13 +162,13 @@ fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
                 text = clinic.address,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
-                color = LightTextPrimary
+                //color = LightTextPrimary
             )
             Text(
                 text = "${clinic.price}₽",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
-                color = LightTextPrimary
+               // color = LightTextPrimary
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -179,7 +179,7 @@ fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
                     Icon(
                         imageVector = Icons.Filled.Star,
                         contentDescription = null,
-//                        tint = LightTextPrimary
+                        //tint = LightTextPrimary
                     )
                 }
                 repeat(5 - clinic.rating.toInt()) {
