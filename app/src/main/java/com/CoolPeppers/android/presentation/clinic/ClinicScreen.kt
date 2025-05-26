@@ -133,7 +133,7 @@ fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
             horizontalAlignment = Alignment.End
         ) {
             Text(
-                text = clinic.address,
+                text = clinic.name,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = LightTextPrimary
@@ -158,6 +158,12 @@ fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
                     )
                 }
             }
+            Text(
+                text = clinic.address,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = LightTextPrimary
+            )
             Text(
                 text = "${clinic.price}₽",
                 fontSize = 14.sp,

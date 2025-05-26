@@ -25,9 +25,9 @@ class AppointmentViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val response = apiService.getSlots(doctorId)
-                _slots.value = response // Directly assign the list (no extra wrapping)
+                _slots.value = response
             } catch (e: Exception) {
-                // Handle error
+
             }
         }
     }

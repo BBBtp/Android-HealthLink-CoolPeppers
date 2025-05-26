@@ -30,7 +30,11 @@ import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.ui.theme.Montserrat
 
 @Composable
-fun ClinicDetailScreen(clinicId: Int, navController: NavController, viewModelClinic: ClinicViewModel = hiltViewModel()) {
+fun ClinicDetailScreen(
+    clinicId: Int,
+    navController: NavController,
+    viewModelClinic: ClinicViewModel = hiltViewModel()
+) {
 
     val clinicById by viewModelClinic.clinic.observeAsState(emptyList())
 
@@ -90,7 +94,7 @@ fun ClinicDetailScreen(clinicId: Int, navController: NavController, viewModelCli
                             horizontalAlignment = Alignment.End
                         ) {
                             Text(
-                                text = clinic.address,
+                                text = clinic.name,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = LightTextPrimary
@@ -112,6 +116,12 @@ fun ClinicDetailScreen(clinicId: Int, navController: NavController, viewModelCli
                                     color = LightTextPrimary
                                 )
                             }
+                            Text(
+                                text = clinic.address,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = LightTextPrimary
+                            )
                             Text(
                                 text = "${clinic.price}₽",
                                 fontSize = 14.sp,
@@ -162,6 +172,7 @@ fun ClinicDetailScreen(clinicId: Int, navController: NavController, viewModelCli
                             value = clinic.yearFoundation.toString(),
                             label = "Год основания",
                             modifier = Modifier.weight(1f)
+
                         )
 
                         InfoBox(
@@ -247,6 +258,7 @@ fun ClinicDetailScreen(clinicId: Int, navController: NavController, viewModelCli
         }
     }
 }
+
 @Composable
 fun InfoBox(iconRes: Int, value: String, label: String, modifier: Modifier = Modifier) {
     Column(
@@ -279,7 +291,10 @@ fun InfoBox(iconRes: Int, value: String, label: String, modifier: Modifier = Mod
             text = label,
             fontSize = 12.sp,
             fontWeight = FontWeight.Medium,
-            color = LightTextPrimary.copy(alpha = 0.7f)
+            color = LightTextPrimary.copy(alpha = 0.7f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            softWrap = false,
         )
     }
 }
