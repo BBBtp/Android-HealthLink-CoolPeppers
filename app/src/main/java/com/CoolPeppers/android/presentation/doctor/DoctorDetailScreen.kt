@@ -32,6 +32,7 @@ import com.CoolPeppers.android.presentation.clinic.ClinicViewModel
 //import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.ui.theme.Montserrat
 import androidx.compose.runtime.*
+import androidx.compose.ui.draw.clip
 import com.CoolPeppers.android.presentation.doctor.DoctorViewModel
 
 @Composable
@@ -86,10 +87,12 @@ fun DoctorDetailScreen(
                                 contentDescription = stringResource(R.string.doctor_photo),
                                 modifier = Modifier
                                     .fillMaxHeight()
-                                    .background(Color.Gray, RoundedCornerShape(14.dp)),
+                                    .clip(RoundedCornerShape(14.dp))
+                                    .background(Color.Gray),
                                 contentScale = ContentScale.Crop,
                                 placeholder = painterResource(id = R.drawable.doctor_blue)
                             )
+
                         }
 
                         Spacer(modifier = Modifier.width(10.dp))
@@ -228,7 +231,7 @@ fun DoctorDetailScreen(
                 )
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.tooth),
+                    painter = painterResource(id = R.drawable.service),
                     contentDescription = stringResource(R.string.schedule_icon),
                     modifier = Modifier.size(20.dp)
                 )

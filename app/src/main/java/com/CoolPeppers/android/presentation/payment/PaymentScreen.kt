@@ -176,7 +176,7 @@ fun PaymentScreen(
             ) {
                 Column {
                     Text(
-                        text = stringResource(R.string.currency_symbol).format(service.price),
+                        text = service.price?.let { stringResource(R.string.price_format, it) } ?: "",
                         style = Typography.titleLarge
                     )
                     Text(
@@ -305,10 +305,7 @@ private fun AppointmentInfoCard(
                     text = stringResource(R.string.price_format, price),
                     style = Typography.titleLarge
                 )
-                Text(
-                    text = stringResource(R.string.currency_symbol).format(price),
-                    style = Typography.titleLarge
-                )
+
             }
         }
     }
