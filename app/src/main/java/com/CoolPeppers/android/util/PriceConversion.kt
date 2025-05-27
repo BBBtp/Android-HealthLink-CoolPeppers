@@ -10,8 +10,9 @@ import com.CoolPeppers.android.ui.theme.Typography
 
 @Composable
 fun PriceConversion(price: Int) {
+    val currentPrice = price/1000
     Row {
-        repeat(price) {
+        repeat(currentPrice) {
             Text(
                 text = stringResource(R.string.currency_symbol),
                 style = Typography.bodyMedium

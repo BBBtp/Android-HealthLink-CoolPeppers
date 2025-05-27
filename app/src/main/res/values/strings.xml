@@ -108,4 +108,7 @@
     <string name="reset_link_sent">Reset link has been sent to your email</string>
     <string name="send_reset">Send</string>
     <string name="return_to_login">Return to login</string>
+    <string name="no_records">No records found</string>
+    <string name="no_doctors">No doctors found</string>
+    <string name="no_clinics">No clinics found</string>
 </resources>

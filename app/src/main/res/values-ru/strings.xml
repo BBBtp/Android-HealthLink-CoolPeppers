@@ -106,4 +106,7 @@
     <string name="reset_link_sent">Ссылка отправлена на ваш email</string>
     <string name="send_reset">Отправить</string>
     <string name="return_to_login">Вернуться к входу</string>
+    <string name="no_records">Записи не найдены</string>
+    <string name="no_doctors">Врачи не найдены</string>
+    <string name="no_clinics">Клиники не найдены</string>
 </resources>

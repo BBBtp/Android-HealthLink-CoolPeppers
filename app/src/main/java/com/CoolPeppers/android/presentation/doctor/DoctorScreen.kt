@@ -60,47 +60,46 @@ import com.CoolPeppers.android.presentation.doctor.DoctorViewModel
 //import com.CoolPeppers.android.ui.theme.LightTextPrimary
 //import com.CoolPeppers.android.ui.theme.Montserrat
 @Composable
-fun DoctorScreen(clinicId: Int,serviceId: Int, navController: NavController, viewModelDoctor: DoctorViewModel = hiltViewModel()) {
+fun DoctorScreen(clinicId: Int, serviceId: Int, navController: NavController, viewModelDoctor: DoctorViewModel = hiltViewModel()) {
     val doctorsByService by viewModelDoctor.doctors.observeAsState(emptyList())
+
     LaunchedEffect(Unit) {
         viewModelDoctor.loadDoctors(0, 100, "", clinicId = clinicId, serviceId = serviceId)
     }
 
-    if (doctorsByService.isEmpty()) {
-        ShimmerAnimation()
-    } else {
-        Box(
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .padding(16.dp)
         ) {
-            Column(
+            Row(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .background(Color.White)
+                    .padding(horizontal = 5.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                Image(
+                    painter = painterResource(id = R.drawable.doctor),
+                    contentDescription = stringResource(R.string.doctors_icon),
+                    modifier = Modifier.size(20.dp)
+                )
+                Text(
+                    text = stringResource(R.string.doctors_by_service),
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                        .background(Color.White)
-                        .padding(horizontal = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.doctor),
-                        contentDescription = stringResource(R.string.doctors_icon),
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Text(
-                        text = stringResource(R.string.doctors_by_service),
-                        style = Typography.titleLarge
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-
-
+            if (doctorsByService.isEmpty()) {
+                ShimmerAnimation()
+            } else {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()

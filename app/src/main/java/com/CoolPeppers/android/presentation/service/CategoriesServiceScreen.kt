@@ -13,8 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.CoolPeppers.android.R
@@ -27,20 +25,22 @@ import androidx.compose.foundation.lazy.grid.GridCells
 
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.CoolPeppers.android.presentation.service.ServiceViewModel
 
-
-val service1 = Service(
-    id = 1,
-    name = "Стоматология",
-    description = "Лечение зубов",
-    price = 0,
-    duration = 0,
-    logoUrl = "https://avatars.mds.yandex.net/get-altay/5449402/2a0000017eaa39ecb506d56384833dca85f5/XXXL"
-)
-val serviceList = List(10) { service1 }
 
 @Composable
-fun CategoriesServiceScreen() {
+fun CategoriesServiceScreen(navController: NavController, viewModelService: ServiceViewModel = hiltViewModel())  {
+    val services by viewModelService.services.observeAsState(emptyList())
+
+    LaunchedEffect(Unit) {
+        viewModelService.loadService(0, 100, "", clinicId = null)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -77,8 +77,12 @@ fun CategoriesServiceScreen() {
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(8.dp)
             ) {
-                items(serviceList) { service ->
-                    ServiceItem(service = service,onClick = {})
+                items(services) { service ->
+                    ServiceItem(service = service, onClick = {
+                        service.clinicId?.let { clinicId ->
+                            navController.navigate("doctor/${clinicId}/${service.id}")
+                        }
+                    })
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.CoolPeppers.android.presentation.home.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -43,13 +45,17 @@ import com.CoolPeppers.android.util.PriceConversion
 import com.CoolPeppers.android.util.RatingStars
 
 @Composable
-fun ClinicCard(clinic: Clinic) {
+fun ClinicCard(
+    clinic: Clinic,
+    onClick: () -> Unit
+) {
     Card(
         colors = CardDefaults.cardColors(
 //            containerColor = LightBgSecondary
         ),
         modifier = Modifier
             .size(width = 290.dp, height = 152.dp)
+            .clickable(onClick = onClick)
     ) {
         Box(Modifier.fillMaxSize()) {
             Column(
@@ -120,7 +126,6 @@ fun ClinicCard(clinic: Clinic) {
                 Row(
                     modifier = Modifier.fillMaxWidth()
                     .padding(start = 5.dp)
-
                 ) {
                     clinic.price?.let {
                         PriceConversion(it.toInt())
@@ -136,7 +141,7 @@ fun ClinicCard(clinic: Clinic) {
             }
 
             IconButton(
-                onClick = {  },
+                onClick = onClick,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(16.dp)
