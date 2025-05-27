@@ -116,4 +116,11 @@
     <string name="ai_assistant">AI Помощник</string>
     <string name="book_appointment">Записаться</string>
     <string name="no_symptoms">Симптомы не найдены</string>
+    <string name="email_icon">Иконка email</string>
+    <string name="clinic_image">Изображение клиники</string>
+    <string name="doctor_image">Изображение врача</string>
+    <string name="your_email">Ваш email</string>
+    <string name="price_format">%s ₽</string>
+    <string name="doctor_name_format">%s %s</string>
+    <string name="rating_format">%.1f</string>
 </resources>

@@ -59,6 +59,7 @@ import com.CoolPeppers.android.ui.theme.Typography
 fun ChatScreen(
     viewModel: ChatViewModel = hiltViewModel()
 ) {
+    val navController = rememberNavController()
     val chats by viewModel.chats.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -72,25 +73,45 @@ fun ChatScreen(
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
-
-    if (isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(color = Color(0xFF2F6690))
+    NavHost(navController = navController, startDestination = "chatList") {
+        composable("chatList") {
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = Color(0xFF2F6690))
+                }
+            } else {
+                ChatApp(
+                    navController = navController,
+                    chats = chats,
+                )
+            }
         }
-    } else {
-        ChatApp(chats = chats)
+        composable("chatDialog/{chatId}") { backStackEntry ->
+            val chatId = backStackEntry.arguments?.getString("chatId")?.toIntOrNull()
+            val chat = chats.find { it.id == chatId }
+            if (chat != null) {
+                ChatDialogScreen(
+                    chat = chat,
+                    onBack = {
+                        navController.popBackStack()
+                        viewModel.refreshData()
+                    },
+                )
+            }
+        }
     }
 }
 
 
 @Composable
 fun ChatApp(
-    chats: List<Chat>
+    navController: NavController,
+    chats: List<Chat>,
 ) {
     val searchText = remember { mutableStateOf(TextFieldValue("")) }
 
@@ -140,7 +161,7 @@ fun ChatApp(
                     EmptyChatItem(
                         chat = chat,
                         onClick = {
-                            // navController.navigate("chatDialog/${chat.id}")
+                            navController.navigate("chatDialog/${chat.id}")
                         }
                     )
                 }
@@ -191,9 +212,7 @@ fun ChatApp(
                 items(matchedByUser) { chat ->
                     ChatItem(
                         chat = chat,
-                        onClick = {
-                            // navController.navigate("chatDialog/${chat.id}")
-                        },
+                        onClick = { navController.navigate("chatDialog/${chat.id}") },
                         showLastMessage = true
                     )
                 }
@@ -204,9 +223,7 @@ fun ChatApp(
                 items(matchedByUser) { chat ->
                     ChatItem(
                         chat = chat,
-                        onClick = {
-                            // navController.navigate("chatDialog/${chat.id}")
-                        },
+                        onClick = { navController.navigate("chatDialog/${chat.id}") },
                         showLastMessage = true
                     )
                 }
@@ -223,9 +240,7 @@ fun ChatApp(
                 items(matchedByMessage) { chat ->
                     ChatItem(
                         chat = chat,
-                        onClick = {
-                            // navController.navigate("chatDialog/${chat.id}")
-                        },
+                        onClick = { navController.navigate("chatDialog/${chat.id}") },
                         showLastMessage = false,
                         searchQuery = searchText.value.text
                     )

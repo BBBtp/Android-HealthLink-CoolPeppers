@@ -118,4 +118,11 @@
     <string name="ai_assistant">AI Assistant</string>
     <string name="book_appointment">Book Appointment</string>
     <string name="no_symptoms">No symptoms found</string>
+    <string name="email_icon">Email Icon</string>
+    <string name="clinic_image">Clinic Image</string>
+    <string name="doctor_image">Doctor Image</string>
+    <string name="your_email">Your email</string>
+    <string name="price_format">%s ₽</string>
+    <string name="doctor_name_format">%s %s</string>
+    <string name="rating_format">%.1f</string>
 </resources>
