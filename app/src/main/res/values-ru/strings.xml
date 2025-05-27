@@ -109,4 +109,11 @@
     <string name="no_records">Записи не найдены</string>
     <string name="no_doctors">Врачи не найдены</string>
     <string name="no_clinics">Клиники не найдены</string>
+    <string name="select_symptoms">Выберите симптомы</string>
+    <string name="find_services">Найти услуги</string>
+    <string name="matched_services">Найденные услуги</string>
+    <string name="no_services_found">Услуги не найдены</string>
+    <string name="ai_assistant">AI Помощник</string>
+    <string name="book_appointment">Записаться</string>
+    <string name="no_symptoms">Симптомы не найдены</string>
 </resources>

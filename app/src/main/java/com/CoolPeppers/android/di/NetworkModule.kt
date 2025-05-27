@@ -12,6 +12,7 @@ import com.CoolPeppers.android.data.repository.ClinicRepository
 import com.CoolPeppers.android.data.repository.DoctorRepository
 import com.CoolPeppers.android.data.repository.ProfileRepository
 import com.CoolPeppers.android.data.repository.ServiceRepository
+import com.CoolPeppers.android.data.repository.SymptomRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -109,5 +110,11 @@ object NetworkModule {
     @Singleton
     fun provideChatRepository(apiService: ApiService): ChatRepository {
         return ChatRepository(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSymptomRepository(apiService: ApiService): SymptomRepository {
+        return SymptomRepository(apiService)
     }
 }

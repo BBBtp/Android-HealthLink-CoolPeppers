@@ -33,6 +33,8 @@ import com.CoolPeppers.android.presentation.authentication.AuthScreen
 import com.CoolPeppers.android.presentation.notifications.NotificationsScreen
 import com.CoolPeppers.android.presentation.payment.PaymentSuccessScreen
 import com.CoolPeppers.android.presentation.request.RequestScreen
+import com.CoolPeppers.android.presentation.symptoms.MatchedServicesScreen
+import com.CoolPeppers.android.presentation.symptoms.SymptomsScreen
 import com.CoolPeppers.android.ui.theme.LocalBottomBarVisibility
 import com.CoolPeppers.android.util.getBottomNavItems
 
@@ -145,6 +147,16 @@ fun NavHostContainer(
             }
             composable("paymentsuccess") {
                 PaymentSuccessScreen(navController = navController)
+            }
+
+            // Маршруты для симптомов
+            composable("symptoms") {
+                SymptomsScreen(navController = navController)
+            }
+
+            composable("matched_services/{symptoms}") { backStackEntry ->
+                val symptoms = backStackEntry.arguments?.getString("symptoms")?.split(",") ?: emptyList()
+                MatchedServicesScreen(symptoms = symptoms, navController = navController)
             }
         }
     )

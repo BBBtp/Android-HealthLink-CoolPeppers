@@ -168,7 +168,7 @@ fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
             Text(
                 text = stringResource(R.string.currency_symbol).format(clinic.price),
                 style = androidx.compose.ui.text.TextStyle(
-                    fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.Medium,
                     fontSize = 14.sp
                 )
             )

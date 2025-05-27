@@ -11,7 +11,10 @@ import com.CoolPeppers.android.data.model.LoginRequest
 import com.CoolPeppers.android.data.model.RefreshToken
 import com.CoolPeppers.android.data.model.Service
 import com.CoolPeppers.android.data.model.SlotResponse
+import com.CoolPeppers.android.data.model.Symptom
+import com.CoolPeppers.android.data.model.SymptomInput
 import com.CoolPeppers.android.data.model.User
+import com.CoolPeppers.android.data.model.MatchResult
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -187,5 +190,11 @@ interface  ApiService {
     suspend fun createChat(
         @Body createChatRequest: CreateChatRequest
     ): Chat
+
+    @GET(ApiConstants.GET_SYMPTOMS_URL)
+    suspend fun getSymptoms(): List<Symptom>
+
+    @POST(ApiConstants.MATCH_SERVICES_URL)
+    suspend fun matchServices(@Body payload: SymptomInput): MatchResult
 
 }
