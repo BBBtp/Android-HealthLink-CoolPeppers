@@ -2,6 +2,7 @@ package com.CoolPeppers.android.presentation.home.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -43,7 +45,8 @@ import com.CoolPeppers.android.util.ParseSLotTime
 fun RecordCard(
     appointment: Appointment,
     doctor: Doctor,
-    slot: SlotResponse
+    slot: SlotResponse,
+    onClick: () -> Unit,
 ) {
     val (date, time) = ParseSLotTime(slot.slotTime)
 
@@ -53,6 +56,7 @@ fun RecordCard(
         ),
         modifier = Modifier
             .size(width = 240.dp, height = 120.dp)
+            .clickable(onClick = onClick)
     ) {
         Column(
             modifier = Modifier
@@ -83,7 +87,7 @@ fun RecordCard(
                                 fontFamily = Montserrat,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp,
-//                                color = LightTextPrimary
+                                color = MaterialTheme.colorScheme.secondary
                             )
                         )
                         Text(
@@ -92,7 +96,7 @@ fun RecordCard(
                                 fontFamily = Montserrat,
                                 fontWeight = FontWeight.Light,
                                 fontSize = 12.sp,
-//                                color = LightTextPrimary
+                            color = MaterialTheme.colorScheme.secondary
                             )
                         )
                     }
@@ -111,7 +115,7 @@ fun RecordCard(
                                 fontFamily = Montserrat,
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 14.sp,
-//                                color = LightTextPrimary
+                                color = MaterialTheme.colorScheme.secondary
                             )
                         )
                         Text(
@@ -120,7 +124,7 @@ fun RecordCard(
                                 fontFamily = Montserrat,
                                 fontWeight = FontWeight.Light,
                                 fontSize = 12.sp,
-//                                color = LightTextPrimary
+                                color = MaterialTheme.colorScheme.secondary
                             )
                         )
                     }
@@ -128,7 +132,7 @@ fun RecordCard(
                         Icon(
                             Icons.Filled.Info,
                             contentDescription = "Info",
-//                            tint = LightTextPrimary
+                            tint = MaterialTheme.colorScheme.secondary
                         )
                     }
                 }

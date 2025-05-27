@@ -1,10 +1,6 @@
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,48 +19,40 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
-import com.CoolPeppers.android.data.model.Doctor
 import com.CoolPeppers.android.data.model.Chat
-import com.CoolPeppers.android.data.model.Message
-import com.CoolPeppers.android.data.repository.ClinicRepository
 import com.CoolPeppers.android.presentation.chat.ChatViewModel
-import com.CoolPeppers.android.presentation.navigation.bottomNavigation.BottomNavigationBar
-import kotlinx.coroutines.delay
-
+import com.CoolPeppers.android.util.MessageTimeFormatter
+import com.CoolPeppers.android.ui.theme.Typography
 
 
 @Composable
@@ -73,10 +60,19 @@ fun ChatScreen(
     viewModel: ChatViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
-    val doctors by viewModel.doctors.collectAsState()
     val chats by viewModel.chats.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val lifecycleOwner = LocalLifecycleOwner.current
 
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.refreshData()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
     NavHost(navController = navController, startDestination = "chatList") {
         composable("chatList") {
             if (isLoading) {
@@ -91,41 +87,39 @@ fun ChatScreen(
             } else {
                 ChatApp(
                     navController = navController,
-                    doctors = doctors,
                     chats = chats,
-                    onRefresh = { viewModel.loadData() }
                 )
             }
         }
-        composable("chatDialog/{doctorId}") { backStackEntry ->
-            val doctorId = backStackEntry.arguments?.getString("doctorId")?.toIntOrNull()
-            val doctor = viewModel.getDoctorById(doctorId ?: -1)
-            if (doctor != null) {
+        composable("chatDialog/{chatId}") { backStackEntry ->
+            val chatId = backStackEntry.arguments?.getString("chatId")?.toIntOrNull()
+            val chat = chats.find { it.id == chatId }
+            if (chat != null) {
                 ChatDialogScreen(
-                    doctor = doctor,
-                    onBack = { navController.popBackStack() }
+                    chat = chat,
+                    onBack = {
+                        navController.popBackStack()
+                        viewModel.refreshData()
+                    },
                 )
             }
         }
     }
 }
 
+
 @Composable
 fun ChatApp(
     navController: NavController,
-    doctors: List<Doctor>,
     chats: List<Chat>,
-    onRefresh: () -> Unit
 ) {
     val searchText = remember { mutableStateOf(TextFieldValue("")) }
-    val isRefreshing = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Поисковая строка (оставляем ваш оригинальный дизайн)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -152,100 +146,164 @@ fun ChatApp(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Список докторов с горизонтальным скроллом
-        val filteredDoctors = remember(doctors, searchText.value.text) {
-            doctors.filter { doctor ->
-                doctor.firstName.contains(searchText.value.text, ignoreCase = true) ||
-                        doctor.lastName.contains(searchText.value.text, ignoreCase = true)
-            }
+        val emptyChats = remember(chats) {
+            chats.filter { it.messages.isEmpty() }
         }
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            filteredDoctors.forEach { doctor ->
-                DoctorAvatar(
-                    doctor = doctor,
-                    onClick = {
-                        navController.navigate("chatDialog/${doctor.id}")
-                    }
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Список чатов
-        val filteredChats = remember(chats, searchText.value.text) {
-            chats.filter { chat ->
-                chat.doctor.firstName.contains(searchText.value.text, ignoreCase = true) ||
-                        chat.doctor.lastName.contains(searchText.value.text, ignoreCase = true)
-            }
-        }
-
-        if (filteredChats.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = if (searchText.value.text.isNotEmpty()) "Ничего не найдено" else "Нет активных чатов",
-                    fontSize = 18.sp,
-                    color = Color(0xFF2F6690))
-            }
-        } else {
-            LazyColumn {
-                items(filteredChats) { chat ->
-                    ChatItem(
+            if (emptyChats.isNotEmpty()) {
+                emptyChats.forEach { chat ->
+                    EmptyChatItem(
                         chat = chat,
                         onClick = {
-                            navController.navigate("chatDialog/${chat.doctor.id}")
+                            navController.navigate("chatDialog/${chat.id}")
                         }
                     )
                 }
             }
         }
+
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        val (matchedByUser, matchedByMessage) = remember(chats, searchText.value.text) {
+            val searchQuery = searchText.value.text
+            val sortedChats = chats.sortedByDescending {
+                it.messages.lastOrNull()?.created_at
+            }
+            val allChats = sortedChats.filter { it.messages.isNotEmpty() }
+
+            val byUser = mutableListOf<Chat>()
+            val byMessage = mutableListOf<Chat>()
+
+            if(searchQuery.isNotEmpty()) {
+                allChats.forEach { chat ->
+                    val userMatch = chat.user2.run {
+                        firstName?.contains(searchQuery, ignoreCase = true) == true ||
+                                lastName?.contains(searchQuery, ignoreCase = true) == true
+                    }
+
+                    val messageMatch = chat.messages.any { message ->
+                        message.text?.contains(searchQuery, ignoreCase = true) == true
+                    }
+
+                    when {
+                        userMatch -> byUser.add(chat)
+                        messageMatch -> byMessage.add(chat)
+                    }
+                }
+            } else {
+                byUser.addAll(allChats)
+            }
+
+            Pair(byUser, byMessage)
+        }
+        if (searchText.value.text.isNotEmpty() && matchedByUser.isNotEmpty()) {
+            Text(
+                text = stringResource(R.string.chats),
+                style = Typography.titleLarge
+            )
+            LazyColumn {
+                items(matchedByUser) { chat ->
+                    ChatItem(
+                        chat = chat,
+                        onClick = { navController.navigate("chatDialog/${chat.id}") },
+                        showLastMessage = true
+                    )
+                }
+            }
+        }
+        if (searchText.value.text.isEmpty() && matchedByUser.isNotEmpty()) {
+            LazyColumn {
+                items(matchedByUser) { chat ->
+                    ChatItem(
+                        chat = chat,
+                        onClick = { navController.navigate("chatDialog/${chat.id}") },
+                        showLastMessage = true
+                    )
+                }
+            }
+        }
+
+        // Секция сообщений
+        if(matchedByMessage.isNotEmpty()) {
+            Text(
+                text = stringResource(R.string.messages),
+                style = Typography.titleLarge
+            )
+            LazyColumn {
+                items(matchedByMessage) { chat ->
+                    ChatItem(
+                        chat = chat,
+                        onClick = { navController.navigate("chatDialog/${chat.id}") },
+                        showLastMessage = false,
+                        searchQuery = searchText.value.text
+                    )
+                }
+            }
+        }
+
+        // Пустое состояние
+        if(searchText.value.text.isNotEmpty()
+            && matchedByUser.isEmpty()
+            && matchedByMessage.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.nothing_found),
+                    style = Typography.bodyMedium
+                )
+            }
+        }
     }
 }
 
-// Ваши оригинальные компоненты остаются без изменений
+
 @Composable
-fun DoctorAvatar(doctor: Doctor, onClick: () -> Unit) {
+fun EmptyChatItem(chat: Chat, onClick: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(8.dp)
             .clickable(onClick = onClick)
     ) {
-        AsyncImage(
-            model = doctor.photoUrl, // URL изображения
-            contentDescription = "Doctor Avatar",
+        Image(
+            painter = painterResource(id = R.drawable.doctor),
+            contentDescription = stringResource(R.string.doctor_avatar),
             modifier = Modifier
-                .size(64.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop,
-            placeholder = painterResource(R.drawable.smileface),
-            error = painterResource(R.drawable.smileface)
+                .size(50.dp)
+                .clip(CircleShape)
         )
-        // Имя врача с обрезанием текста
         Text(
-            text = "${doctor.firstName} ${doctor.lastName}",
-            fontSize = 12.sp,
-            color = Color(0xFF2F6690),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.width(80.dp)
+            text = stringResource(R.string.doctor).format(chat.user2.firstName, chat.user2.lastName),
+            style = Typography.titleMedium
         )
     }
 }
 
 @Composable
-fun ChatItem(chat: Chat, onClick: () -> Unit) {
+fun ChatItem(
+    chat: Chat,
+    onClick: () -> Unit,
+    showLastMessage: Boolean,
+    searchQuery: String = ""
+) {
+    val messageToShow = remember(chat, searchQuery) {
+        if(showLastMessage) {
+            chat.messages.lastOrNull()
+        } else {
+            chat.messages.firstOrNull {
+                it.text?.contains(searchQuery, ignoreCase = true) == true
+            }
+        }
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -259,42 +317,34 @@ fun ChatItem(chat: Chat, onClick: () -> Unit) {
             modifier = Modifier.weight(1f)
         )
         {
-            AsyncImage(
-                model = chat.doctor.photoUrl, // URL изображения
-                contentDescription = "Doctor Avatar",
+            Image(
+                painter = painterResource(id = R.drawable.doctor),
+                contentDescription = stringResource(R.string.doctor_avatar),
                 modifier = Modifier
-                    .size(56.dp)
-                    .padding(end = 10.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop,
-                placeholder = painterResource(R.drawable.smileface),
-                error = painterResource(R.drawable.smileface)
+                    .size(50.dp)
+                    .clip(CircleShape)
             )
             Column(modifier = Modifier.weight(1f)) {
-
                 Text(
-                    text = "${chat.doctor.firstName} ${chat.doctor.lastName}",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF2F6690),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    text = stringResource(R.string.doctor).format(chat.user2.firstName, chat.user2.lastName),
+                    style = Typography.titleMedium
                 )
                 Text(
-                    text = chat.lastMessage.text,
+                    text = messageToShow?.text ?: "Нет сообщений",
                     modifier = Modifier.padding(end = 13.dp),
-                    fontSize = 14.sp,
-                    color = Color(0xFF2F6690),
+                    style = Typography.bodyMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
             }
         }
-        Text(
-            text = chat.lastMessage.time,
-            fontSize = 12.sp,
-            color = Color(0xFF2F6690),
-            modifier = Modifier.padding(end = 8.dp)
-        )
+        messageToShow?.let { message ->
+            Text(
+                text = message.created_at?.let {
+                    MessageTimeFormatter.formatSmartDateTime(it)
+                } ?: "",
+                style = Typography.bodySmall
+            )
+        }
     }
 }

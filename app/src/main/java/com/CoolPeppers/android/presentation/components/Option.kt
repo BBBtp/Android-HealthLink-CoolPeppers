@@ -13,11 +13,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.CoolPeppers.android.R
 import com.CoolPeppers.android.ui.theme.AndroidHealthLinkCoolPeppersTheme
 import com.CoolPeppers.android.ui.theme.primaryLight
 
@@ -55,5 +57,9 @@ fun Option(
 @Preview(showBackground = true)
 @Composable
 fun OptionPreview() {
-    Option(onClick = {}, text = "random", icon = Icons.Default.AccountCircle)
+    Option(
+        onClick = {},
+        text = stringResource(R.string.random),
+        icon = Icons.Default.AccountCircle
+    )
 }

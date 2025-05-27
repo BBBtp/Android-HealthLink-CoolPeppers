@@ -2,6 +2,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,15 +16,21 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,10 +43,10 @@ import com.CoolPeppers.android.presentation.home.HomeViewModel
 import com.CoolPeppers.android.presentation.home.components.ClinicCard
 import com.CoolPeppers.android.presentation.home.components.DoctorCard
 import com.CoolPeppers.android.presentation.home.components.RecordCard
-import com.CoolPeppers.android.presentation.home.components.UserInfoBlock
 import com.CoolPeppers.android.presentation.profile.ProfileViewModel
 //import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.ui.theme.Montserrat
+import kotlinx.coroutines.launch
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -58,84 +65,214 @@ fun HomeScreen(
     val slotsMap by viewModelAppointment.slots.observeAsState(emptyMap())
     val user by viewModelProfile.userState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModelDoctor.loadDoctors(skip = 0, limit = 100, search = "", serviceId = null, clinicId = null)
-        viewModelClinic.loadClinics(skip = 0, limit = 100, search = "")
-        viewModelAppointment.getAppointments()
-    }
-    if (doctors.isEmpty() || clinics.isEmpty() || appointments.isEmpty()) {
-        ShimmerAnimation()
-    } else {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(26.dp)
-        ) {
-            UserInfoBlock(user, navController)
-            Text(
-                text = stringResource(R.string.records),
-                style = androidx.compose.ui.text.TextStyle(
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-//                    color = LightTextPrimary
-                ),
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(appointments) { appointment ->
-                    val doctor = doctorsMap[appointment.doctorId]
-                    val slot = slotsMap[appointment.appointmentSlotId]
+    // Состояния загрузки
+    val isLoadingAppointments by viewModelAppointment.isLoadingAppointments.observeAsState(false)
+    val isLoadingDoctors by viewModelAppointment.isLoadingDoctors.observeAsState(false)
+    val isLoadingSlots by viewModelAppointment.isLoadingSlots.observeAsState(false)
 
-                    if (doctor != null && slot != null) {
-                        RecordCard(appointment,doctor,slot)
+
+    // Состояния ошибок
+    val appointmentsError by viewModelAppointment.appointmentsError.observeAsState(null)
+    val doctorsError by viewModelAppointment.doctorsError.observeAsState(null)
+    val slotsError by viewModelAppointment.slotsError.observeAsState(null)
+
+
+    // Эффект для начальной загрузки данных
+    LaunchedEffect(Unit) {
+        launch {
+            viewModelDoctor.loadDoctors(skip = 0, limit = 5, search = "", serviceId = null, clinicId = null)
+        }
+
+        launch {
+            viewModelClinic.loadClinics(skip = 0, limit = 5, search = "")
+        }
+
+        launch {
+            viewModelAppointment.getAppointments()
+        }
+    }
+
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(26.dp)
+    ) {
+
+        // Секция записей
+        Text(
+            text = stringResource(R.string.records),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.secondary,
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        when {
+            isLoadingAppointments -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+            appointmentsError != null -> {
+                ErrorView(
+                    message = appointmentsError!!,
+                    onRetry = { viewModelAppointment.retryLoading() }
+                )
+            }
+            appointments.isNotEmpty() -> {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(appointments) { appointment ->
+                        val doctor = doctorsMap[appointment.doctorId]
+                        val slot = slotsMap[appointment.appointmentSlotId]
+
+                        if (doctor != null && slot != null) {
+                            RecordCard(appointment, doctor, slot,
+                                onClick = {navController.navigate("appointment_detail/${appointment.clinicId}/${appointment.serviceId}/${appointment.doctorId}")})
+                        }
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(26.dp))
-            Text(
-                text = stringResource(R.string.doctors),
-                style = androidx.compose.ui.text.TextStyle(
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-//                    color = LightTextPrimary
-                ),
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(doctors) { doctor ->
-                    DoctorCard(doctor)
-                }
-            }
-            Spacer(modifier = Modifier.height(26.dp))
-            Text(
-                text = stringResource(R.string.clinics),
-                style = androidx.compose.ui.text.TextStyle(
-                    fontFamily = Montserrat,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-//                    color = LightTextPrimary
-                ),
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            LazyRow (
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(clinics) { clinic ->
-                    ClinicCard(clinic)
-                }
+            else -> {
+                EmptyStateView(message = stringResource(R.string.no_records))
             }
         }
+
+        Spacer(modifier = Modifier.height(26.dp))
+
+        // Секция врачей
+        Text(
+            text = stringResource(R.string.doctors),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.secondary
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        when {
+            isLoadingDoctors -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+            doctorsError != null -> {
+                ErrorView(
+                    message = doctorsError!!,
+                    onRetry = { viewModelDoctor.loadDoctors(0, 5, "", null, null) }
+                )
+            }
+            doctors.isNotEmpty() -> {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(doctors) { doctor ->
+                        DoctorCard(
+                            doctor = doctor,
+                            onClick = {
+                                navController.navigate("doctor_detail/${null}/${null}/${doctor.id}")
+                            }
+                        )
+                    }
+                }
+            }
+            else -> {
+                EmptyStateView(message = stringResource(R.string.no_doctors))
+            }
+        }
+
+        Spacer(modifier = Modifier.height(26.dp))
+
+        // Секция клиник
+        Text(
+            text = stringResource(R.string.clinics),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.secondary
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        when {
+            clinics.isEmpty()-> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+            clinics.isNotEmpty() -> {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(clinics) { clinic ->
+                        ClinicCard(
+                            clinic = clinic,
+                            onClick = {
+                                navController.navigate("clinic_detail/${clinic.id}")
+                            }
+                        )
+                    }
+                }
+            }
+            else -> {
+                EmptyStateView(message = stringResource(R.string.no_clinics))
+            }
+        }
+    }
+}
+
+@Composable
+fun ErrorView(
+    message: String,
+    onRetry: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = message,
+            color = Color.Red,
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(onClick = onRetry) {
+            Text("Повторить")
+        }
+    }
+}
+
+@Composable
+fun EmptyStateView(message: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = message,
+            color = Color.Gray,
+            textAlign = TextAlign.Center
+        )
     }
 }

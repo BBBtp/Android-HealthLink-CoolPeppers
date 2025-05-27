@@ -5,9 +5,9 @@ import com.CoolPeppers.android.data.api.local.TokenManager
 import com.CoolPeppers.android.data.api.network.AuthInterceptor
 import com.CoolPeppers.android.data.api.remote.ApiService
 import com.CoolPeppers.android.data.api.remote.ApiConstants
-import com.CoolPeppers.android.data.api.remote.RetrofitClient
 import com.CoolPeppers.android.data.repository.AppointmentRepository
 import com.CoolPeppers.android.data.repository.AuthRepository
+import com.CoolPeppers.android.data.repository.ChatRepository
 import com.CoolPeppers.android.data.repository.ClinicRepository
 import com.CoolPeppers.android.data.repository.DoctorRepository
 import com.CoolPeppers.android.data.repository.ProfileRepository
@@ -36,7 +36,20 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(tokenManager: TokenManager): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor { tokenManager.getAccessToken() })
+            .addInterceptor { chain ->
+                val originalRequest = chain.request()
+                val token = tokenManager.getAccessToken()
+                
+                if (token == null) {
+                    return@addInterceptor chain.proceed(originalRequest)
+                }
+
+                val request = originalRequest.newBuilder()
+                    .addHeader("Authorization", "Bearer $token")
+                    .build()
+
+                chain.proceed(request)
+            }
             .build()
     }
 
@@ -92,4 +105,9 @@ object NetworkModule {
         return AuthRepository(apiService)
     }
 
+    @Provides
+    @Singleton
+    fun provideChatRepository(apiService: ApiService): ChatRepository {
+        return ChatRepository(apiService)
+    }
 }

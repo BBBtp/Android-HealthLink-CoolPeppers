@@ -8,5 +8,6 @@ data class Service(
     val price: Int?,
     val duration: Int?,
     @SerializedName("logo_url") val logoUrl: String?,
-    val id: Int
+    val id: Int,
+    @SerializedName("clinic_id") val clinicId: Int?,
 )

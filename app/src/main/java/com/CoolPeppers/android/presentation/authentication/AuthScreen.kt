@@ -1,9 +1,9 @@
 package com.CoolPeppers.android.presentation.authentication
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,11 +30,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.CoolPeppers.android.data.model.MockAuthController
 import kotlinx.coroutines.launch
-//import com.CoolPeppers.android.ui.theme.LightBgSecondary
-//import com.CoolPeppers.android.ui.theme.LightTextPrimary
 import com.CoolPeppers.android.ui.theme.Typography
 import com.CoolPeppers.android.R
-
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 
 @Composable
 fun AuthScreen(
@@ -45,6 +51,9 @@ fun AuthScreen(
         mutableStateOf(AuthState.LOGIN)
     }
 
+    val errorMessage by viewModel.errorMessage.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+
     IconButton(
         onClick = { /* TODO */ },
         modifier = Modifier
@@ -53,38 +62,56 @@ fun AuthScreen(
     ) {
         Image(
             painter = painterResource(id = R.drawable.goback),
-            contentDescription = "Go back icon",
+            contentDescription = stringResource(R.string.go_back),
             modifier = Modifier.fillMaxSize()
         )
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.smileface),
-            contentDescription = "smile face",
-            modifier = Modifier
-                .padding(bottom = 10.dp)
-                .size(66.dp)
-        )
-        when (authState) {
-            AuthState.LOGIN -> LoginScreen(
-                viewModel = viewModel,
-                onSwitchToRegister = { authState = AuthState.REGISTER },
-                navController = navController
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = modifier
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.smileface),
+                contentDescription = stringResource(R.string.avatar),
+                modifier = Modifier
+                    .padding(bottom = 10.dp)
+                    .size(66.dp)
             )
-            AuthState.REGISTER -> RegisterScreen(
-                viewModel = viewModel,
-                onSwitchToLogin = { authState = AuthState.LOGIN }
+            when (authState) {
+                AuthState.LOGIN -> LoginScreen(
+                    viewModel = viewModel,
+                    onSwitchToRegister = { authState = AuthState.REGISTER },
+                    navController = navController
+                )
+                AuthState.REGISTER -> RegisterScreen(
+                    viewModel = viewModel,
+                    onSwitchToLogin = { authState = AuthState.LOGIN }
+                )
+            }
+        }
+
+        // Показываем ошибку, если она есть
+        errorMessage?.let { error ->
+            Snackbar(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp)
+            ) {
+                Text(error)
+            }
+        }
+
+        // Показываем индикатор загрузки
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(48.dp)
             )
-           /* AuthState.FORGOT_PASSWORD -> ForgotPasswordScreen(
-                viewModel = viewModel,
-                onBackToLogin = { authState = AuthState.LOGIN }
-            )*/
         }
     }
 }
@@ -93,6 +120,7 @@ enum class AuthState {
     LOGIN, REGISTER /*, FORGOT_PASSWORD*/
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
@@ -101,6 +129,8 @@ fun LoginScreen(
     navController: NavController,
 ) {
     val coroutineScope = rememberCoroutineScope()
+    var passwordVisible by remember { mutableStateOf(false) }
+    val layoutDirection = LocalLayoutDirection.current
 
     Column(
         modifier = Modifier
@@ -109,20 +139,19 @@ fun LoginScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "Вход",
+            text = stringResource(R.string.login),
             style = Typography.titleLarge,
             fontWeight = FontWeight.Bold,
-//            color = LightTextPrimary
         )
 
         OutlinedTextField(
             value = viewModel.loginUsername,
             onValueChange = { viewModel.loginUsername = it },
-            label = { Text("Ваш email", /*color = LightTextPrimary*/) },
+            label = { Text(stringResource(R.string.email)) },
             leadingIcon = {
                 Image(
                     painter = painterResource(id = R.drawable.email),
-                    contentDescription = "Email Icon",
+                    contentDescription = stringResource(R.string.email),
                     modifier = Modifier.size(20.dp)
                 )
             },
@@ -138,14 +167,26 @@ fun LoginScreen(
         OutlinedTextField(
             value = viewModel.loginPassword,
             onValueChange = { viewModel.loginPassword = it },
-            label = { Text("Ваш пароль",/* color = LightTextPrimary*/) },
+            label = { Text(stringResource(R.string.password)) },
             leadingIcon = {
                 Image(
                     painter = painterResource(id = R.drawable.password),
-                    contentDescription = "Password Icon",
+                    contentDescription = stringResource(R.string.password),
                     modifier = Modifier.size(20.dp)
                 )
             },
+            trailingIcon = {
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(
+                        imageVector = if (passwordVisible) Icons.Default.Close else Icons.Default.Info,
+                        contentDescription = if (passwordVisible) 
+                            stringResource(R.string.hide_password) 
+                        else 
+                            stringResource(R.string.show_password)
+                    )
+                }
+            },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(25.dp),
             colors = TextFieldDefaults.colors(
@@ -156,7 +197,7 @@ fun LoginScreen(
         )
 
         ClickableText(
-            text = AnnotatedString("Забыли пароль?"),
+            text = AnnotatedString(stringResource(R.string.forgot_password)),
             onClick = { },
             style = TextStyle(
                 fontSize = 15.sp,
@@ -181,19 +222,16 @@ fun LoginScreen(
                 .fillMaxWidth(0.65f)
                 .height(48.dp),
             shape = RoundedCornerShape(25.dp),
-            colors = ButtonDefaults.buttonColors(
-                /*containerColor = *//*LightBgSecondary*/
-            )
+            enabled = !viewModel.isLoading.value
         ) {
             Text(
-                text = "Войти",
-                /*color = *//*LightTextPrimary*//*,*/
+                text = stringResource(R.string.login_button),
                 fontSize = 18.sp
             )
         }
 
         ClickableText(
-            text = AnnotatedString("Нет аккаунта? Создай!"),
+            text = AnnotatedString(stringResource(R.string.no_account)),
             onClick = { onSwitchToRegister() },
             style = TextStyle(
                 fontSize = 15.sp,
@@ -205,7 +243,7 @@ fun LoginScreen(
 
         Image(
             painter = painterResource(id = R.drawable.login_choise),
-            contentDescription = "login choice"
+            contentDescription = stringResource(R.string.login)
         )
 
         Button(
@@ -218,24 +256,22 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .height(48.dp),
             shape = RoundedCornerShape(25.dp),
-            colors = ButtonDefaults.buttonColors(
-               /* containerColor = *//*LightBgSecondary*/
-            )
+            enabled = !viewModel.isLoading.value
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.google),
-                    contentDescription = "Google Icon",
+                    contentDescription = stringResource(R.string.login_with_google),
                     modifier = Modifier
                         .padding(start = 15.dp, end = 15.dp)
                         .size(25.dp)
                 )
                 Text(
-                    text = "Войти через Google",
-                    /*color = *//*LightTextPrimary*//*,*/
+                    text = stringResource(R.string.login_with_google),
                     fontSize = 18.sp
                 )
             }
@@ -243,13 +279,16 @@ fun LoginScreen(
     }
 }
 
-
+@SuppressLint("StateFlowValueCalledInComposition")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
     viewModel: AuthViewModel = hiltViewModel(),
     onSwitchToLogin: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
+    var passwordVisible by remember { mutableStateOf(false) }
+    val layoutDirection = LocalLayoutDirection.current
 
     Column(
         modifier = Modifier
@@ -258,156 +297,113 @@ fun RegisterScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "Регистрация",
+            text = stringResource(R.string.register),
             style = Typography.titleLarge,
             fontWeight = FontWeight.Bold,
-//            color = LightTextPrimary
         )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .border(
-                    width = 5.dp, // Толщина рамки
-                    color = Color.Red, // Цвет рамки
-                    shape = RoundedCornerShape(25.dp) // Закругленные углы
-                )
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+
+        OutlinedTextField(
+            value = viewModel.username,
+            onValueChange = { viewModel.username = it },
+            label = { Text(stringResource(R.string.username)) },
+            leadingIcon = {
                 Image(
                     painter = painterResource(id = R.drawable.person),
-                    contentDescription = "Person Icon",
-                    modifier = Modifier
-                        .padding(start = 15.dp)
-                        .size(20.dp)
+                    contentDescription = stringResource(R.string.username),
+                    modifier = Modifier.size(20.dp)
                 )
-                OutlinedTextField(
-                    value = viewModel.username,
-                    onValueChange = { viewModel.username = it },
-                    label = { Text("Ваше имя", /*color = LightTextPrimary*/) },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(25.dp),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent
-                    )
-                )
-            }
-        }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(25.dp),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent
+            )
+        )
 
-        // Поле для ввода email
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .border(
-                    width = 5.dp, // Толщина рамки
-                    color = Color.Red, // Цвет рамки
-                    shape = RoundedCornerShape(25.dp) // Закругленные углы
-                )
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+        OutlinedTextField(
+            value = viewModel.email,
+            onValueChange = { viewModel.email = it },
+            label = { Text(stringResource(R.string.email)) },
+            leadingIcon = {
                 Image(
                     painter = painterResource(id = R.drawable.email),
-                    contentDescription = "Email Icon",
-                    modifier = Modifier
-                        .padding(start = 15.dp)
-                        .size(20.dp)
+                    contentDescription = stringResource(R.string.email),
+                    modifier = Modifier.size(20.dp)
                 )
-                OutlinedTextField(
-                    value = viewModel.email,
-                    onValueChange = { viewModel.email = it },
-                    label = { Text("Ваш еmail", /*color = LightTextPrimary*/) },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(25.dp),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent
-                    )
-                )
-            }
-        }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(25.dp),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent
+            )
+        )
 
-        // Поле для ввода пароля
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .border(
-                    width = 5.dp, // Толщина рамки
-                    color = Color.Red, // Цвет рамки
-                    shape = RoundedCornerShape(25.dp) // Закругленные углы
-                )
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+        OutlinedTextField(
+            value = viewModel.password,
+            onValueChange = { viewModel.password = it },
+            label = { Text(stringResource(R.string.password)) },
+            leadingIcon = {
                 Image(
                     painter = painterResource(id = R.drawable.password),
-                    contentDescription = "Password Icon",
-                    modifier = Modifier
-                        .padding(start = 15.dp)
-                        .size(20.dp)
+                    contentDescription = stringResource(R.string.password),
+                    modifier = Modifier.size(20.dp)
                 )
-                OutlinedTextField(
-                    value = viewModel.password,
-                    onValueChange = { viewModel.password = it },
-                    label = { Text("Ваш пароль", /*color = LightTextPrimary*/) },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(25.dp),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent
+            },
+            trailingIcon = {
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(
+                        imageVector = if (passwordVisible) Icons.Default.Close else Icons.Default.Info,
+                        contentDescription = if (passwordVisible) 
+                            stringResource(R.string.hide_password) 
+                        else 
+                            stringResource(R.string.show_password)
                     )
-                )
-            }
-        }
-
+                }
+            },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(25.dp),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent
+            )
+        )
 
         Button(
             onClick = {
-                coroutineScope.launch { // Запускаем корутину
+                coroutineScope.launch {
                     viewModel.register()
                 }
             },
             modifier = Modifier
                 .fillMaxWidth(0.65f)
-                .height(48.dp), // Высота кнопки
-            shape = RoundedCornerShape(25.dp), // Закругленные углы
-            colors = ButtonDefaults.buttonColors(
-                /*containerColor = LightBgSecondary*/ // Цвет кнопки
-            )
+                .height(48.dp),
+            shape = RoundedCornerShape(25.dp),
+            enabled = !viewModel.isLoading.value
         ) {
             Text(
-                text = "Регистрация",
-                /*color = LightTextPrimary,*/
+                text = stringResource(R.string.register_button),
                 fontSize = 18.sp
             )
         }
 
         ClickableText(
-            text = AnnotatedString("Есть аккаунт? Войти"),
+            text = AnnotatedString(stringResource(R.string.have_account)),
             onClick = { onSwitchToLogin() },
             style = TextStyle(
                 fontSize = 15.sp,
-                color = Color.DarkGray, // Цвет текста
-                textDecoration = TextDecoration.Underline // Подчеркивание
+                color = Color.DarkGray,
+                textDecoration = TextDecoration.Underline
             ),
             modifier = Modifier.padding(top = 8.dp)
         )
     }
 }
-
 
 /*
 @OptIn(ExperimentalMaterial3Api::class)

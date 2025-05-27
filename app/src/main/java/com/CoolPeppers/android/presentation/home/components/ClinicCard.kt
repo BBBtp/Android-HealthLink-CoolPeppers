@@ -1,5 +1,6 @@
 package com.CoolPeppers.android.presentation.home.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,6 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -43,13 +46,17 @@ import com.CoolPeppers.android.util.PriceConversion
 import com.CoolPeppers.android.util.RatingStars
 
 @Composable
-fun ClinicCard(clinic: Clinic) {
+fun ClinicCard(
+    clinic: Clinic,
+    onClick: () -> Unit
+) {
     Card(
         colors = CardDefaults.cardColors(
 //            containerColor = LightBgSecondary
         ),
         modifier = Modifier
             .size(width = 290.dp, height = 152.dp)
+            .clickable(onClick = onClick)
     ) {
         Box(Modifier.fillMaxSize()) {
             Column(
@@ -77,7 +84,8 @@ fun ClinicCard(clinic: Clinic) {
 //                                color = LightTextPrimary
                             ),
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.secondary
                         )
                         Text(
                             text = clinic.address,
@@ -88,7 +96,8 @@ fun ClinicCard(clinic: Clinic) {
 //                                color = LightTextPrimary
                             ),
                             maxLines = 3,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.secondary
                         )
                         Spacer(Modifier.width(10.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -109,7 +118,8 @@ fun ClinicCard(clinic: Clinic) {
 //                                        color = LightTextPrimary
                                     ),
                                     maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
+                                    overflow = TextOverflow.Ellipsis,
+                                    color = MaterialTheme.colorScheme.secondary
                                 )
                             }
                         }
@@ -120,7 +130,6 @@ fun ClinicCard(clinic: Clinic) {
                 Row(
                     modifier = Modifier.fillMaxWidth()
                     .padding(start = 5.dp)
-
                 ) {
                     clinic.price?.let {
                         PriceConversion(it.toInt())
@@ -136,7 +145,7 @@ fun ClinicCard(clinic: Clinic) {
             }
 
             IconButton(
-                onClick = {  },
+                onClick = onClick,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(16.dp)
@@ -144,7 +153,7 @@ fun ClinicCard(clinic: Clinic) {
                 Icon(
                     imageVector = Icons.Default.Info,
                     contentDescription = "Info",
-//                    tint = LightTextPrimary
+                    tint = MaterialTheme.colorScheme.secondary
                 )
             }
         }

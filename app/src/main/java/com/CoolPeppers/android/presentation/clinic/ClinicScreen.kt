@@ -1,5 +1,6 @@
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -24,17 +26,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Clinic
 import com.CoolPeppers.android.data.model.ClinicDetail
 import com.CoolPeppers.android.presentation.clinic.ClinicViewModel
 //import com.CoolPeppers.android.ui.theme.LightTextPrimary
-import com.CoolPeppers.android.ui.theme.Montserrat
+//import com.CoolPeppers.android.ui.theme.Montserrat
 import com.CoolPeppers.android.util.PriceConversion
 
 @Composable
-fun ClinicScreen(viewModelClinic: ClinicViewModel = hiltViewModel()) {
+fun ClinicScreen(navController: NavController, viewModelClinic: ClinicViewModel = hiltViewModel()) {
     val clinics by viewModelClinic.clinics.observeAsState(emptyList())
 
     LaunchedEffect(Unit) {
@@ -47,7 +50,7 @@ fun ClinicScreen(viewModelClinic: ClinicViewModel = hiltViewModel()) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+//                .background(Color.White)
         ) {
             Column(
                 modifier = Modifier
@@ -58,20 +61,21 @@ fun ClinicScreen(viewModelClinic: ClinicViewModel = hiltViewModel()) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp)
-                        .background(Color(0xFFffFfFf))
+//                        .background(Color(0xFFffFfFf))
                         .padding(5.dp, 0.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.clinic_blue),
-                        contentDescription = "List Icon",
-                        modifier = Modifier.size(20.dp)
+                        painter = painterResource(id = R.drawable.clinic),
+                        contentDescription = stringResource(R.string.hospital_image),
+                        modifier = Modifier
+                            .size(20.dp)
                     )
                     Text(
                         text = stringResource(R.string.select_your_clinic),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-//                        color = LightTextPrimary
+                        color = MaterialTheme.colorScheme.secondary
                     )
                 }
 
@@ -83,10 +87,12 @@ fun ClinicScreen(viewModelClinic: ClinicViewModel = hiltViewModel()) {
                         .weight(1f)
                 ) {
                     items(clinics.size) { index ->
-                        HospitalCard(clinic = clinics[index])
-
+                        HospitalCard(clinic = clinics[index], onClick = {
+                            navController.navigate("clinic_detail/${clinics[index].id}")
+                        })
                         Spacer(modifier = Modifier.height(10.dp))
                     }
+
                 }
             }
         }
@@ -94,13 +100,14 @@ fun ClinicScreen(viewModelClinic: ClinicViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun HospitalCard(clinic: Clinic) {
+fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
-            .background(Color(0xFFEAF4F4), RoundedCornerShape(14.dp))
-            .padding(10.dp),
+//            .background(/*Color(0xFFEAF4F4)*/, RoundedCornerShape(14.dp))
+            .padding(10.dp)
+            .clickable { onClick() },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -115,8 +122,7 @@ fun HospitalCard(clinic: Clinic) {
                 contentDescription = "Hospital Image",
                 modifier = Modifier
                     .fillMaxHeight()
-                    .background(Color.Gray, RoundedCornerShape(14.dp))
-                    .clip(RoundedCornerShape(16.dp)),
+                    .background(Color.Gray, RoundedCornerShape(14.dp)),
                 contentScale = ContentScale.Crop,
             )
         }
@@ -129,32 +135,46 @@ fun HospitalCard(clinic: Clinic) {
             horizontalAlignment = Alignment.End
         ) {
             Text(
-                text = clinic.address,
+                text = clinic.name,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
-//                color = LightTextPrimary
+                color = MaterialTheme.colorScheme.secondary
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(id = R.drawable.metro),
-                    contentDescription = "Metro Icon",
+                    contentDescription = stringResource(R.string.metro_icon),
                     modifier = Modifier.size(20.dp)
                 )
                 clinic.metro?.let {
                     Text(
                         text = it,
                         style = androidx.compose.ui.text.TextStyle(
-                            fontFamily = Montserrat,
+                           // fontFamily = Montserrat,
                             fontWeight = FontWeight.Light,
                             fontSize = 12.sp,
-//                            color = LightTextPrimary
+                           // color = LightTextPrimary
                         ),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.secondary
                     )
                 }
             }
-            clinic.price?.let { PriceConversion(it.toInt()) }
+            Text(
+                text = clinic.address,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.secondary
+            )
+            Text(
+                text = stringResource(R.string.currency_symbol).format(clinic.price),
+                style = androidx.compose.ui.text.TextStyle(
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp
+                ),
+                color = MaterialTheme.colorScheme.secondary
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,
@@ -164,7 +184,7 @@ fun HospitalCard(clinic: Clinic) {
                     Icon(
                         imageVector = Icons.Filled.Star,
                         contentDescription = null,
-//                        tint = LightTextPrimary
+                        tint = MaterialTheme.colorScheme.secondary
                     )
                 }
                 repeat(5 - clinic.rating.toInt()) {

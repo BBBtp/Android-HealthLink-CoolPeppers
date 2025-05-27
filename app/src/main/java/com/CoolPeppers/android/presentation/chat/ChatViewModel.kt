@@ -1,35 +1,21 @@
 package com.CoolPeppers.android.presentation.chat
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.CoolPeppers.android.data.model.Chat
-import com.CoolPeppers.android.data.model.Doctor
-import com.CoolPeppers.android.data.model.Message
-import com.CoolPeppers.android.data.repository.ClinicRepository
-import com.CoolPeppers.android.data.repository.DoctorRepository
+import com.CoolPeppers.android.data.repository.ChatRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
-
-val LocalBottomBarVisibility = staticCompositionLocalOf { mutableStateOf(true) }
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    private val doctorRepository: DoctorRepository
+    private val chatRepository: ChatRepository,
 ) : ViewModel() {
-    private val _doctors = MutableStateFlow<List<Doctor>>(emptyList())
-    val doctors: StateFlow<List<Doctor>> = _doctors
 
     private val _chats = MutableStateFlow<List<Chat>>(emptyList())
     val chats: StateFlow<List<Chat>> = _chats
@@ -37,71 +23,43 @@ class ChatViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
+
+    private val _refreshTrigger = MutableStateFlow(0)
     init {
-        loadData()
+        loadUserAndData()
     }
 
-    fun loadData() {
+    private fun loadUserAndData() {
         viewModelScope.launch {
             _isLoading.value = true
+            _error.value = null
             try {
-                // Загружаем докторов из репозитория
-                _doctors.value = doctorRepository.getDoctors(
-                    skip = 0,
-                    limit = 20,
-                    search = "",
-                    serviceId = null,
-                    clinicId = null
-                )
+                loadDoctorsAndChats()
 
-                // Создаем моковые чаты на основе загруженных докторов
-                _chats.value = createMockChats(_doctors.value)
             } catch (e: Exception) {
-                // Обработка ошибок
-                Log.e("ChatViewModel", "Error loading data", e)
+                _error.value = "Ошибка загрузки пользователя: ${e.localizedMessage}"
             } finally {
                 _isLoading.value = false
             }
         }
     }
 
-    private fun createMockChats(doctors: List<Doctor>): List<Chat> {
-        return doctors.mapIndexed { index, doctor ->
-            Chat(
-                id = index + 1,
-                doctor = doctor,
-                lastMessage = Message(
-                    id = 1,
-                    text = when (index % 3) {
-                        0 -> "Добрый день! Как ваше самочувствие?"
-                        1 -> "Результаты анализов готовы"
-                        else -> "Напоминаю о записи на завтра"
-                    },
-                    time = when (index % 4) {
-                        0 -> "10:30"
-                        1 -> "Вчера"
-                        2 -> "5 мая"
-                        else -> "2 недели назад"
-                    },
-                    isFromUser = index % 2 == 0
-                ),
-            )
+    private suspend fun loadDoctorsAndChats() {
+        try {
+
+            val chats = chatRepository.getUserChats()
+            _chats.value = chats
+
+        } catch (e: Exception) {
+            _error.value = "Ошибка загрузки данных: ${e.localizedMessage}"
+            Log.e("ChatViewModel", "Error loading data", e)
         }
     }
 
-    fun getDoctorById(id: Int): Doctor? {
-        return _doctors.value.find { it.id == id }
-    }
-}
-@HiltViewModel
-class ChatDialogViewModel @Inject constructor() : ViewModel() {
-    private val _messages = mutableStateListOf<Message>()
-    val messages: List<Message> get() = _messages
-
-    fun sendMessage(text: String) {
-        if (text.isNotBlank()) {
-            val currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-            _messages.add(Message(_messages.size + 1, text, currentTime, true))
-        }
+    fun refreshData() {
+        _refreshTrigger.value++
+        loadUserAndData()
     }
 }

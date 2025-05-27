@@ -17,6 +17,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,11 +31,13 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -61,6 +65,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.CoolPeppers.android.R
+import com.CoolPeppers.android.data.api.local.TokenManager
 import com.CoolPeppers.android.data.model.User
 import com.CoolPeppers.android.presentation.components.HealthLinkTextField
 import com.CoolPeppers.android.presentation.components.Option
@@ -74,10 +79,11 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.padding(12.dp),
     viewModel: ProfileViewModel = hiltViewModel(),
     navController: NavController
 ) {
+
     val user by viewModel.userState.collectAsState()
     val loading by viewModel.loadingState
     val error by viewModel.errorState
@@ -112,7 +118,10 @@ fun ProfileScreen(
             loadingState = loading, errorState = error
         )
         OptionsList(navController = navController)
+
     }
+
+
 }
 
 @Composable
@@ -122,6 +131,7 @@ fun OptionsList(
     navController: NavController
 
 ) {
+    var showLogoutDialog by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     Column(
         verticalArrangement = Arrangement.spacedBy(24.dp),
@@ -148,17 +158,34 @@ fun OptionsList(
         Option(icon = Icons.AutoMirrored.Filled.ExitToApp,
             text = stringResource(R.string.log_out),
             buttonIcon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            onClick = {
-                coroutineScope.launch {
-                    viewModel.logOut()
-                    navController.navigate("auth") {
-                        popUpTo(navController.graph.id) {
-                            inclusive = true
+            onClick = { showLogoutDialog = true })
+    }
+
+    if (showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
+            title = { Text("Подтверждение выхода") },
+            text = { Text("Вы уверены, что хотите выйти из аккаунта?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.logOut()
+                        navController.navigate("auth") {
+                            popUpTo("home") { inclusive = true }
                         }
-                        launchSingleTop = true
                     }
+                ) {
+                    Text("Выйти")
                 }
-            })
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showLogoutDialog = false }
+                ) {
+                    Text("Отмена")
+                }
+            }
+        )
     }
 }
 
@@ -412,4 +439,3 @@ fun ProfileTextFieldPreview() {
         placeholder = R.string.avatar
     )
 }
-

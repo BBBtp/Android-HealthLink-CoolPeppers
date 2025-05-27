@@ -14,5 +14,10 @@ class ClinicRepository @Inject constructor(
             search = search,
         )
     }
+    suspend fun getClinicsById(clinicId: Int): Clinic {
+        return apiService.getClinicById(
+            clinicId = clinicId
+        )
+    }
 
 }
