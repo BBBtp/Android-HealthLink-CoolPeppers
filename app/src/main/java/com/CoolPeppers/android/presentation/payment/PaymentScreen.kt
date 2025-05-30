@@ -38,6 +38,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import com.CoolPeppers.android.presentation.profile.ProfileViewModel
 
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -53,11 +54,13 @@ fun PaymentScreen(
     viewModelDoctor: DoctorViewModel = hiltViewModel(),
     viewModelService: ServiceViewModel = hiltViewModel(),
     viewModelAppointment: AppointmentViewModel = hiltViewModel(),
+    viewModelProfileViewModel: ProfileViewModel = hiltViewModel()
 ) {
     val clinicById by viewModelClinic.clinic.observeAsState(emptyList())
     val doctorById by viewModelDoctor.doctor.observeAsState(emptyList())
     val serviceById by viewModelService.service.observeAsState(emptyList())
     val coroutineScope = rememberCoroutineScope()
+    val user by viewModelProfileViewModel.userState.collectAsState()
     val context = LocalContext.current
     val selectedCard = remember { mutableStateOf(0) }
 
@@ -196,6 +199,7 @@ fun PaymentScreen(
                                         doctorId = doctorId,
                                         slotId = slot
                                     )
+                                    viewModelAppointment.createChat(user.id, doctorId)
                                     Toast.makeText(
                                         context,
                                         "Вы успешно записаны!",

@@ -188,8 +188,9 @@ interface  ApiService {
 
     @POST(ApiConstants.CREATE_CHAT_URL)
     suspend fun createChat(
-        @Body createChatRequest: CreateChatRequest
-    ): Chat
+        @Query(ApiConstants.USER1_ID) user1Id: Int,
+        @Query(ApiConstants.USER2_ID) user2Id: Int,
+    )
 
     @GET(ApiConstants.GET_SYMPTOMS_URL)
     suspend fun getSymptoms(): List<Symptom>

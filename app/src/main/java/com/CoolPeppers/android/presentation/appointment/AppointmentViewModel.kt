@@ -32,6 +32,12 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
+    fun createChat(user1Id: Int, user2Id: Int) {
+        viewModelScope.launch {
+            apiService.createChat(user1Id, user2Id)
+        }
+    }
+
     fun createAppointment(clinicId: Int,serviceId: Int, doctorId: Int, slotId: Int,) {
         viewModelScope.launch {
             try {

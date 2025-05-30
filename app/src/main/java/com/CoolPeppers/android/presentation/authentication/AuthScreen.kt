@@ -230,10 +230,6 @@ fun LoginScreen(
             modifier = Modifier.padding(top = 8.dp)
         )
 
-        Image(
-            painter = painterResource(id = R.drawable.login_choise),
-            contentDescription = stringResource(R.string.login)
-        )
     }
 }
 
@@ -283,11 +279,11 @@ fun RegisterScreen(
         OutlinedTextField(
             value = viewModel.email,
             onValueChange = { viewModel.email = it },
-            label = { Text(stringResource(R.string.username)) },
+            label = { Text(stringResource(R.string.email)) },
             leadingIcon = {
                 Image(
                     painter = painterResource(id = R.drawable.person),
-                    contentDescription = stringResource(R.string.username),
+                    contentDescription = stringResource(R.string.email),
                     modifier = Modifier.size(20.dp)
                 )
             },
@@ -336,6 +332,7 @@ fun RegisterScreen(
             onClick = {
                 coroutineScope.launch {
                     viewModel.register()
+                    onSwitchToLogin()
                 }
             },
             modifier = Modifier
@@ -345,7 +342,7 @@ fun RegisterScreen(
             enabled = !viewModel.isLoading.value
         ) {
             Text(
-                text = stringResource(R.string.register_button),
+                text = stringResource(R.string.register),
                 fontSize = 18.sp
             )
         }

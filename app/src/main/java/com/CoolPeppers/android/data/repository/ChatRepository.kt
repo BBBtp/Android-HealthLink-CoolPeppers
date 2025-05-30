@@ -16,4 +16,8 @@ class ChatRepository @Inject constructor(
         return apiService.getUserChats(
         )
     }
+
+    suspend fun createChat(user1Id: Int, user2Id: Int) {
+        return apiService.createChat(user1Id = user1Id , user2Id = user2Id)
+    }
 }
