@@ -180,9 +180,8 @@ fun DoctorCard(doctor: Doctor, onClick: () -> Unit) {
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "%.1f".format(doctor.rating),
-//                        color = Color(0xFF2F6690),
-                        fontSize = 14.sp
+                        text = stringResource(R.string.rating_format, doctor.rating),
+                        style = MaterialTheme.typography.bodyLarge
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(

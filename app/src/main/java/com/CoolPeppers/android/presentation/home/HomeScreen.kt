@@ -92,6 +92,11 @@ fun HomeScreen(
         }
     }
 
+    val doctorIdsInAppointments = appointments.map { it.doctorId }.toSet()
+    val filteredDoctors = doctors.filter { it.id in doctorIdsInAppointments }
+
+    val clinicIdsInAppointments = appointments.map { it.clinicId }.toSet()
+    val filteredClinics = clinics.filter { it.id in clinicIdsInAppointments }
 
     Column(
         modifier = Modifier
@@ -179,7 +184,7 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(doctors) { doctor ->
+                    items(filteredDoctors) { doctor ->
                         DoctorCard(
                             doctor = doctor,
                             onClick = {
@@ -221,7 +226,7 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(clinics) { clinic ->
+                    items(filteredClinics) { clinic ->
                         ClinicCard(
                             clinic = clinic,
                             onClick = {

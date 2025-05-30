@@ -24,7 +24,13 @@ import androidx.compose.foundation.lazy.grid.GridCells
 
 
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -33,6 +39,7 @@ import androidx.navigation.NavController
 import com.CoolPeppers.android.presentation.service.ServiceViewModel
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoriesServiceScreen(navController: NavController, viewModelService: ServiceViewModel = hiltViewModel())  {
     val services by viewModelService.services.observeAsState(emptyList())
@@ -41,34 +48,47 @@ fun CategoriesServiceScreen(navController: NavController, viewModelService: Serv
         viewModelService.loadService(0, 100, "", clinicId = null)
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-//            .background(Color.White)
-    ) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .background(Color.White)
+                            .padding(horizontal = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.service),
+                            contentDescription = stringResource(R.string.service_icon),
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.select_service),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { navController.navigate("symptoms") }) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = stringResource(R.string.ai_assistant)
+                        )
+                    }
+                }
+            )
+        }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-//                    .background(Color.White)
-                    .padding(horizontal = 5.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.service),
-                    contentDescription = stringResource(R.string.service_icon),
-                    modifier = Modifier.size(20.dp)
-                )
-                Text(
-                    text = stringResource(R.string.select_service),
-                    style = MaterialTheme.typography.titleLarge
-                )
-            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
 

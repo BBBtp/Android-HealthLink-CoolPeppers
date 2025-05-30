@@ -176,7 +176,7 @@ fun PaymentScreen(
             ) {
                 Column {
                     Text(
-                        text = stringResource(R.string.currency_symbol).format(service.price),
+                        text = service.price?.let { stringResource(R.string.price_format, it) } ?: "",
                         style = Typography.titleLarge
                     )
                     Text(
@@ -302,14 +302,10 @@ private fun AppointmentInfoCard(
                     style = Typography.titleMedium
                 )
                 Text(
-                    text = "$price ₽",
+                    text = stringResource(R.string.price_format, price),
                     style = Typography.titleLarge
                 )
-                Text(
 
-                    text = stringResource(R.string.currency_symbol).format(price),
-                    style = Typography.titleLarge
-                )
             }
         }
     }
@@ -444,19 +440,19 @@ private fun PaymentSystemsList() {
     ) {
         PaymentSystemButton(
             iconRes = R.drawable.sber,
-            text = "Sber Pay",
+            text = stringResource(R.string.sber_pay),
             backgroundColor = Color(0xFF21A038)
         )
 
         PaymentSystemButton(
             iconRes = R.drawable.vtb,
-            text = "ВТБ",
+            text = stringResource(R.string.vtb),
             backgroundColor = Color(0xFF009FDF)
         )
 
         PaymentSystemButton(
             iconRes = R.drawable.vk_pay,
-            text = "ВК Пэй",
+            text = stringResource(R.string.vk_pay),
             backgroundColor = Color(0xFF0077FF)
         )
     }

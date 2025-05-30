@@ -35,6 +35,7 @@ import com.CoolPeppers.android.R
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -54,18 +55,7 @@ fun AuthScreen(
     val errorMessage by viewModel.errorMessage.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
-    IconButton(
-        onClick = { /* TODO */ },
-        modifier = Modifier
-            .size(40.dp)
-            .padding(start = 10.dp, top = 10.dp)
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.goback),
-            contentDescription = stringResource(R.string.go_back),
-            modifier = Modifier.fillMaxSize()
-        )
-    }
+
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -140,7 +130,9 @@ fun LoginScreen(
     ) {
         Text(
             text = stringResource(R.string.login),
-            style = Typography.titleLarge,
+            style = MaterialTheme.typography.titleLarge.copy(
+                color = MaterialTheme.colorScheme.secondary
+            ),
             fontWeight = FontWeight.Bold,
         )
 
@@ -152,7 +144,7 @@ fun LoginScreen(
                 Image(
                     painter = painterResource(id = R.drawable.email),
                     contentDescription = stringResource(R.string.email),
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(20.dp),
                 )
             },
             modifier = Modifier.fillMaxWidth(),
@@ -179,6 +171,7 @@ fun LoginScreen(
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(
                         imageVector = if (passwordVisible) Icons.Default.Close else Icons.Default.Info,
+                        tint = MaterialTheme.colorScheme.primary,
                         contentDescription = if (passwordVisible) 
                             stringResource(R.string.hide_password) 
                         else 
@@ -199,9 +192,9 @@ fun LoginScreen(
         ClickableText(
             text = AnnotatedString(stringResource(R.string.forgot_password)),
             onClick = { },
-            style = TextStyle(
+            style = MaterialTheme.typography.bodyMedium.copy(
                 fontSize = 15.sp,
-                color = Color.DarkGray,
+                color = MaterialTheme.colorScheme.secondary,
                 textDecoration = TextDecoration.Underline
             ),
             modifier = Modifier
@@ -233,49 +226,18 @@ fun LoginScreen(
         ClickableText(
             text = AnnotatedString(stringResource(R.string.no_account)),
             onClick = { onSwitchToRegister() },
-            style = TextStyle(
+            style = MaterialTheme.typography.bodyMedium.copy(
                 fontSize = 15.sp,
-                color = Color.DarkGray,
+                color = MaterialTheme.colorScheme.secondary,
                 textDecoration = TextDecoration.Underline
             ),
             modifier = Modifier.padding(top = 8.dp)
         )
 
-        Image(
-            painter = painterResource(id = R.drawable.login_choise),
-            contentDescription = stringResource(R.string.login)
-        )
-
-        Button(
-            onClick = {
-                coroutineScope.launch {
-                    viewModel.login()
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            shape = RoundedCornerShape(25.dp),
-            enabled = !viewModel.isLoading.value
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.google),
-                    contentDescription = stringResource(R.string.login_with_google),
-                    modifier = Modifier
-                        .padding(start = 15.dp, end = 15.dp)
-                        .size(25.dp)
-                )
-                Text(
-                    text = stringResource(R.string.login_with_google),
-                    fontSize = 18.sp
-                )
-            }
-        }
+//        Image(
+//            painter = painterResource(id = R.drawable.login_choise),
+//            contentDescription = stringResource(R.string.login)
+//        )
     }
 }
 
@@ -298,7 +260,9 @@ fun RegisterScreen(
     ) {
         Text(
             text = stringResource(R.string.register),
-            style = Typography.titleLarge,
+            style = MaterialTheme.typography.titleLarge.copy(
+                color = MaterialTheme.colorScheme.secondary
+            ),
             fontWeight = FontWeight.Bold,
         )
 
@@ -325,11 +289,11 @@ fun RegisterScreen(
         OutlinedTextField(
             value = viewModel.email,
             onValueChange = { viewModel.email = it },
-            label = { Text(stringResource(R.string.email)) },
+            label = { Text(stringResource(R.string.username)) },
             leadingIcon = {
                 Image(
-                    painter = painterResource(id = R.drawable.email),
-                    contentDescription = stringResource(R.string.email),
+                    painter = painterResource(id = R.drawable.person),
+                    contentDescription = stringResource(R.string.username),
                     modifier = Modifier.size(20.dp)
                 )
             },
@@ -381,7 +345,7 @@ fun RegisterScreen(
                 }
             },
             modifier = Modifier
-                .fillMaxWidth(0.65f)
+//                .fillMaxWidth(0.85f)
                 .height(48.dp),
             shape = RoundedCornerShape(25.dp),
             enabled = !viewModel.isLoading.value
@@ -395,9 +359,10 @@ fun RegisterScreen(
         ClickableText(
             text = AnnotatedString(stringResource(R.string.have_account)),
             onClick = { onSwitchToLogin() },
-            style = TextStyle(
+            // TODO: из-за нематериаловского стайла цвет не соответсвует теме, надо исправить
+            style = MaterialTheme.typography.bodyMedium.copy(
                 fontSize = 15.sp,
-                color = Color.DarkGray,
+                color = MaterialTheme.colorScheme.secondary,
                 textDecoration = TextDecoration.Underline
             ),
             modifier = Modifier.padding(top = 8.dp)
@@ -405,111 +370,3 @@ fun RegisterScreen(
     }
 }
 
-/*
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ForgotPasswordScreen(
-    viewModel: AuthViewModel,
-    onBackToLogin: () -> Unit
-) {
-    val coroutineScope = rememberCoroutineScope()
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(0.8f)
-            .padding(bottom = 25.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text(
-            text = "Восстановление пароля",
-            style = Typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = LightTextPrimary
-        )
-
-        // Поле для email
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .border(
-                    width = 5.dp, // Толщина рамки
-                    color = LightBgSecondary, // Цвет рамки
-                    shape = RoundedCornerShape(25.dp) // Закругленные углы
-                )
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.email),
-                            contentDescription = "Email Icon",
-                            modifier = Modifier
-                                .padding(start = 15.dp)
-                                .size(20.dp)
-                        )
-                        OutlinedTextField(
-                            value = viewModel.forgotPasswordEmail,
-                            onValueChange = { viewModel.forgotPasswordEmail = it },
-                            label = { Text(text = "Ваш email", color = LightTextPrimary) },
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(25.dp),
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                disabledContainerColor = Color.Transparent
-                            )
-                        )
-                    }
-                }
-
-                    viewModel.passwordResetError?.let { error ->
-                Text(
-                    text = error,
-                    color = Color.Red,
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-
-            if (viewModel.passwordResetSent) {
-                Text(
-                    text = "Ссылка отправлена на ваш email",
-                    color = Color.Green,
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-
-            Button(
-                onClick = {coroutineScope.launch {
-                    viewModel.sendPasswordReset() }
-                          },
-            modifier = Modifier
-                .fillMaxWidth(0.65f)
-                .height(48.dp),
-            shape = RoundedCornerShape(25.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = LightBgSecondary
-            )
-        ) {
-            Text(
-                text = "Отправить",
-                color = LightTextPrimary,
-                fontSize = 18.sp
-            )
-        }
-
-        ClickableText(
-            text = AnnotatedString("Вернуться к входу"),
-            onClick = { onBackToLogin() },
-            style = TextStyle(
-                fontSize = 15.sp,
-                color = Color.DarkGray,
-                textDecoration = TextDecoration.Underline
-            ),
-            modifier = Modifier.padding(top = 8.dp)
-        )
-    }
-}
-*/

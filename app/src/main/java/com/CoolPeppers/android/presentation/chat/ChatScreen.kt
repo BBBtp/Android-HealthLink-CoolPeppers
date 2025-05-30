@@ -19,6 +19,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -37,6 +39,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -107,7 +110,7 @@ fun ChatScreen(
     }
 }
 
-
+//@Preview
 @Composable
 fun ChatApp(
     navController: NavController,
@@ -131,12 +134,13 @@ fun ChatApp(
                 textStyle = TextStyle(fontSize = 16.sp),
                 modifier = Modifier
                     .weight(1f)
-                    .background(Color(0xFFEAF4F4), CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
+//                    .clip(CircleShape)
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 decorationBox = { innerTextField ->
                     Box {
                         if (searchText.value.text.isEmpty()) {
-                            Text(stringResource(R.string.search), color = Color(0xFF808080))
+                            Text(stringResource(R.string.search), /*color = Color(0xFF808080)*/)
                         }
                         innerTextField()
                     }
@@ -274,9 +278,10 @@ fun EmptyChatItem(chat: Chat, onClick: () -> Unit) {
             .padding(8.dp)
             .clickable(onClick = onClick)
     ) {
-        Image(
+        Icon(
             painter = painterResource(id = R.drawable.doctor),
             contentDescription = stringResource(R.string.doctor_avatar),
+            tint = MaterialTheme.colorScheme.secondary,
             modifier = Modifier
                 .size(50.dp)
                 .clip(CircleShape)
@@ -317,9 +322,10 @@ fun ChatItem(
             modifier = Modifier.weight(1f)
         )
         {
-            Image(
+            Icon(
                 painter = painterResource(id = R.drawable.doctor),
                 contentDescription = stringResource(R.string.doctor_avatar),
+                tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape)
@@ -327,12 +333,16 @@ fun ChatItem(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(R.string.doctor).format(chat.user2.firstName, chat.user2.lastName),
-                    style = Typography.titleMedium
+                    style = Typography.titleMedium.copy(
+                        color = MaterialTheme.colorScheme.secondary
+                    )
                 )
                 Text(
                     text = messageToShow?.text ?: "Нет сообщений",
                     modifier = Modifier.padding(end = 13.dp),
-                    style = Typography.bodyMedium,
+                    style = Typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.secondary,
+                    ),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -343,7 +353,9 @@ fun ChatItem(
                 text = message.created_at?.let {
                     MessageTimeFormatter.formatSmartDateTime(it)
                 } ?: "",
-                style = Typography.bodySmall
+                style = Typography.bodySmall.copy(
+                    color = MaterialTheme.colorScheme.secondary
+                )
             )
         }
     }

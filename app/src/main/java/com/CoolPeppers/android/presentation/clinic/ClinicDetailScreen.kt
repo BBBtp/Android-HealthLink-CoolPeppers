@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -83,7 +84,8 @@ fun ClinicDetailScreen(
                                 contentDescription = "Hospital Image",
                                 modifier = Modifier
                                     .fillMaxHeight()
-                                    .background(Color.Gray, RoundedCornerShape(14.dp)),
+                                    .clip(RoundedCornerShape(14.dp))
+                                    .background(Color.Gray),
                                 contentScale = ContentScale.Crop,
                             )
                         }

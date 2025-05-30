@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -73,7 +74,7 @@ fun DoctorCard(
                     Spacer(modifier = Modifier.width(8.dp))
                     Column {
                         Text(
-                            text = "${doctor.firstName} ${doctor.lastName}",
+                            text = stringResource(R.string.doctor_name_format, doctor.firstName, doctor.lastName),
                             style = androidx.compose.ui.text.TextStyle(
                                 fontFamily = Montserrat,
                                 fontWeight = FontWeight.Bold,

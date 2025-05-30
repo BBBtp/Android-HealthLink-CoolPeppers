@@ -122,7 +122,8 @@ fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
                 contentDescription = "Hospital Image",
                 modifier = Modifier
                     .fillMaxHeight()
-                    .background(Color.Gray, RoundedCornerShape(14.dp)),
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(Color.Gray),
                 contentScale = ContentScale.Crop,
             )
         }
@@ -167,34 +168,39 @@ fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.secondary
             )
-            Text(
-                text = stringResource(R.string.currency_symbol).format(clinic.price),
-                style = androidx.compose.ui.text.TextStyle(
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp
-                ),
-                color = MaterialTheme.colorScheme.secondary
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 5.dp),
+                horizontalAlignment = Alignment.End
             ) {
-                repeat(clinic.rating.toInt()) {
-                    Icon(
-                        imageVector = Icons.Filled.Star,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
+                Row(
+
+                ) {
+                    clinic.price?.let {
+                        PriceConversion(it.toInt())
+                    }
                 }
-                repeat(5 - clinic.rating.toInt()) {
-                    Icon(
-                        imageVector = Icons.Outlined.Star,
-                        contentDescription = null,
-                        tint = Color.Gray
-                    )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    repeat(clinic.rating.toInt()) {
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                    repeat(5 - clinic.rating.toInt()) {
+                        Icon(
+                            imageVector = Icons.Outlined.Star,
+                            contentDescription = null,
+                            tint = Color.Gray
+                        )
+                    }
                 }
             }
+
         }
     }
 }

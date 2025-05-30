@@ -41,6 +41,7 @@ import com.CoolPeppers.android.R
 import com.CoolPeppers.android.data.model.Chat
 import com.CoolPeppers.android.data.model.Message
 import com.CoolPeppers.android.presentation.chat.ChatDialogViewModel
+import com.CoolPeppers.android.presentation.components.HealthLinkTextField
 import com.CoolPeppers.android.ui.theme.LocalBottomBarVisibility
 import com.CoolPeppers.android.util.MessageTimeFormatter
 import com.google.android.gms.maps.model.Circle
@@ -195,8 +196,9 @@ private fun ChatHeader(chat: Chat, onBack: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .background(color = MaterialTheme.colorScheme.surfaceContainer)
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(
             onClick = { onBack() },
@@ -204,12 +206,14 @@ private fun ChatHeader(chat: Chat, onBack: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.back)
+                contentDescription = stringResource(R.string.back),
+                tint = MaterialTheme.colorScheme.secondary
             )
         }
-        Image(
+        Icon(
             painter = painterResource(id = R.drawable.doctor),
             contentDescription = stringResource(R.string.doctor_avatar),
+            tint = MaterialTheme.colorScheme.secondary,
             modifier = Modifier
                 .size(50.dp)
                 .clip(CircleShape)
@@ -218,7 +222,9 @@ private fun ChatHeader(chat: Chat, onBack: () -> Unit) {
         Column {
             Text(
                 text = stringResource(R.string.doctor).format(chat.user2.firstName, chat.user2.lastName),
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.colorScheme.secondary
+                )
             )
         }
     }
@@ -234,13 +240,13 @@ private fun DateSeparator(date: String) {
     ) {
         Surface(
             shape = RoundedCornerShape(16.dp),
-            color = Color(0xFFEAF4F4),
+//            color = Color(0xFFEAF4F4),
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             Text(
                 text = date,
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                color = Color(0xFF2F6690),
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 12.sp
             )
         }
@@ -311,7 +317,7 @@ private fun FloatingDateHeader(
         ) {
             Surface(
                 shape = CircleShape,
-                color = Color(0xFF2F6690),
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 Text(
@@ -343,7 +349,7 @@ private fun MessageInput(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFEAF4F4)),
+            .background(MaterialTheme.colorScheme.surfaceContainer),
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -354,11 +360,12 @@ private fun MessageInput(
                     .height(65.dp)
                     .padding(end = 10.dp)
                     .weight(1f)
-                    .border(
-                        width = 1.dp,
-                        color = if (enabled) Color.Black else Color.Gray,
-                        shape = RoundedCornerShape(24.dp)
-                    ),
+//                    .border(
+//                        width = 1.dp,
+//                        color = if (enabled) Color.Black else Color.Gray,
+//                        shape = RoundedCornerShape(24.dp)
+//                    )
+                        ,
                 shape = RoundedCornerShape(24.dp),
                 color = Color.Transparent
             ) {
@@ -366,20 +373,20 @@ private fun MessageInput(
                     modifier = Modifier.padding(start = 9.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TextField(
+                    HealthLinkTextField(
                         value = messageText,
                         onValueChange = onMessageChange,
                         modifier = Modifier.weight(1f),
                         placeholder = { Text("Введите сообщение...", fontSize = 12.sp) },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent
-                        ),
+////                        shape = RoundedCornerShape(24.dp),
+////                        colors = TextFieldDefaults.colors(
+//                            focusedContainerColor = Color.Transparent,
+//                            unfocusedContainerColor = Color.Transparent,
+//                            disabledContainerColor = Color.Transparent,
+//                            focusedIndicatorColor = Color.Transparent,
+//                            unfocusedIndicatorColor = Color.Transparent,
+//                            disabledIndicatorColor = Color.Transparent
+//                        ),
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Send,
                             keyboardType = KeyboardType.Text
@@ -397,7 +404,7 @@ private fun MessageInput(
                 modifier = Modifier
                     .size(53.dp)
                     .background(
-                        color = if (enabled) Color(0xFF2F6690) else Color.Gray,
+                        color = if (enabled) MaterialTheme.colorScheme.primary else Color.Gray,
                         shape = RoundedCornerShape(50)
                     ),
                 enabled = enabled && messageText.isNotBlank()
@@ -420,7 +427,7 @@ private fun MessageBubble(
 ) {
     Log.i("Current", "$isCurrentUser")
     val alignment = if (isCurrentUser) Alignment.CenterEnd else Alignment.CenterStart
-    val bgColor = if (isCurrentUser) Color(0xFFFFFFFF) else Color(0xFF2F6690)
+    val bgColor = if (isCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
     val textColor = if (isCurrentUser) Color(0xFF2F6690) else Color(0xFFFFFFFF)
     val formattedTime = remember(message.created_at) {
         try {
@@ -467,7 +474,7 @@ private fun MessageBubble(
                 ) {
                     Text(
                         text = message.text,
-                        color = textColor,
+//                        color = textColor,
                         fontSize = 16.sp,
                         modifier = Modifier
                             .weight(1f, fill = false)
@@ -482,7 +489,7 @@ private fun MessageBubble(
                             text = formattedTime,
                             fontSize = 12.sp,
                             modifier = Modifier.offset(y = 6.dp),
-                            color = textColor.copy(alpha = 0.7f),
+//                            color = textColor.copy(alpha = 0.7f),
                         )
                         if (isCurrentUser) {
                             Icon(

@@ -46,4 +46,7 @@ object ApiConstants {
     const val CREATE_CHAT_URL = "/api/v1/chat/chats/"
     //Вебсокет
     const val  GET_WEBSOCKET = "api/v1//ws/{user_id}"
+    //Симптомы
+    const val GET_SYMPTOMS_URL = "/api/v1/match/symptoms/"
+    const val MATCH_SERVICES_URL = "/api/v1/match/match-services"
 }
