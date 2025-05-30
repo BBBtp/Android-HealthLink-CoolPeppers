@@ -107,7 +107,8 @@ fun HomeScreen(
         // Секция записей
         Text(
             text = stringResource(R.string.records),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.secondary,
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -139,7 +140,8 @@ fun HomeScreen(
                         val slot = slotsMap[appointment.appointmentSlotId]
 
                         if (doctor != null && slot != null) {
-                            RecordCard(appointment, doctor, slot)
+                            RecordCard(appointment, doctor, slot,
+                                onClick = {navController.navigate("appointment_detail/${appointment.clinicId}/${appointment.serviceId}/${appointment.doctorId}")})
                         }
                     }
                 }
@@ -154,7 +156,8 @@ fun HomeScreen(
         // Секция врачей
         Text(
             text = stringResource(R.string.doctors),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.secondary
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -185,7 +188,7 @@ fun HomeScreen(
                         DoctorCard(
                             doctor = doctor,
                             onClick = {
-//                                navController.navigate("doctor_detail/${null}/${null}/${doctor.id}")
+                                navController.navigate("doctor_detail/${null}/${null}/${doctor.id}")
                             }
                         )
                     }
@@ -201,7 +204,8 @@ fun HomeScreen(
         // Секция клиник
         Text(
             text = stringResource(R.string.clinics),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.secondary
         )
 
         Spacer(modifier = Modifier.height(12.dp))

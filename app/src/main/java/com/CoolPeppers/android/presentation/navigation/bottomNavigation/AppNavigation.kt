@@ -28,6 +28,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.CoolPeppers.android.presentation.appointment.AppointmentDetail
 import com.CoolPeppers.android.presentation.authentication.AuthScreen
 
 import com.CoolPeppers.android.presentation.notifications.NotificationsScreen
@@ -125,6 +126,16 @@ fun NavHostContainer(
                         clinicId = clinicId,
                         serviceId = serviceId,
                         doctorId = doctorId,
+                        navController = navController
+                    )
+                }
+            }
+            composable("appointment_detail/{appointmentId}") { backStackEntry ->
+                val appointmentId = backStackEntry.arguments?.getString("appointmentId")?.toIntOrNull()
+
+                if (appointmentId != null) {
+                    AppointmentDetail(
+                        appointmentId = appointmentId,
                         navController = navController
                     )
                 }

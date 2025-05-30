@@ -162,7 +162,7 @@ fun NotificationsScreen(
                             if (doctor != null && slot != null) {
                                 Log.d(TAG, "Rendering RecordCard for appointment ${appointment.id}")
                                 Column {
-                                    RecordCard(appointment, doctor, slot)
+                                    RecordCard(appointment, doctor, slot, onClick = {})
 
                                     val slotDateTime = runCatching {
                                         LocalDateTime.parse(slot.slotTime, formatter)

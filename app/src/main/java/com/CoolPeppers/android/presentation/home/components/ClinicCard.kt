@@ -19,6 +19,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -83,7 +84,8 @@ fun ClinicCard(
 //                                color = LightTextPrimary
                             ),
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.secondary
                         )
                         Text(
                             text = clinic.address,
@@ -94,7 +96,8 @@ fun ClinicCard(
 //                                color = LightTextPrimary
                             ),
                             maxLines = 3,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.secondary
                         )
                         Spacer(Modifier.width(10.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -115,7 +118,8 @@ fun ClinicCard(
 //                                        color = LightTextPrimary
                                     ),
                                     maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
+                                    overflow = TextOverflow.Ellipsis,
+                                    color = MaterialTheme.colorScheme.secondary
                                 )
                             }
                         }
@@ -149,7 +153,7 @@ fun ClinicCard(
                 Icon(
                     imageVector = Icons.Default.Info,
                     contentDescription = "Info",
-//                    tint = LightTextPrimary
+                    tint = MaterialTheme.colorScheme.secondary
                 )
             }
         }

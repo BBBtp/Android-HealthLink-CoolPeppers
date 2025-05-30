@@ -37,7 +37,7 @@ fun RequestScreen(navController: NavController, viewModel: RequestViewModel = vi
                     selected = selectedTab == index,
                     onClick = { selectedTab = index },
                     icon = { Icon(item.icon, contentDescription = null) },
-                    text = { Text(text = item.label) },
+                    text = { Text(text = item.label, color = MaterialTheme.colorScheme.secondary) },
 //                    unselectedContentColor = LightTextPrimary,
 //                    selectedContentColor = LightTextPrimary
                 )

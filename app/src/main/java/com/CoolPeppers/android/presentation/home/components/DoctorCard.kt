@@ -21,6 +21,7 @@ import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,9 +49,9 @@ fun DoctorCard(
     onClick: () -> Unit
 ) {
     Card(
-        colors = CardDefaults.cardColors(
-//            containerColor = LightBgSecondary
-        ),
+//        colors = CardDefaults.cardColors(
+////            containerColor = LightBgSecondary
+//        ),
         modifier = Modifier
             .size(width = 300.dp, height = 90.dp)
             .clickable(onClick = onClick)
@@ -81,7 +82,8 @@ fun DoctorCard(
 //                                color = LightTextPrimary
                             ),
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.secondary
                         )
                         Text(
                             text = doctor.specialization,
@@ -92,7 +94,8 @@ fun DoctorCard(
 //                                color = LightTextPrimary
                             ),
                             maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.secondary
                         )
                     }
                 }
@@ -107,7 +110,7 @@ fun DoctorCard(
                 Icon(
                     imageVector = Icons.Default.Info,
                     contentDescription = "Info",
-//                    tint = LightTextPrimary
+                    tint = MaterialTheme.colorScheme.secondary
                 )
             }
         }

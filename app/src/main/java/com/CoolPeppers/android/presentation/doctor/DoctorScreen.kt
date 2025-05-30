@@ -70,7 +70,7 @@ fun DoctorScreen(clinicId: Int, serviceId: Int, navController: NavController, vi
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+//            .background(Color.White)
     ) {
         Column(
             modifier = Modifier
@@ -81,7 +81,7 @@ fun DoctorScreen(clinicId: Int, serviceId: Int, navController: NavController, vi
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
-                    .background(Color.White)
+//                    .background(Color.White)
                     .padding(horizontal = 5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -123,10 +123,10 @@ fun DoctorCard(doctor: Doctor, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(116.dp)
-            .background(
-                color = Color(0xFFEAF4F4),
-                shape = RoundedCornerShape(16.dp)
-            )
+//            .background(
+//                color = Color(0xFFEAF4F4),
+//                shape = RoundedCornerShape(16.dp)
+//            )
             .clickable { onClick() },
     ) {
         Row(
@@ -159,7 +159,7 @@ fun DoctorCard(doctor: Doctor, onClick: () -> Unit) {
                 doctor.specialization?.let {
                     Text(
                         text = it,
-                        color = Color(0xFF2F6690),
+//                        color = Color(0xFF2F6690),
                         fontSize = 14.sp,
                         modifier = Modifier.padding(top = 4.dp)
                     )

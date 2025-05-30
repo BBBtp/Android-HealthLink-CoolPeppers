@@ -56,7 +56,7 @@ fun ServiceScreen(clinicId: Int, navController: NavController, viewModelService:
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+//                .background(Color.White)
         ) {
             Column(
                 modifier = Modifier
@@ -67,7 +67,7 @@ fun ServiceScreen(clinicId: Int, navController: NavController, viewModelService:
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp)
-                        .background(Color.White)
+//                        .background(Color.White)
                         .padding(horizontal = 5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -120,7 +120,7 @@ fun ServiceItem(service: Service, onClick: () -> Unit) {
         Box(
             modifier = Modifier
                 .size(60.dp)
-                .background(Color(0xFF2F6690).copy(alpha = 0.08f), shape = RoundedCornerShape(50))
+//                .background(Color(0xFF2F6690).copy(alpha = 0.08f), shape = RoundedCornerShape(50))
         ) {
             AsyncImage(
                 model = service.logoUrl,
@@ -133,7 +133,7 @@ fun ServiceItem(service: Service, onClick: () -> Unit) {
         }
         Text(
             text = service.name,
-            color = Color(0xFF2F6690),
+//            color = Color(0xFF2F6690),
             fontSize = 12.sp,
             fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(top = 8.dp)

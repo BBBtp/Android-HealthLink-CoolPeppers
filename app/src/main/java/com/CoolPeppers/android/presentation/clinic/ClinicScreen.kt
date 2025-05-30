@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -49,7 +50,7 @@ fun ClinicScreen(navController: NavController, viewModelClinic: ClinicViewModel 
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+//                .background(Color.White)
         ) {
             Column(
                 modifier = Modifier
@@ -60,7 +61,7 @@ fun ClinicScreen(navController: NavController, viewModelClinic: ClinicViewModel 
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp)
-                        .background(Color(0xFFffFfFf))
+//                        .background(Color(0xFFffFfFf))
                         .padding(5.dp, 0.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -74,7 +75,7 @@ fun ClinicScreen(navController: NavController, viewModelClinic: ClinicViewModel 
                         text = stringResource(R.string.select_your_clinic),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                       // color = LightTextPrimary
+                        color = MaterialTheme.colorScheme.secondary
                     )
                 }
 
@@ -104,7 +105,7 @@ fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
-            .background(Color(0xFFEAF4F4), RoundedCornerShape(14.dp))
+//            .background(/*Color(0xFFEAF4F4)*/, RoundedCornerShape(14.dp))
             .padding(10.dp)
             .clickable { onClick() },
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -138,7 +139,7 @@ fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
                 text = clinic.name,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
-              //  color = LightTextPrimary
+                color = MaterialTheme.colorScheme.secondary
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
@@ -156,7 +157,8 @@ fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
                            // color = LightTextPrimary
                         ),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.secondary
                     )
                 }
             }
@@ -164,7 +166,7 @@ fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
                 text = clinic.address,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
-                //color = LightTextPrimary
+                color = MaterialTheme.colorScheme.secondary
             )
             Column(
                 modifier = Modifier
@@ -186,7 +188,7 @@ fun HospitalCard(clinic: Clinic, onClick: () -> Unit) {
                         Icon(
                             imageVector = Icons.Filled.Star,
                             contentDescription = null,
-                            // tint = LightTextPrimary
+                            tint = MaterialTheme.colorScheme.secondary
                         )
                     }
                     repeat(5 - clinic.rating.toInt()) {

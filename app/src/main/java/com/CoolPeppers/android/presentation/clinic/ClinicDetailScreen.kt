@@ -68,7 +68,7 @@ fun ClinicDetailScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(screenHeight * 0.2f)
-                            .background(Color.White, RoundedCornerShape(14.dp))
+//                            .background(Color.White, RoundedCornerShape(14.dp))
                             .padding(10.dp),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
@@ -236,10 +236,10 @@ fun ClinicDetailScreen(
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 8.dp),
                 shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFEAF4F4),
-                    //contentColor = LightTextPrimary
-                )
+//                colors = ButtonDefaults.buttonColors(
+//                    containerColor = Color(0xFFEAF4F4),
+//                    //contentColor = LightTextPrimary
+//                )
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.service),
@@ -249,7 +249,8 @@ fun ClinicDetailScreen(
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = stringResource(R.string.select_service),
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
+//                    color = MaterialTheme.colorScheme.secondary
                 )
             }
         }

@@ -1,6 +1,7 @@
 package com.CoolPeppers.android.util
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -15,7 +16,8 @@ fun PriceConversion(price: Int) {
         repeat(currentPrice) {
             Text(
                 text = stringResource(R.string.currency_symbol),
-                style = Typography.bodyMedium
+                style = Typography.bodyMedium,
+                color = MaterialTheme.colorScheme.secondary
             )
         }
     }

@@ -65,12 +65,14 @@ fun Settings(
         modifier = modifier.fillMaxWidth()
     ) {
 
-        val themeOptions = listOf(
-            Pair(R.string.light_theme_setting, AppCompatDelegate.MODE_NIGHT_NO),
-            Pair(R.string.dark_theme_setting, AppCompatDelegate.MODE_NIGHT_YES),
-            Pair(R.string.system_theme_setting, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM))
+        val themeOptions = mapOf(
+            AppCompatDelegate.MODE_NIGHT_NO to R.string.light_theme_setting,
+            AppCompatDelegate.MODE_NIGHT_YES to R.string.dark_theme_setting,
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM to R.string.system_theme_setting
+        )
 
         var themeExpanded by remember { mutableStateOf(false) }
+        val themeMode = sharedPreferences.getInt("mode", AppCompatDelegate.MODE_NIGHT_NO)
 
         ExposedDropdownMenuBox(
             expanded = themeExpanded,
@@ -80,7 +82,7 @@ fun Settings(
             HealthLinkTextField(
                 modifier = Modifier.fillMaxWidth().menuAnchor(),
                 readOnly = true,
-                value = "current theme",
+                value = stringResource(themeOptions[themeMode] ?: R.string.system_theme_setting),
                 onValueChange = {},
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = themeExpanded) },
             )
@@ -89,7 +91,7 @@ fun Settings(
                 expanded = themeExpanded,
                 onDismissRequest = { themeExpanded = false }
             ) {
-                themeOptions.forEach { (res, mode) ->
+                themeOptions.forEach { (mode, res) ->
                     DropdownMenuItem(
                         text = { Text(stringResource(res)) },
                         onClick = {
