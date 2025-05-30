@@ -56,14 +56,15 @@ fun CategoriesServiceScreen(navController: NavController, viewModelService: Serv
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp)
-                            .background(Color.White)
+//                            .background(Color.White)
                             .padding(horizontal = 5.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Image(
+                        Icon(
                             painter = painterResource(id = R.drawable.service),
                             contentDescription = stringResource(R.string.service_icon),
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(20.dp),
+                            tint = MaterialTheme.colorScheme.secondary
                         )
                         Text(
                             text = stringResource(R.string.select_service),
@@ -74,8 +75,9 @@ fun CategoriesServiceScreen(navController: NavController, viewModelService: Serv
                 actions = {
                     IconButton(onClick = { navController.navigate("symptoms") }) {
                         Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = stringResource(R.string.ai_assistant)
+                            painter = painterResource(R.drawable.robot),
+                            contentDescription = stringResource(R.string.ai_assistant),
+                            tint = MaterialTheme.colorScheme.secondary
                         )
                     }
                 }

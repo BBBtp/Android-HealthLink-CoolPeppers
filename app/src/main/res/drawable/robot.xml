@@ -1,0 +1,61 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="66dp"
+    android:height="66dp"
+    android:viewportWidth="66"
+    android:viewportHeight="66">
+
+    <!-- Голова -->
+    <path
+        android:pathData="M33,60.5C17.812,60.5 5.5,48.188 5.5,33C5.5,17.812 17.812,5.5 33,5.5C48.188,5.5 60.5,17.812 60.5,33C60.5,48.188 48.188,60.5 33,60.5Z"
+        android:strokeLineJoin="round"
+        android:strokeWidth="5"
+        android:fillColor="#00000000"
+        android:strokeColor="#2F6690"
+        android:strokeLineCap="round"/>
+
+    <!-- Рот -->
+    <path
+        android:pathData="M44,38.5C44,38.5 39.875,44 33,44C26.125,44 22,38.5 22,38.5"
+        android:strokeLineJoin="round"
+        android:strokeWidth="5"
+        android:fillColor="#00000000"
+        android:strokeColor="#2F6690"
+        android:strokeLineCap="round"/>
+
+    <!-- Новые глаза-линзы -->
+    <path
+        android:pathData="M22,23h5v5h-5z"
+        android:fillColor="#2F6690"/>
+    <path
+        android:pathData="M39,23h5v5h-5z"
+        android:fillColor="#2F6690"/>
+
+    <!-- Левая антенна-ушко -->
+    <path
+        android:pathData="M25,8L20,0"
+        android:strokeWidth="2"
+        android:strokeColor="#2F6690"/>
+    <path
+        android:pathData="M18.5,-1.5A1.5,1.5 0 1,0 21.5,-1.5A1.5,1.5 0 1,0 18.5,-1.5Z"
+        android:fillColor="#2F6690"/>
+
+    <!-- Правая антенна-ушко -->
+    <path
+        android:pathData="M41,8L46,0"
+        android:strokeWidth="2"
+        android:strokeColor="#2F6690"/>
+    <path
+        android:pathData="M44.5,-1.5A1.5,1.5 0 1,0 47.5,-1.5A1.5,1.5 0 1,0 44.5,-1.5Z"
+        android:fillColor="#2F6690"/>
+
+    <!-- Болты по бокам -->
+    <path
+        android:pathData="M5.5,33L0,33"
+        android:strokeWidth="2"
+        android:strokeColor="#2F6690"/>
+    <path
+        android:pathData="M60.5,33L66,33"
+        android:strokeWidth="2"
+        android:strokeColor="#2F6690"/>
+
+</vector>

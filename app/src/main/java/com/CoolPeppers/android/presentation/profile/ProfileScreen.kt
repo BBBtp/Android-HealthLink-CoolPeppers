@@ -277,7 +277,7 @@ fun Avatar(
             )
         } else if (errorState != null) {
             Image(
-                painter = painterResource(R.drawable.ic_launcher_background),
+                painter = painterResource(R.drawable.smileface),
                 contentDescription = stringResource(R.string.avatar),
                 modifier = customModifier
             )
