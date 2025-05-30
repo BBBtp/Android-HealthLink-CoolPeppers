@@ -51,6 +51,7 @@ class ChatViewModel @Inject constructor(
 
             val chats = chatRepository.getUserChats()
             _chats.value = chats
+            Log.d("ChatViewModel", "$chats")
 
         } catch (e: Exception) {
             _error.value = "Ошибка загрузки данных: ${e.localizedMessage}"

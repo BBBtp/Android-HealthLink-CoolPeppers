@@ -16,15 +16,4 @@ class ChatRepository @Inject constructor(
         return apiService.getUserChats(
         )
     }
-
-    suspend fun createChat(
-        doctorId: Int,
-        userId: Int
-    ): Chat {
-        val request = CreateChatRequest(
-            doctorId = doctorId,
-            userId = userId
-        )
-        return apiService.createChat(request)
-    }
 }

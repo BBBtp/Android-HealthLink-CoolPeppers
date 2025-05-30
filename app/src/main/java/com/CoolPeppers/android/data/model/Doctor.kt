@@ -12,5 +12,6 @@ data class Doctor(
     val description: String?,
     val experience: Int?,
     @SerializedName("customer_count") val customerCount: Int?,
-    @SerializedName("reviews_count") val reviewsCount: Int?
+    @SerializedName("reviews_count") val reviewsCount: Int?,
+    val clinicId: Int,
 )

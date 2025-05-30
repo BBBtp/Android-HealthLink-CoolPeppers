@@ -43,7 +43,6 @@ import com.CoolPeppers.android.data.model.Message
 import com.CoolPeppers.android.presentation.chat.ChatDialogViewModel
 import com.CoolPeppers.android.ui.theme.LocalBottomBarVisibility
 import com.CoolPeppers.android.util.MessageTimeFormatter
-import com.google.android.gms.maps.model.Circle
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -207,17 +206,22 @@ private fun ChatHeader(chat: Chat, onBack: () -> Unit) {
                 contentDescription = stringResource(R.string.back)
             )
         }
-        Image(
-            painter = painterResource(id = R.drawable.doctor),
+        AsyncImage(
+            model = chat.doctor?.photoUrl,
             contentDescription = stringResource(R.string.doctor_avatar),
             modifier = Modifier
                 .size(50.dp)
-                .clip(CircleShape)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop,
+            placeholder = painterResource(R.drawable.doctor),
+            error = painterResource(R.drawable.doctor)
         )
         Spacer(modifier = Modifier.width(16.dp))
         Column {
             Text(
-                text = stringResource(R.string.doctor).format(chat.user2.firstName, chat.user2.lastName),
+                text = chat.doctor?.let {
+                    "${it.firstName ?: ""} ${it.lastName ?: ""}".trim()
+                } ?: stringResource(R.string.doctor_avatar),
                 style = MaterialTheme.typography.titleMedium
             )
         }

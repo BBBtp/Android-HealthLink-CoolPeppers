@@ -183,7 +183,7 @@ fun ChatApp(
 
             if(searchQuery.isNotEmpty()) {
                 allChats.forEach { chat ->
-                    val userMatch = chat.user2.run {
+                    val userMatch = chat.doctor.run {
                         firstName?.contains(searchQuery, ignoreCase = true) == true ||
                                 lastName?.contains(searchQuery, ignoreCase = true) == true
                     }
@@ -274,19 +274,26 @@ fun EmptyChatItem(chat: Chat, onClick: () -> Unit) {
             .padding(8.dp)
             .clickable(onClick = onClick)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.doctor),
+        AsyncImage(
+            model = chat.doctor?.photoUrl,
             contentDescription = stringResource(R.string.doctor_avatar),
             modifier = Modifier
                 .size(50.dp)
-                .clip(CircleShape)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop,
+            placeholder = painterResource(R.drawable.doctor),
+            error = painterResource(R.drawable.doctor)
         )
+
         Text(
-            text = stringResource(R.string.doctor).format(chat.user2.firstName, chat.user2.lastName),
+            text = chat.doctor?.let {
+                "${it.firstName ?: ""} ${it.lastName ?: ""}".trim()
+            } ?: stringResource(R.string.doctor_avatar),
             style = Typography.titleMedium
         )
     }
 }
+
 
 @Composable
 fun ChatItem(
@@ -296,7 +303,7 @@ fun ChatItem(
     searchQuery: String = ""
 ) {
     val messageToShow = remember(chat, searchQuery) {
-        if(showLastMessage) {
+        if (showLastMessage) {
             chat.messages.lastOrNull()
         } else {
             chat.messages.firstOrNull {
@@ -304,6 +311,7 @@ fun ChatItem(
             }
         }
     }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -315,22 +323,30 @@ fun ChatItem(
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.weight(1f)
-        )
-        {
-            Image(
-                painter = painterResource(id = R.drawable.doctor),
+        ) {
+
+            AsyncImage(
+                model = chat.doctor?.photoUrl,
                 contentDescription = stringResource(R.string.doctor_avatar),
                 modifier = Modifier
                     .size(50.dp)
-                    .clip(CircleShape)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(R.drawable.doctor),
+                error = painterResource(R.drawable.doctor)
             )
+
             Column(modifier = Modifier.weight(1f)) {
+
                 Text(
-                    text = stringResource(R.string.doctor).format(chat.user2.firstName, chat.user2.lastName),
+                    text = chat.doctor?.let {
+                        "${it.firstName ?: ""} ${it.lastName ?: ""}".trim()
+                    } ?: stringResource(R.string.doctor_avatar),
                     style = Typography.titleMedium
                 )
+
                 Text(
-                    text = messageToShow?.text ?: "Нет сообщений",
+                    text = messageToShow?.text ?: stringResource(R.string.doctor_avatar),
                     modifier = Modifier.padding(end = 13.dp),
                     style = Typography.bodyMedium,
                     maxLines = 1,
@@ -338,6 +354,7 @@ fun ChatItem(
                 )
             }
         }
+
         messageToShow?.let { message ->
             Text(
                 text = message.created_at?.let {
